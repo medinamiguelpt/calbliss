@@ -3,52 +3,13 @@
 import { useState, useRef, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { CheckCircle } from "lucide-react"
-
-type CoinParticle = { id: number; x: number; delay: number; emoji: string }
-let coinId = 0
-const COIN_EMOJIS = ["💰", "🪙", "✨", "💸", "🎉"]
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { SpotlightCard } from "@/components/ui/spotlight-card"
 
-const PLAN_BACK: Record<string, { title: string; lines: string[] }> = {
-  Starter: {
-    title: "Your first week",
-    lines: [
-      "Day 1: Agent live on your number",
-      "Day 2: First auto-booked appointment",
-      "Day 3: Confirm calendar sync works",
-      "Day 7: Review your booking stats",
-    ],
-  },
-  Growth: {
-    title: "Your first week",
-    lines: [
-      "Day 1: Multi-staff calendars synced",
-      "Day 2: Multilingual detected & tested",
-      "Day 3: Analytics dashboard live",
-      "Day 7: Compare to previous week",
-    ],
-  },
-  Pro: {
-    title: "Your first week",
-    lines: [
-      "Day 1: Custom voice & persona set up",
-      "Day 2: CRM integration completed",
-      "Day 3: All 3 agents live & tested",
-      "Day 7: Onboarding call with your CSM",
-    ],
-  },
-  Franchise: {
-    title: "Your first week",
-    lines: [
-      "Day 1: All locations connected",
-      "Day 2: Central dashboard configured",
-      "Day 3: White-label branding applied",
-      "Day 7: Multi-location report ready",
-    ],
-  },
-}
+type CoinParticle = { id: number; x: number; delay: number; emoji: string }
+let coinId = 0
+const COIN_EMOJIS = ["💰", "🪙", "✨", "💸", "🎉"]
 
 const PLANS = [
   {
