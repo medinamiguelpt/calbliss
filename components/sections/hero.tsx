@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useEffect, useState } from "react"
-import { motion, animate, useScroll, useTransform } from "framer-motion"
+import { motion, animate, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion"
 import { ArrowRight, CheckCircle, Phone, Calendar } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -223,14 +223,37 @@ export function Hero({ variant = "a" }: { variant?: "a" | "b" }) {
   const glowY = useTransform(scrollY, [0, 600], [0, 120])
   const glowOpacity = useTransform(scrollY, [0, 400], [1, 0])
 
+  const rawMouseX = useMotionValue(0)
+  const rawMouseY = useMotionValue(0)
+  const mouseX = useSpring(rawMouseX, { stiffness: 40, damping: 20 })
+  const mouseY = useSpring(rawMouseY, { stiffness: 40, damping: 20 })
+
+  const blob1X = useTransform(mouseX, [-1, 1], [-18, 18])
+  const blob1Y = useTransform(mouseY, [-1, 1], [-14, 14])
+  const blob2X = useTransform(mouseX, [-1, 1], [12, -12])
+  const blob2Y = useTransform(mouseY, [-1, 1], [10, -10])
+  const mockupX = useTransform(mouseX, [-1, 1], [-6, 6])
+  const mockupY = useTransform(mouseY, [-1, 1], [-4, 4])
+
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      const x = (e.clientX / window.innerWidth) * 2 - 1
+      const y = (e.clientY / window.innerHeight) * 2 - 1
+      rawMouseX.set(x)
+      rawMouseY.set(y)
+    }
+    window.addEventListener("mousemove", onMove)
+    return () => window.removeEventListener("mousemove", onMove)
+  }, [rawMouseX, rawMouseY])
+
   const headline = HEADLINES[variant] ?? HEADLINES.a
 
   return (
     <section ref={sectionRef} className="relative overflow-hidden">
-      {/* Mesh gradient blobs */}
-      <div className="absolute inset-0 -z-10 overflow-hidden" aria-hidden>
-        <div className="mesh-blob-1 absolute top-[-20%] left-[-10%] w-[60vw] h-[60vw] rounded-full bg-primary/15 blur-[100px]" />
-        <div className="mesh-blob-2 absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-primary/10 blur-[120px]" />
+      {/* Mesh gradient blobs — hue-shift + parallax */}
+      <div className="absolute inset-0 -z-10 overflow-hidden hue-shift" aria-hidden>
+        <motion.div style={{ x: blob1X, y: blob1Y }} className="mesh-blob-1 absolute top-[-20%] left-[-10%] w-[60vw] h-[60vw] rounded-full bg-primary/15 blur-[100px]" />
+        <motion.div style={{ x: blob2X, y: blob2Y }} className="mesh-blob-2 absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-primary/10 blur-[120px]" />
         <div className="mesh-blob-3 absolute top-[30%] right-[20%] w-[30vw] h-[30vw] rounded-full bg-violet-500/8 blur-[80px]" />
       </div>
       {/* Particles */}
@@ -282,19 +305,26 @@ export function Hero({ variant = "a" }: { variant?: "a" | "b" }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <Button
-                size="lg"
-                render={<a href="#get-started" onClick={() => {
-                  if (typeof window !== "undefined" && (window as Window & { plausible?: (e: string, o?: object) => void }).plausible) {
-                    (window as Window & { plausible?: (e: string, o?: object) => void }).plausible?.("hero-cta-click", { props: { variant } })
-                  }
-                }} />}
-                nativeButton={false}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-full px-7 h-12 text-base shadow-lg shadow-primary/25"
-              >
-                {headline.cta}
-                <ArrowRight size={18} className="ml-2" />
-              </Button>
+              <div className="relative group/cta w-fit">
+                <div
+                  className="absolute -inset-[2px] rounded-full opacity-80 blur-[2px] group-hover/cta:opacity-100 group-hover/cta:blur-[3px] transition-all duration-300"
+                  style={{ background: "conic-gradient(from var(--border-angle), #7C3AED, #A78BFA, #C4B5FD, #7C3AED)", animation: "border-spin 3s linear infinite" }}
+                  aria-hidden
+                />
+                <Button
+                  size="lg"
+                  render={<a href="#get-started" onClick={() => {
+                    if (typeof window !== "undefined" && (window as Window & { plausible?: (e: string, o?: object) => void }).plausible) {
+                      (window as Window & { plausible?: (e: string, o?: object) => void }).plausible?.("hero-cta-click", { props: { variant } })
+                    }
+                  }} />}
+                  nativeButton={false}
+                  className="relative bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-full px-7 h-12 text-base shadow-lg shadow-primary/25"
+                >
+                  {headline.cta}
+                  <ArrowRight size={18} className="ml-2" />
+                </Button>
+              </div>
               <Button
                 size="lg"
                 variant="outline"
@@ -322,9 +352,10 @@ export function Hero({ variant = "a" }: { variant?: "a" | "b" }) {
             </motion.p>
           </div>
 
-          {/* Right — Mockup */}
+          {/* Right — Mockup with parallax */}
           <motion.div
             className="lg:pl-8"
+            style={{ x: mockupX, y: mockupY }}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}

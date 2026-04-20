@@ -6,6 +6,8 @@ import { CookieBanner } from "@/components/ui/cookie-banner"
 import { ScrollProgress } from "@/components/ui/scroll-progress"
 import { ChatWidget } from "@/components/ui/chat-widget"
 import { CursorFollower } from "@/components/ui/cursor-follower"
+import { SocialProof } from "@/components/ui/social-proof"
+import { ScrollHue } from "@/components/ui/scroll-hue"
 import "./globals.css"
 
 const inter = Inter({
@@ -58,6 +60,8 @@ export default function RootLayout({
         <CookieBanner />
         <ChatWidget />
         <CursorFollower />
+        <SocialProof />
+        <ScrollHue />
         {/* Plausible Analytics — privacy-friendly, no cookies required */}
         <Script
           defer

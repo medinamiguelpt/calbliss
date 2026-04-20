@@ -4,6 +4,7 @@ import { useRef, useEffect } from "react"
 import { motion, useInView, animate } from "framer-motion"
 import { Clock, Globe, CalendarDays, MessageSquare, ShieldCheck, BarChart3 } from "lucide-react"
 import { SpotlightCard } from "@/components/ui/spotlight-card"
+import { Globe3D } from "@/components/ui/globe-3d"
 import { cn } from "@/lib/utils"
 
 const INTEGRATIONS = [
@@ -69,6 +70,11 @@ const FEATURES: Feature[] = [
     accent: "#10B981",
     accentBg: "rgba(16,185,129,0.08)",
     span: "normal",
+    extra: (
+      <div className="flex justify-center mt-3">
+        <Globe3D size={80} />
+      </div>
+    ),
   },
   {
     icon: CalendarDays,

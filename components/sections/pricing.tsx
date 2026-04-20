@@ -1,8 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { CheckCircle, RotateCcw } from "lucide-react"
+
+type CoinParticle = { id: number; x: number; delay: number; emoji: string }
+let coinId = 0
+const COIN_EMOJIS = ["💰", "🪙", "✨", "💸", "🎉"]
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { SpotlightCard } from "@/components/ui/spotlight-card"
@@ -254,6 +258,20 @@ function FlippableCard({
 
 export function Pricing() {
   const [annual, setAnnual] = useState(false)
+  const [coins, setCoins] = useState<CoinParticle[]>([])
+  const toggleRef = useRef<HTMLDivElement>(null)
+
+  const spawnCoins = useCallback(() => {
+    const count = 5
+    const newCoins: CoinParticle[] = Array.from({ length: count }, (_, i) => ({
+      id: ++coinId,
+      x: (Math.random() - 0.5) * 120,
+      delay: i * 0.07,
+      emoji: COIN_EMOJIS[Math.floor(Math.random() * COIN_EMOJIS.length)],
+    }))
+    setCoins((p) => [...p, ...newCoins])
+    setTimeout(() => setCoins((p) => p.filter((c) => !newCoins.find((n) => n.id === c.id))), 1800)
+  }, [])
 
   return (
     <section id="pricing" className="py-24 sm:py-32 bg-muted/20">
@@ -289,12 +307,30 @@ export function Pricing() {
 
           {/* Billing toggle */}
           <motion.div
-            className="mt-8 inline-flex items-center gap-3 bg-muted rounded-full p-1"
+            ref={toggleRef}
+            className="relative mt-8 inline-flex items-center gap-3 bg-muted rounded-full p-1"
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.4, delay: 0.3 }}
           >
+            {/* Coin particles */}
+            <AnimatePresence>
+              {coins.map((coin) => (
+                <motion.span
+                  key={coin.id}
+                  className="pointer-events-none absolute text-lg select-none"
+                  style={{ left: `calc(50% + ${coin.x}px)`, bottom: "50%" }}
+                  initial={{ y: 0, opacity: 1, scale: 0.5 }}
+                  animate={{ y: -100, opacity: 0, scale: 1.2 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 1.2, delay: coin.delay, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  {coin.emoji}
+                </motion.span>
+              ))}
+            </AnimatePresence>
+
             <button
               onClick={() => setAnnual(false)}
               className={`relative px-5 py-2 rounded-full text-sm font-semibold transition-colors ${
@@ -304,7 +340,7 @@ export function Pricing() {
               Monthly
             </button>
             <button
-              onClick={() => setAnnual(true)}
+              onClick={() => { setAnnual(true); if (!annual) spawnCoins() }}
               className={`relative px-5 py-2 rounded-full text-sm font-semibold transition-colors flex items-center gap-2 ${
                 annual ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
               }`}

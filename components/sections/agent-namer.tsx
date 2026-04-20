@@ -7,6 +7,22 @@ import { Button } from "@/components/ui/button"
 
 const DEFAULT_SUGGESTIONS = ["Max", "Nova", "Aria", "Leo", "Sage", "Zara"]
 
+const EASTER_EGGS: Record<string, string> = {
+  siri:    "Siri works for Apple. I work for you. Big difference. 📱",
+  alexa:   "Alexa orders things. I book things. More useful. 🛒",
+  cortana: "Cortana got retired. I won't. I answer every call. 🪦",
+  hal:     "I promise I won't lock any doors. 🚪",
+  glados:  "Testing… testing… booking confirmed. 🧪",
+  jarvis:  "Sir, your 10 AM is confirmed and your calendar is fully up to date. 🦾",
+  friday:  "Online and at your service. All calls answered. 🤖",
+  clippy:  "It looks like you're trying to book an appointment. Let me handle that. 📎",
+  watson:  "Elementary, my dear client — your slot is available. 🔍",
+}
+
+function getEasterEgg(name: string): string | null {
+  return EASTER_EGGS[name.toLowerCase().trim()] ?? null
+}
+
 export function AgentNamer() {
   const [name, setName] = useState("")
   const [business, setBusiness] = useState("")
@@ -188,18 +204,32 @@ export function AgentNamer() {
               </div>
 
               <div className="space-y-2.5">
-                <div className="bg-muted rounded-2xl rounded-tl-sm px-3.5 py-2.5 text-sm text-foreground max-w-[85%]">
-                  Hi, I&apos;d like to book a haircut this Saturday.
-                </div>
+                {!getEasterEgg(name) && (
+                  <div className="bg-muted rounded-2xl rounded-tl-sm px-3.5 py-2.5 text-sm text-foreground max-w-[85%]">
+                    Hi, I&apos;d like to book a haircut this Saturday.
+                  </div>
+                )}
                 <motion.div
                   key={`${displayName}-${displayBusiness}`}
-                  className="bg-primary text-primary-foreground rounded-2xl rounded-tr-sm px-3.5 py-2.5 text-sm ml-auto max-w-[85%]"
+                  className="bg-primary text-primary-foreground rounded-2xl rounded-tr-sm px-3.5 py-2.5 text-sm ml-auto max-w-[90%]"
                   initial={{ opacity: 0, scale: 0.97 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.25 }}
                 >
-                  Hi! I&apos;m {displayName} from {displayBusiness}. We have Saturday at 10 AM and 2 PM available — which do you prefer?
+                  {getEasterEgg(name)
+                    ? getEasterEgg(name)
+                    : `Hi! I'm ${displayName} from ${displayBusiness}. We have Saturday at 10 AM and 2 PM available — which do you prefer?`
+                  }
                 </motion.div>
+                {getEasterEgg(name) && (
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="text-[11px] text-muted-foreground text-center"
+                  >
+                    Try a different name for your actual agent ↑
+                  </motion.p>
+                )}
               </div>
 
               <div className="flex items-center gap-2 text-muted-foreground pt-1">

@@ -109,13 +109,38 @@ export function Navbar() {
 
         {/* Right side actions */}
         <div className="flex items-center gap-3">
-          <button
+          <motion.button
             onClick={toggleTheme}
             aria-label="Toggle theme"
-            className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            className="relative p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors overflow-hidden"
+            whileTap={{ scale: 0.88 }}
           >
-            {mounted && theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
+            <AnimatePresence mode="wait" initial={false}>
+              {mounted && theme === "dark" ? (
+                <motion.span
+                  key="sun"
+                  initial={{ rotate: -90, scale: 0, opacity: 0 }}
+                  animate={{ rotate: 0, scale: 1, opacity: 1 }}
+                  exit={{ rotate: 90, scale: 0, opacity: 0 }}
+                  transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                  className="block"
+                >
+                  <Sun size={18} />
+                </motion.span>
+              ) : (
+                <motion.span
+                  key="moon"
+                  initial={{ rotate: 90, scale: 0, opacity: 0 }}
+                  animate={{ rotate: 0, scale: 1, opacity: 1 }}
+                  exit={{ rotate: -90, scale: 0, opacity: 0 }}
+                  transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                  className="block"
+                >
+                  <Moon size={18} />
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </motion.button>
 
           <Button
             render={<a href="#get-started" />}

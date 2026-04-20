@@ -94,6 +94,12 @@
   html {
     @apply scroll-smooth;
     overflow-x: hidden;
+    --scroll-hue: 0deg;
+  }
+
+  .hue-shift {
+    filter: hue-rotate(var(--scroll-hue));
+    transition: filter 0.4s ease;
   }
 
   body {
