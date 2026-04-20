@@ -43,7 +43,7 @@ const FAQS = [
   },
   {
     q: "Can the agent handle multiple languages?",
-    a: "Yes — Growth and Pro plans include multilingual support. The agent can detect and respond in the caller's language automatically, covering English, Spanish, French, Portuguese, and more.",
+    a: "Yes — all plans include 7-language support. The agent auto-detects the caller's language and responds in Greek, English, Spanish, Portuguese, French, German, or Arabic.",
   },
   {
     q: "What if I get more calls than my plan allows?",

@@ -14,98 +14,72 @@ const COIN_EMOJIS = ["💰", "🪙", "✨", "💸", "🎉"]
 const PLANS = [
   {
     name: "Starter",
-    monthly: 49,
-    annual: 39,
+    monthly: 79,
+    annual: 63,
     description: "Perfect for solo operators and small shops.",
     perks: [
       "1 AI voice agent",
       "Up to 200 calls/month",
-      "Calendar sync",
-      "Booking confirmations",
+      "Auto-booking from every call",
+      "SMS & email confirmations",
+      "7-language support",
       "Email support",
     ],
     cta: "Get started",
     popular: false,
-    franchise: false,
   },
   {
-    name: "Growth",
-    monthly: 99,
-    annual: 79,
-    description: "For growing businesses with higher call volume.",
+    name: "Professional",
+    monthly: 149,
+    annual: 119,
+    description: "For growing barbershops with higher call volume.",
     perks: [
       "1 AI voice agent",
-      "Up to 600 calls/month",
+      "Up to 500 calls/month",
       "Multi-staff scheduling",
-      "7-language support (EN/ES/PT/FR/DE/AR/EL)",
-      "Priority support",
       "Analytics dashboard",
+      "7-language support (EN/ES/PT/FR/DE/AR/EL)",
+      "Custom agent name & voice",
+      "Priority support",
     ],
     cta: "Get started",
     popular: true,
-    franchise: false,
   },
   {
-    name: "Pro",
-    monthly: 199,
-    annual: 159,
+    name: "Enterprise",
+    monthly: 299,
+    annual: 239,
     description: "For multi-location or high-volume businesses.",
     perks: [
       "Up to 3 AI voice agents",
-      "Unlimited calls",
-      "Custom agent voice & persona",
-      "CRM integrations",
+      "Up to 1,000 calls/month",
+      "Multi-location dashboard",
+      "Custom CRM integrations",
       "Dedicated onboarding",
       "SLA support",
     ],
     cta: "Contact us",
     popular: false,
-    franchise: false,
-  },
-  {
-    name: "Franchise",
-    monthly: 499,
-    annual: 399,
-    description: "For chains, franchises, and multi-location groups.",
-    perks: [
-      "Up to 10 AI voice agents",
-      "Unlimited calls across all locations",
-      "Centralised multi-location dashboard",
-      "White-label agent voice & branding",
-      "Custom CRM & POS integrations",
-      "Dedicated account manager",
-      "99.9% SLA guarantee",
-    ],
-    cta: "Contact us",
-    popular: false,
-    franchise: true,
   },
 ]
 
 function PricingCard({
-  name, price, originalPrice, annualPrice, description, perks, cta, popular, franchise, annual,
+  name, price, originalPrice, annualPrice, description, perks, cta, popular, annual,
 }: {
   name: string; price: number; originalPrice: number; annualPrice: number; description: string
-  perks: string[]; cta: string; popular: boolean; franchise: boolean; annual: boolean
+  perks: string[]; cta: string; popular: boolean; annual: boolean
 }) {
   return (
     <SpotlightCard
       className={`relative rounded-2xl border p-7 flex flex-col gap-6 transition-shadow duration-300 ${
         popular
           ? "border-primary/60 bg-gradient-to-b from-primary/10 to-primary/5 shadow-2xl shadow-primary/20 ring-1 ring-primary/20"
-          : franchise
-          ? "border-amber-500/40 bg-gradient-to-b from-amber-500/10 to-amber-500/5"
           : "border-border bg-card"
       }`}
     >
       {popular && (
         <Badge className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground font-semibold px-5 py-1.5 rounded-full text-xs shadow-lg shadow-primary/30">
           Most popular
-        </Badge>
-      )}
-      {franchise && (
-        <Badge className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-amber-500 text-white font-semibold px-5 py-1.5 rounded-full text-xs shadow-lg shadow-amber-500/30">
-          Multi-location
         </Badge>
       )}
 
@@ -124,16 +98,16 @@ function PricingCard({
             exit={{ opacity: 0, y: 8 }}
             transition={{ duration: 0.2 }}
           >
-            ${price}
+            €{price}
           </motion.span>
         </AnimatePresence>
         <div className="flex flex-col mb-1">
           <span className="text-muted-foreground text-sm">/mo</span>
-          {annual && <span className="text-xs text-muted-foreground line-through">${originalPrice}</span>}
+          {annual && <span className="text-xs text-muted-foreground line-through">€{originalPrice}</span>}
         </div>
         {annual && (
           <span className="mb-1 text-xs font-semibold text-green-600 dark:text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full">
-            Save ${(originalPrice - annualPrice) * 12}/yr
+            Save €{(originalPrice - annualPrice) * 12}/yr
           </span>
         )}
       </div>
@@ -149,13 +123,11 @@ function PricingCard({
 
       <Button
         size="lg"
-        render={<a href={(name === "Pro" || name === "Franchise") ? "/demo" : `/api/checkout?plan=${name.toLowerCase()}&billing=${annual ? "annual" : "monthly"}`} />}
+        render={<a href={name === "Enterprise" ? "/demo" : `/api/checkout?plan=${name.toLowerCase()}&billing=${annual ? "annual" : "monthly"}`} />}
         nativeButton={false}
         className={`rounded-full font-semibold h-11 ${
           popular
             ? "bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25"
-            : franchise
-            ? "bg-amber-500 hover:bg-amber-500/90 text-white shadow-lg shadow-amber-500/25"
             : "bg-transparent border-2 border-border hover:border-primary/40 hover:bg-primary/5 text-foreground transition-colors"
         }`}
       >
@@ -184,7 +156,7 @@ export function Pricing() {
 
   return (
     <section id="pricing" className="py-24 sm:py-32 bg-muted/20">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-12">
           <motion.p
             className="text-sm font-semibold uppercase tracking-widest text-primary mb-3"
@@ -262,8 +234,8 @@ export function Pricing() {
           </motion.div>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
-          {PLANS.map(({ name, monthly, annual: annualPrice, description, perks, cta, popular, franchise }, i) => {
+        <div className="grid md:grid-cols-3 gap-6 items-start">
+          {PLANS.map(({ name, monthly, annual: annualPrice, description, perks, cta, popular }, i) => {
             const price = annual ? annualPrice : monthly
             const originalPrice = monthly
             return (
@@ -283,7 +255,6 @@ export function Pricing() {
                   perks={perks}
                   cta={cta}
                   popular={popular}
-                  franchise={franchise}
                   annual={annual}
                 />
               </motion.div>

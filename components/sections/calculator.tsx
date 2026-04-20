@@ -5,20 +5,20 @@ import { motion } from "framer-motion"
 import { ArrowRight, TrendingUp } from "lucide-react"
 
 const PLANS = [
-  { name: "Starter", price: 49, maxCalls: 200 },
-  { name: "Growth",  price: 99, maxCalls: 600 },
-  { name: "Pro",     price: 199, maxCalls: Infinity },
+  { name: "Starter",      price: 79,  maxCalls: 200  },
+  { name: "Professional", price: 149, maxCalls: 500  },
+  { name: "Enterprise",   price: 299, maxCalls: 1000 },
 ]
 
 function formatCurrency(n: number) {
   return n >= 1000
-    ? "$" + (n / 1000).toFixed(1).replace(/\.0$/, "") + "k"
-    : "$" + Math.round(n)
+    ? "€" + (n / 1000).toFixed(1).replace(/\.0$/, "") + "k"
+    : "€" + Math.round(n)
 }
 
 export function Calculator() {
   const [dailyCalls, setDailyCalls]     = useState(20)
-  const [bookingValue, setBookingValue] = useState(45)
+  const [bookingValue, setBookingValue] = useState(22)
   const [missRate, setMissRate]         = useState(30)
 
   const stats = useMemo(() => {
@@ -84,8 +84,8 @@ export function Calculator() {
                 {
                   label: "Average booking value",
                   value: bookingValue,
-                  min: 15, max: 300, step: 5,
-                  display: `$${bookingValue}`,
+                  min: 5, max: 150, step: 5,
+                  display: `€${bookingValue}`,
                   onChange: setBookingValue,
                 },
                 {
@@ -143,7 +143,7 @@ export function Calculator() {
                   {formatCurrency(stats.lostRevenue)}
                 </motion.p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  = {stats.missedPerMonth} missed × ${bookingValue} avg booking
+                  = {stats.missedPerMonth} missed × €{bookingValue} avg booking
                 </p>
               </div>
 
@@ -154,7 +154,7 @@ export function Calculator() {
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold text-primary mb-0.5">Recommended plan</p>
                     <p className="text-sm font-heading font-bold text-foreground">
-                      {stats.recommended.name} — ${stats.recommended.price}/mo
+                      {stats.recommended.name} — €{stats.recommended.price}/mo
                     </p>
                     <p className="text-xs text-muted-foreground mt-1">
                       {stats.roi}× ROI · Recovers{" "}
