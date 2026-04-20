@@ -11,7 +11,6 @@ import { BeforeAfter } from "@/components/sections/before-after"
 import { ForWho } from "@/components/sections/for-who"
 import { Pricing } from "@/components/sections/pricing"
 import { Testimonials } from "@/components/sections/testimonials"
-import { StatsBar } from "@/components/sections/stats-bar"
 import { Calculator } from "@/components/sections/calculator"
 import { FAQ } from "@/components/sections/faq"
 import { FinalCTA } from "@/components/sections/final-cta"
@@ -42,7 +41,6 @@ export default async function Home() {
         <Pricing />
         <WaveDivider opacity={0.5} />
         <Testimonials />
-        <StatsBar />
         <Calculator />
         <FAQ />
         <FinalCTA />
