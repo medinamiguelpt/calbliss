@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useEffect } from "react"
+import { useRef, useEffect, useMemo, useState } from "react"
 import { motion, animate, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion"
 import { ArrowRight, CheckCircle, Phone, Calendar } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -8,7 +8,6 @@ import { Badge } from "@/components/ui/badge"
 import { openDemoModal } from "@/components/ui/demo-modal"
 import { Particles } from "@/components/ui/particles"
 import { TiltCard } from "@/components/ui/tilt-card"
-import { useState } from "react"
 
 const FULL_TEXT = "CalBliss creates a custom voice AI that answers calls, handles bookings, and fills your calendar — automatically, 24 hours a day."
 
@@ -193,9 +192,8 @@ function HeroMockup() {
   )
 }
 
-// ── Staggered word-by-word headline reveal ────────────────────────────────────
 function HeadlineReveal({ plain, highlight }: { plain: string; highlight: string }) {
-  const words = plain.split(" ")
+  const words = useMemo(() => plain.split(" "), [plain])
   return (
     <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-extrabold leading-[1.1] tracking-tight text-balance">
       {words.map((word, i) => (
@@ -224,16 +222,23 @@ function HeadlineReveal({ plain, highlight }: { plain: string; highlight: string
   )
 }
 
-// ── Magnetic button wrapper ───────────────────────────────────────────────────
 function MagneticWrap({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null)
+  const rectRef = useRef<DOMRect | null>(null)
   const x = useMotionValue(0)
   const y = useMotionValue(0)
   const sx = useSpring(x, { stiffness: 350, damping: 28 })
   const sy = useSpring(y, { stiffness: 350, damping: 28 })
 
+  useEffect(() => {
+    const update = () => { rectRef.current = ref.current?.getBoundingClientRect() ?? null }
+    update()
+    window.addEventListener("resize", update)
+    return () => window.removeEventListener("resize", update)
+  }, [])
+
   const onMove = (e: React.MouseEvent) => {
-    const rect = ref.current?.getBoundingClientRect()
+    const rect = rectRef.current
     if (!rect) return
     x.set((e.clientX - (rect.left + rect.width / 2)) * 0.32)
     y.set((e.clientY - (rect.top + rect.height / 2)) * 0.32)

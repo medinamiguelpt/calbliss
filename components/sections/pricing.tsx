@@ -1,28 +1,10 @@
 "use client"
 
 import { useState, useRef, useCallback } from "react"
-import { motion, AnimatePresence, useInView, animate } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { CheckCircle } from "lucide-react"
 import { SpotlightCard } from "@/components/ui/spotlight-card"
-
-function AnimatedMinutes({ value }: { value: number }) {
-  const ref = useRef<HTMLSpanElement>(null)
-  const inView = useInView(ref, { once: true, margin: "-60px" })
-  const started = useRef(false)
-
-  if (inView && !started.current && ref.current) {
-    started.current = true
-    animate(0, value, {
-      duration: 1.4,
-      ease: [0.22, 1, 0.36, 1],
-      onUpdate: (v) => {
-        if (ref.current) ref.current.textContent = Math.round(v).toLocaleString()
-      },
-    })
-  }
-
-  return <span ref={ref}>0</span>
-}
+import { CountUp } from "@/components/sections/features"
 
 type CoinParticle = { id: number; x: number; delay: number; emoji: string }
 let coinId = 0
@@ -124,7 +106,7 @@ function PricingCard({
                 <span>
                   {match ? (
                     <>
-                      <AnimatedMinutes value={parseInt(match[1].replace(/,/g, ""))} />
+                      <CountUp to={parseInt(match[1].replace(/,/g, ""))} duration={1.4} />
                       {match[2]}
                     </>
                   ) : perk}

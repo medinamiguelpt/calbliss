@@ -15,7 +15,7 @@ const INTEGRATIONS = [
   { name: "Apple Calendar",  color: "#FF3B30" },
 ]
 
-function CountUp({ to, prefix = "", suffix = "", duration = 1.8 }: {
+export function CountUp({ to, prefix = "", suffix = "", duration = 1.8 }: {
   to: number; prefix?: string; suffix?: string; duration?: number
 }) {
   const ref = useRef<HTMLSpanElement>(null)
