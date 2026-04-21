@@ -233,7 +233,7 @@ export function Testimonials() {
   }
 
   return (
-    <section className="py-24 sm:py-32 bg-muted/30 overflow-hidden">
+    <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 bg-muted/30 overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-14">
           <motion.p
