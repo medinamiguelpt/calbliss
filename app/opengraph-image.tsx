@@ -21,7 +21,6 @@ export default function OGImage() {
           fontFamily: "system-ui, sans-serif",
         }}
       >
-        {/* Purple radial glow */}
         <div
           style={{
             position: "absolute",
@@ -35,7 +34,6 @@ export default function OGImage() {
           }}
         />
 
-        {/* Left accent bar */}
         <div
           style={{
             position: "absolute",
@@ -61,7 +59,6 @@ export default function OGImage() {
             <path d="M17 11 L9 24 L9 44 L32 55 L55 44 L55 24 L47 11 L32 29 Z" fill="#A855F7"/>
           </svg>
 
-          {/* Brand name */}
           <div
             style={{
               color: "white",
@@ -74,7 +71,6 @@ export default function OGImage() {
             TimeBookingPro
           </div>
 
-          {/* Tagline */}
           <div
             style={{
               color: "rgba(255,255,255,0.55)",
@@ -87,7 +83,6 @@ export default function OGImage() {
             AI voice agents that fill your calendar — 24 hours a day
           </div>
 
-          {/* Pill badges */}
           <div style={{ display: "flex", gap: 14, marginTop: 8 }}>
             {["Live in 24 hours", "No credit card", "Cancel any time"].map((text) => (
               <div
@@ -108,7 +103,6 @@ export default function OGImage() {
           </div>
         </div>
 
-        {/* Bottom domain */}
         <div
           style={{
             position: "absolute",

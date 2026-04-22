@@ -208,10 +208,10 @@ export default async function VsPage({ params }: Props) {
                   </tr>
                 </thead>
                 <tbody>
-                  {config.rows.map((row, i) => (
+                  {config.rows.map((row) => (
                     <tr
                       key={row.feature}
-                      className={`border-b border-border last:border-0 ${i % 2 === 0 ? "" : "bg-muted/10"}`}
+                      className="border-b border-border last:border-0 even:bg-muted/10"
                     >
                       <td className="px-5 py-3.5 font-medium">{row.feature}</td>
                       <td className="px-5 py-3.5 text-center">

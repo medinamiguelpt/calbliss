@@ -2,6 +2,9 @@ import { NextResponse } from "next/server"
 import Stripe from "stripe"
 import { createClient } from "@supabase/supabase-js"
 import { Resend } from "resend"
+import { SITE_URL, BRAND_NAME, FROM_EMAIL } from "@/lib/constants"
+
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 
 export async function POST(req: Request) {
   const body = await req.text()
@@ -73,8 +76,7 @@ async function cancelCustomer(subscriptionId: string) {
 }
 
 async function sendOnboardingEmail(email: string | null | undefined, plan: string) {
-  if (!email || !process.env.RESEND_API_KEY) return
-  const resend = new Resend(process.env.RESEND_API_KEY)
+  if (!email || !resend) return
 
   const steps = [
     "We'll call you within 24 hours to collect your scheduling preferences",
@@ -83,9 +85,9 @@ async function sendOnboardingEmail(email: string | null | undefined, plan: strin
   ]
 
   await resend.emails.send({
-    from: "TimeBookingPro <hello@timebookingpro.com>",
+    from: FROM_EMAIL,
     to: [email],
-    subject: "Welcome to TimeBookingPro — your agent is being set up",
+    subject: `Welcome to ${BRAND_NAME} — your agent is being set up`,
     html: `
 <!DOCTYPE html><html><body style="margin:0;padding:0;background:#FAFAFF;font-family:system-ui,sans-serif;">
 <div style="max-width:520px;margin:40px auto;background:#fff;border-radius:16px;border:1px solid #E4DCFF;overflow:hidden;">
@@ -113,7 +115,7 @@ async function sendOnboardingEmail(email: string | null | undefined, plan: strin
     </div>
   </div>
   <div style="border-top:1px solid #E4DCFF;padding:20px 40px;text-align:center;">
-    <p style="color:#6B6880;font-size:12px;margin:0;">© 2026 TimeBookingPro · <a href="https://timebookingpro.com" style="color:#7C3AED;">timebookingpro.com</a></p>
+    <p style="color:#6B6880;font-size:12px;margin:0;">© 2026 ${BRAND_NAME} · <a href="${SITE_URL}" style="color:#7C3AED;">${SITE_URL.replace("https://","")}</a></p>
   </div>
 </div></body></html>`,
   })
