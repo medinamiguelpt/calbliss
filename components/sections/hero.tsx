@@ -208,16 +208,14 @@ function HeadlineReveal({ plain, highlight }: { plain: string; highlight: string
           </motion.span>
         </span>
       ))}
-      <span className="inline-block overflow-hidden">
-        <motion.span
-          className="inline-block"
-          initial={{ y: "110%" }}
-          animate={{ y: 0 }}
-          transition={{ duration: 0.55, delay: 0.05 + words.length * 0.09, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <span className="text-shimmer">{highlight}</span>
-        </motion.span>
-      </span>
+      <motion.span
+        className="inline-block text-shimmer"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.05 + words.length * 0.09 }}
+      >
+        {highlight}
+      </motion.span>
     </h1>
   )
 }
