@@ -25,6 +25,10 @@ export function Navbar() {
   useEffect(() => {
     setMounted(true)
 
+    // Always start at top — disable browser scroll restoration on refresh
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual"
+    window.scrollTo(0, 0)
+
     const onScroll = () => setScrolled(window.scrollY > 16)
     window.addEventListener("scroll", onScroll, { passive: true })
 
@@ -77,7 +81,9 @@ export function Navbar() {
         scrolled ? "h-14" : "h-16 max-w-6xl mx-auto px-4 sm:px-6"
       )}>
         {/* Logo */}
-        <Logo iconSize={32} />
+        <a href="/" aria-label="TimeBookingPro home" className="flex items-center">
+          <Logo iconSize={32} />
+        </a>
 
         {/* Desktop nav links */}
         <ul className="hidden md:flex items-center gap-8">
