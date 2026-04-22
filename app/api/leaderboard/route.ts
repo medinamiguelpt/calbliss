@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
+import { leaderboardQuerySchema, parseQuery } from "@/lib/schemas"
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
-  const code = searchParams.get("code")?.toUpperCase()
+  const { data: query } = parseQuery(leaderboardQuerySchema, searchParams)
+  const code = query?.code?.toUpperCase()
 
   if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
     // Demo data when Supabase is not configured

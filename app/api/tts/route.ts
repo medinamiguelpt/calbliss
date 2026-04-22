@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server"
+import { ttsSchema, parseBody } from "@/lib/schemas"
 
 const VOICE_ID = "EXAVITQu4vr4xnSDxMaL" // ElevenLabs "Bella" — warm, professional
 
 export async function POST(req: Request) {
-  const { text } = await req.json()
-  if (!text || typeof text !== "string") {
-    return NextResponse.json({ error: "Missing text" }, { status: 400 })
-  }
+  const parsed = parseBody(ttsSchema, await req.json())
+  if (parsed.error) return parsed.error
+  const { text } = parsed.data
 
   const apiKey = process.env.ELEVENLABS_API_KEY
   if (!apiKey) {

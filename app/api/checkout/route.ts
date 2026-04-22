@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import Stripe from "stripe"
+import { checkoutQuerySchema, parseQuery } from "@/lib/schemas"
 
 const PLANS: Record<string, { monthly: string; annual: string; name: string }> = {
   starter: {
@@ -23,9 +24,9 @@ const BASE = process.env.NEXT_PUBLIC_BASE_URL ?? "https://timebookingpro.com"
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
-  const plan     = searchParams.get("plan") ?? "growth"
-  const billing  = searchParams.get("billing") ?? "monthly"
-  const ref      = searchParams.get("ref") ?? ""
+  const parsed = parseQuery(checkoutQuerySchema, searchParams)
+  if (parsed.error) return NextResponse.redirect(new URL("/#pricing", req.url))
+  const { plan, billing, ref } = parsed.data
 
   if (!process.env.STRIPE_SECRET_KEY) {
     return NextResponse.redirect(new URL("/#get-started", req.url))

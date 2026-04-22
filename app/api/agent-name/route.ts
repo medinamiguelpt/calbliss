@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server"
 import Anthropic from "@anthropic-ai/sdk"
+import { agentNameSchema, parseBody } from "@/lib/schemas"
 
 const client = new Anthropic()
 
 export async function POST(req: Request) {
-  const { business } = await req.json()
+  const parsed = parseBody(agentNameSchema, await req.json())
+  if (parsed.error) return parsed.error
+  const { business } = parsed.data
 
   const businessContext = business?.trim()
     ? `The business is called "${business}".`

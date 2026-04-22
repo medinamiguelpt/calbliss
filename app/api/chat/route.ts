@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk"
+import { chatSchema, parseBody } from "@/lib/schemas"
 
 const client = new Anthropic()
 
@@ -23,17 +24,15 @@ Rules:
 - If you don't know something, say "That's a great question — email us at hello@timebookingpro.com and we'll get back to you quickly."`
 
 export async function POST(req: Request) {
-  const { messages } = await req.json()
-
-  if (!Array.isArray(messages) || messages.length === 0) {
-    return new Response("Invalid messages", { status: 400 })
-  }
+  const parsed = parseBody(chatSchema, await req.json())
+  if (parsed.error) return new Response("Invalid messages", { status: 400 })
+  const { messages } = parsed.data
 
   const stream = client.messages.stream({
     model: "claude-haiku-4-5-20251001",
     max_tokens: 256,
     system: SYSTEM,
-    messages: messages.slice(-10), // keep last 10 turns to avoid runaway context
+    messages: messages.slice(-10),
   })
 
   const encoder = new TextEncoder()

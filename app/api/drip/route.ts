@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { Resend } from "resend"
 import { SITE_URL, BRAND_NAME, FROM_EMAIL } from "@/lib/constants"
+import { dripSchema, parseBody } from "@/lib/schemas"
 
 const resendKey  = process.env.RESEND_API_KEY
 const DRIP_SECRET = process.env.DRIP_SECRET
@@ -124,14 +125,16 @@ const EMAILS: Record<number, { subject: string; html: (email: string) => string 
 }
 
 export async function POST(req: Request) {
-  const { email, day, secret } = await req.json()
+  const parsed = parseBody(dripSchema, await req.json())
+  if (parsed.error) return parsed.error
+  const { email, day, secret } = parsed.data
 
   if (DRIP_SECRET && secret !== DRIP_SECRET) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  if (!email?.includes("@") || !EMAILS[day as number]) {
-    return NextResponse.json({ error: "Invalid params" }, { status: 400 })
+  if (!EMAILS[day]) {
+    return NextResponse.json({ error: "Invalid day" }, { status: 400 })
   }
 
   if (!resend) {
@@ -139,7 +142,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, sent: false })
   }
 
-  const template = EMAILS[day as number]
+  const template = EMAILS[day]
   await resend.emails.send({
     from: FROM_EMAIL,
     to: [email],

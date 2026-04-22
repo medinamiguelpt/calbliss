@@ -1,17 +1,16 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
 import { Resend } from "resend"
+import { demoSchema, parseBody } from "@/lib/schemas"
 
 const supabaseUrl = process.env.SUPABASE_URL
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 const resendKey = process.env.RESEND_API_KEY
 
 export async function POST(req: Request) {
-  const { name, email, business } = await req.json()
-
-  if (!email?.includes("@") || !name) {
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 })
-  }
+  const parsed = parseBody(demoSchema, await req.json())
+  if (parsed.error) return parsed.error
+  const { name, email, business } = parsed.data
 
   await Promise.allSettled([
     persistDemo({ name, email, business }),

@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
+import { affiliateQuerySchema, parseQuery } from "@/lib/schemas"
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
-  const code = searchParams.get("code")?.toUpperCase()
-
-  if (!code || code.length !== 6) {
-    return NextResponse.json({ error: "Invalid code" }, { status: 400 })
-  }
+  const parsed = parseQuery(affiliateQuerySchema, searchParams)
+  if (parsed.error) return parsed.error
+  const { code } = parsed.data
 
   if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
     // Return demo data when Supabase isn't configured

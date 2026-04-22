@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
 import { Resend } from "resend"
 import { SITE_URL, BRAND_NAME, FROM_EMAIL, OWNER_EMAIL } from "@/lib/constants"
+import { waitlistSchema, parseBody } from "@/lib/schemas"
 
 const supabaseUrl = process.env.SUPABASE_URL
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -22,11 +23,9 @@ function generateCode(): string {
 }
 
 export async function POST(req: Request) {
-  const { email, source = "waitlist", ref = "", phone = "" } = await req.json()
-
-  if (!email || !email.includes("@")) {
-    return NextResponse.json({ error: "Invalid email" }, { status: 400 })
-  }
+  const parsed = parseBody(waitlistSchema, await req.json())
+  if (parsed.error) return parsed.error
+  const { email, source, ref, phone } = parsed.data
 
   const { position, referralCode } = await persistToSupabase(email, source, ref, phone)
 
