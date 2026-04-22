@@ -56,35 +56,19 @@ export default function OGImage() {
             zIndex: 1,
           }}
         >
-          {/* Logo mark */}
-          <div
-            style={{
-              width: 88,
-              height: 88,
-              borderRadius: 22,
-              background: "linear-gradient(135deg, #9333EA 0%, #5B21B6 100%)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: "0 0 60px rgba(124,58,237,0.5)",
-            }}
-          >
-            {/* Phone wave icon */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 5, alignItems: "center" }}>
-              <div style={{ display: "flex", gap: 3, alignItems: "flex-end", height: 24 }}>
-                {[10, 20, 14, 24, 12, 18, 10].map((h, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      width: 4,
-                      height: h,
-                      borderRadius: 2,
-                      background: "rgba(255,255,255,0.9)",
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
+          {/* Logo mark — hexagonal badge with double chevron */}
+          <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+            <svg width="96" height="96" viewBox="0 0 64 64" fill="none">
+              <defs>
+                <linearGradient id="tbp-og" x1="8" y1="4" x2="56" y2="60" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#A855F7" />
+                  <stop offset="100%" stopColor="#6D28D9" />
+                </linearGradient>
+              </defs>
+              <path d="M44.1 11 Q56.2 18 56.2 32 Q56.2 46 44.1 53 Q32 60 19.9 53 Q7.8 46 7.8 32 Q7.8 18 19.9 11 Q32 4 44.1 11 Z" fill="url(#tbp-og)" />
+              <path d="M20 25 L32 36 L44 25" stroke="white" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              <path d="M20 34 L32 45 L44 34" stroke="rgba(255,255,255,0.55)" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+            </svg>
           </div>
 
           {/* Brand name */}

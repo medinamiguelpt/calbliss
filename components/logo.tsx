@@ -17,30 +17,20 @@ export function LogoIcon({ className, size = 36 }: LogoIconProps) {
       aria-hidden="true"
     >
       <defs>
-        <linearGradient
-          id="cb-bg"
-          x1="0" y1="0" x2="64" y2="64"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop offset="0%" stopColor="#9333EA" />
-          <stop offset="100%" stopColor="#5B21B6" />
+        <linearGradient id="tbp-bg" x1="8" y1="4" x2="56" y2="60" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#A855F7" />
+          <stop offset="100%" stopColor="#6D28D9" />
         </linearGradient>
       </defs>
-
-      {/* Background */}
-      <rect width="64" height="64" rx="16" fill="url(#cb-bg)" />
-
-      {/* Source dot — the agent */}
-      <circle cx="10" cy="32" r="4" fill="white" />
-
-      {/* Single fluid sine wave — the voice */}
+      {/* Rounded hexagon — midpoint quadratic-bezier technique */}
       <path
-        d="M 14 32 C 22 18, 30 18, 38 32 C 46 46, 54 46, 58 32"
-        stroke="white"
-        strokeWidth="5"
-        strokeLinecap="round"
-        fill="none"
+        d="M44.1 11 Q56.2 18 56.2 32 Q56.2 46 44.1 53 Q32 60 19.9 53 Q7.8 46 7.8 32 Q7.8 18 19.9 11 Q32 4 44.1 11 Z"
+        fill="url(#tbp-bg)"
       />
+      {/* Upper chevron */}
+      <path d="M20 25 L32 36 L44 25" stroke="white" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      {/* Lower chevron */}
+      <path d="M20 34 L32 45 L44 34" stroke="rgba(255,255,255,0.55)" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
     </svg>
   )
 }
@@ -60,8 +50,8 @@ export function Logo({
     <div className={cn("flex items-center gap-2.5", className)}>
       <LogoIcon size={iconSize} />
       {showWordmark && (
-        <span className="font-heading font-semibold text-xl tracking-tight text-foreground">
-          TimeBookingPro
+        <span className="font-heading text-xl tracking-tight text-foreground">
+          <span className="font-bold">TimeBooking</span><span className="font-light opacity-75">Pro</span>
         </span>
       )}
     </div>
