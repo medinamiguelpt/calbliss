@@ -57,9 +57,8 @@ export default function OGImage() {
           }}
         >
           <svg width="100" height="100" viewBox="0 0 64 64" fill="none">
-            <path fillRule="evenodd" fill="#7C3AED" d="M14 0 L0 9 L0 43 L32 64 L64 43 L64 9 L51 0 L32 9 Z M11 13 L53 13 L53 43 L32 55 L11 43 Z"/>
-            <path d="M15 16 L32 27 L49 16" stroke="#A855F7" strokeWidth="5.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-            <path d="M21 31 L32 41 L43 31" stroke="#A855F7" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+            <path d="M8 0 L0 18 L0 50 L32 64 L64 50 L64 18 L56 0 L32 22 Z" fill="#8B5CF6"/>
+            <path d="M17 11 L9 24 L9 44 L32 55 L55 44 L55 24 L47 11 L32 29 Z" fill="#A855F7"/>
           </svg>
 
           {/* Brand name */}
