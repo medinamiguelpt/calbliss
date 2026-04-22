@@ -12,7 +12,6 @@ const NAV_LINKS = [
   { label: "How it Works", href: "#how-it-works", sectionId: "how-it-works" },
   { label: "Features",     href: "#features",     sectionId: "features" },
   { label: "Pricing",      href: "#pricing",       sectionId: "pricing" },
-  { label: "Blog",         href: "/blog",          sectionId: null },
 ]
 
 export function Navbar() {

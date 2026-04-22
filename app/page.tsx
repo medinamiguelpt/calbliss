@@ -16,7 +16,6 @@ import { FAQ } from "@/components/sections/faq"
 import { FinalCTA } from "@/components/sections/final-cta"
 import { StickyCTA } from "@/components/ui/sticky-cta"
 import { DemoModal } from "@/components/ui/demo-modal"
-import { ExitIntent } from "@/components/ui/exit-intent"
 import { HomeJsonLd } from "@/components/seo/json-ld"
 import { WaveDivider } from "@/components/ui/wave-divider"
 
@@ -48,7 +47,6 @@ export default async function Home() {
       </main>
       <Footer />
       <DemoModal />
-      <ExitIntent />
       <HomeJsonLd />
     </>
   )
