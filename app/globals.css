@@ -223,6 +223,10 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: shimmer-slide 3s linear infinite;
+    /* Safari: force compositing layer so background-clip:text renders correctly
+       when an ancestor has overflow:hidden or a CSS transform */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
   }
 
   .text-shimmer-white {
