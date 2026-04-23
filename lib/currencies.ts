@@ -4,7 +4,11 @@
  * We do NOT convert EUR at runtime — every tier has a hand-picked, round
  * local price per currency. This mirrors how mature SaaS products handle
  * multi-currency (Linear, Notion, Vercel): psychologically clean numbers
- * in each market rather than FX output like €229 → $247.32.
+ * in each market rather than FX output like €99 → $107.42.
+ *
+ * Non-EUR prices derived from the v3 EUR table (99/179/299/499) using the
+ * same per-currency ratios the previous 3-tier table used, then hand-rounded
+ * for local psychology. Refresh from the canonical source when promos change.
  */
 
 import { YEARLY_DISCOUNT, type TierPricing } from "./pricing";
@@ -21,46 +25,33 @@ export interface Currency {
   decimals: 0 | 2;
   tierMonthly: Record<TierPricing["id"], number>;
   roundStep: number;
-  overageByTier: Record<TierPricing["id"], number>;
 }
 
 export const CURRENCIES: Record<CurrencyCode, Currency> = {
   EUR: { code: "EUR", locale: "en-IE", name: "Euro", flag: "🇪🇺", decimals: 2,
-    tierMonthly: { starter: 229, professional: 429, enterprise: 859 }, roundStep: 1,
-    overageByTier: { starter: 0.6, professional: 0.5, enterprise: 0.4 } },
+    tierMonthly: { light:  99, standard:  179, busy:  299, heavy:   499 }, roundStep: 1 },
   USD: { code: "USD", locale: "en-US", name: "US Dollar", flag: "🇺🇸", decimals: 2,
-    tierMonthly: { starter: 249, professional: 479, enterprise: 939 }, roundStep: 1,
-    overageByTier: { starter: 0.65, professional: 0.55, enterprise: 0.45 } },
+    tierMonthly: { light: 109, standard:  199, busy:  329, heavy:   549 }, roundStep: 1 },
   GBP: { code: "GBP", locale: "en-GB", name: "British Pound", flag: "🇬🇧", decimals: 2,
-    tierMonthly: { starter: 199, professional: 379, enterprise: 759 }, roundStep: 1,
-    overageByTier: { starter: 0.55, professional: 0.45, enterprise: 0.35 } },
+    tierMonthly: { light:  89, standard:  159, busy:  269, heavy:   449 }, roundStep: 1 },
   CHF: { code: "CHF", locale: "de-CH", name: "Swiss Franc", flag: "🇨🇭", decimals: 2,
-    tierMonthly: { starter: 229, professional: 429, enterprise: 859 }, roundStep: 1,
-    overageByTier: { starter: 0.6, professional: 0.5, enterprise: 0.4 } },
+    tierMonthly: { light:  99, standard:  179, busy:  299, heavy:   499 }, roundStep: 1 },
   CAD: { code: "CAD", locale: "en-CA", name: "Canadian Dollar", flag: "🇨🇦", decimals: 2,
-    tierMonthly: { starter: 339, professional: 649, enterprise: 1299 }, roundStep: 1,
-    overageByTier: { starter: 0.9, professional: 0.75, enterprise: 0.6 } },
+    tierMonthly: { light: 149, standard:  269, busy:  449, heavy:   749 }, roundStep: 1 },
   AUD: { code: "AUD", locale: "en-AU", name: "Australian Dollar", flag: "🇦🇺", decimals: 2,
-    tierMonthly: { starter: 379, professional: 699, enterprise: 1399 }, roundStep: 1,
-    overageByTier: { starter: 0.99, professional: 0.79, enterprise: 0.65 } },
+    tierMonthly: { light: 169, standard:  299, busy:  499, heavy:   829 }, roundStep: 1 },
   SEK: { code: "SEK", locale: "sv-SE", name: "Swedish Krona", flag: "🇸🇪", decimals: 2,
-    tierMonthly: { starter: 2599, professional: 4899, enterprise: 9749 }, roundStep: 10,
-    overageByTier: { starter: 6.9, professional: 5.7, enterprise: 4.5 } },
+    tierMonthly: { light: 1149, standard: 2049, busy: 3399, heavy:  5699 }, roundStep: 10 },
   NOK: { code: "NOK", locale: "nb-NO", name: "Norwegian Krone", flag: "🇳🇴", decimals: 2,
-    tierMonthly: { starter: 2649, professional: 4949, enterprise: 9899 }, roundStep: 10,
-    overageByTier: { starter: 6.9, professional: 5.7, enterprise: 4.5 } },
+    tierMonthly: { light: 1149, standard: 2099, busy: 3499, heavy:  5799 }, roundStep: 10 },
   DKK: { code: "DKK", locale: "da-DK", name: "Danish Krone", flag: "🇩🇰", decimals: 2,
-    tierMonthly: { starter: 1699, professional: 3199, enterprise: 6399 }, roundStep: 10,
-    overageByTier: { starter: 4.5, professional: 3.7, enterprise: 3.0 } },
+    tierMonthly: { light: 749, standard: 1349, busy: 2249, heavy:  3749 }, roundStep: 10 },
   PLN: { code: "PLN", locale: "pl-PL", name: "Polish Zloty", flag: "🇵🇱", decimals: 2,
-    tierMonthly: { starter: 999, professional: 1849, enterprise: 3699 }, roundStep: 1,
-    overageByTier: { starter: 2.6, professional: 2.2, enterprise: 1.7 } },
+    tierMonthly: { light: 449, standard:  799, busy: 1299, heavy:  2199 }, roundStep: 1 },
   AED: { code: "AED", locale: "en-AE", name: "UAE Dirham", flag: "🇦🇪", decimals: 2,
-    tierMonthly: { starter: 899, professional: 1699, enterprise: 3399 }, roundStep: 1,
-    overageByTier: { starter: 2.4, professional: 2.0, enterprise: 1.6 } },
+    tierMonthly: { light: 399, standard:  719, busy: 1199, heavy:  1999 }, roundStep: 1 },
   JPY: { code: "JPY", locale: "ja-JP", name: "Japanese Yen", flag: "🇯🇵", decimals: 0,
-    tierMonthly: { starter: 37000, professional: 70000, enterprise: 140000 }, roundStep: 100,
-    overageByTier: { starter: 100, professional: 85, enterprise: 70 } },
+    tierMonthly: { light: 16000, standard: 29000, busy: 48000, heavy: 81000 }, roundStep: 100 },
 };
 
 export const CURRENCY_ORDER: CurrencyCode[] = [

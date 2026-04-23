@@ -2,35 +2,35 @@
  * Pricing — single source of truth for subscription tiers, yearly packages,
  * and seasonal holiday promotions.
  *
- * Tier prices are set to preserve ≥80% operating margin **per tier** at the
- * modelled production cost base (fixed OpEx ~€30.70 / customer / mo + variable
- * voice-minute cost). Any price change here should re-validate that margin.
+ * MODEL: hard-cap. All tiers have a monthly minute bucket. When exhausted,
+ * new calls route to voicemail until the next billing cycle or an upgrade.
+ * No overage charges. Customers get email alerts at 75% and 90% usage.
  *
  * Yearly billing applies a flat discount (YEARLY_DISCOUNT). Holiday promos
  * stack on top of the already-discounted price with `stacking: "multiply"`
  * or replace the base discount with `stacking: "replace"`.
  *
- * Keep `CLAUDE.md` "Pricing tiers" and the agent prompt (if it ever mentions
- * subscription pricing) in sync when this file changes.
+ * Canonical source: dashboard-sooty-seven-64.vercel.app/dashboard
+ *                   → Settings → Subscription
  */
 
 export type BillingCycle = "monthly" | "yearly";
 
 export interface TierPricing {
   /** Machine id — never shown */
-  id: "starter" | "professional" | "enterprise";
+  id: "light" | "standard" | "busy" | "heavy";
   /** Display label */
   name: string;
   /** Color used for borders / CTA */
   color: string;
   /** Monthly list price in EUR */
   monthly: number;
-  /** Included voice minutes per month */
+  /** Hard-cap monthly minute bucket — calls go to voicemail when exhausted */
   minutesPerMonth: number;
-  /** Per-minute rate charged after the included bucket is consumed */
-  overageRatePerMinute: number;
-  /** Short value-prop bullets (besides the minutes line) */
-  features: string[];
+  /** Short descriptor shown under the tier */
+  profile: string;
+  /** Call-to-action label, per-tier */
+  cta: string;
   /** Marketing badge, optional */
   badge?: "Most popular" | "Best value";
 }
@@ -38,47 +38,61 @@ export interface TierPricing {
 /** 20% off the monthly list price when paid annually — industry standard. */
 export const YEARLY_DISCOUNT = 0.2;
 
-/*
- * Tier ladder is tuned so each upgrade is clearly worth it per minute.
- * The step-up in included minutes outpaces the price step-up every time:
+/**
+ * Authoritative tier table (EUR) from the v3 pricing handoff · 23 Apr 2026.
  *
- *   Starter → Professional: +€200/mo buys +400 min (€0.50/min incremental)
- *   Professional → Enterprise: +€430/mo buys +1,000 min (€0.43/min incremental)
- *
- * Per-included-minute (list):
- *   Starter  €1.145/min · Professional €0.715/min · Enterprise €0.537/min
- *                        (−37% vs Starter)        (−25% vs Professional)
+ *   Light     €99/mo · 100 min  · €0.990/min
+ *   Standard  €179/mo · 250 min · €0.716/min · "Most popular"
+ *   Busy      €299/mo · 500 min · €0.598/min
+ *   Heavy     €499/mo · 1,000 min · €0.499/min · "Best value"
  */
 export const SUBSCRIPTION_TIERS: TierPricing[] = [
   {
-    id: "starter",
-    name: "Starter",
+    id: "light",
+    name: "Light",
     color: "#3D7A50",
-    monthly: 229,
-    minutesPerMonth: 200,
-    overageRatePerMinute: 0.6,
-    features: ["200 min/month", "1 location", "Email support"],
+    monthly: 99,
+    minutesPerMonth: 100,
+    profile: "Small or quieter business — ~3 calls/day",
+    cta: "Start with Light",
   },
   {
-    id: "professional",
-    name: "Professional",
+    id: "standard",
+    name: "Standard",
     color: "#1B5EBE",
-    monthly: 429,
-    minutesPerMonth: 600,
-    overageRatePerMinute: 0.5,
-    features: ["600 min/month", "Up to 3 locations", "Priority support"],
+    monthly: 179,
+    minutesPerMonth: 250,
+    profile: "Busy single location — ~8 calls/day",
+    cta: "Start with Standard",
     badge: "Most popular",
   },
   {
-    id: "enterprise",
-    name: "Enterprise",
+    id: "busy",
+    name: "Busy",
     color: "#6747C7",
-    monthly: 859,
-    minutesPerMonth: 1600,
-    overageRatePerMinute: 0.4,
-    features: ["1,600 min/month", "Unlimited locations", "Dedicated success manager"],
+    monthly: 299,
+    minutesPerMonth: 500,
+    profile: "High volume or a couple of locations — ~15 calls/day",
+    cta: "Start with Busy",
+  },
+  {
+    id: "heavy",
+    name: "Heavy",
+    color: "#B8411C",
+    monthly: 499,
+    minutesPerMonth: 1000,
+    profile: "Multi-location or very high volume — ~30+ calls/day",
+    cta: "Start with Heavy",
     badge: "Best value",
   },
+];
+
+/** Shared feature bullets — rendered on every plan card, alongside the minutes line. */
+export const FEATURES_ON_EVERY_PLAN = [
+  "Bookings synced to your calendar",
+  "Weekly performance email",
+  "Call recordings on demand",
+  "All 7 supported languages",
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -281,6 +295,7 @@ export interface Quote {
     gross: string;
     annualSavings: string;
     monthlyEquivalent: string;
+    yearlyTotal: string;
   };
 }
 
@@ -329,6 +344,7 @@ export function quote(input: QuoteInput): Quote {
       gross: formatMoney(vat.gross, currency),
       annualSavings: formatMoney(annualSavings, currency),
       monthlyEquivalent: formatMoney(monthlyEquivalent, currency),
+      yearlyTotal: formatMoney(yearlyLocal(currency, tier.id), currency),
     },
   };
 }

@@ -2,25 +2,25 @@
 
 import { useState, useMemo, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { CheckCircle, ChevronDown, Tag } from "lucide-react"
-import { SUBSCRIPTION_TIERS, quote, YEARLY_DISCOUNT, activeHolidayPromo, type BillingCycle } from "@/lib/pricing"
-import { CURRENCIES, CURRENCY_ORDER, formatMoney, type CurrencyCode } from "@/lib/currencies"
+import { CheckCircle, ChevronDown } from "lucide-react"
+import { SUBSCRIPTION_TIERS, FEATURES_ON_EVERY_PLAN, quote, YEARLY_DISCOUNT, activeHolidayPromo, type BillingCycle } from "@/lib/pricing"
+import { CURRENCIES, CURRENCY_ORDER, type CurrencyCode } from "@/lib/currencies"
 import { COUNTRIES, COUNTRY_ORDER, isPlausibleVatId, VENDOR_COUNTRY, type CountryCode } from "@/lib/vat"
 import { SpotlightCard } from "@/components/ui/spotlight-card"
 import { BottomSheet } from "@/components/ui/bottom-sheet"
 import { RevealWords } from "@/components/ui/reveal-words"
 import { Tooltip } from "@/components/ui/tooltip"
 
+// Tooltips for the minutes bullet (tier-specific) and shared bullets
 const FEATURE_TIPS: Record<string, string> = {
-  "200 min/month":               "~20–30 booking calls per day. Overage billed at €0.60/min.",
-  "1 location":                  "One business address and phone number.",
-  "Email support":               "We respond within 24 hours on business days.",
-  "600 min/month":               "~60–90 calls per day. Overage billed at €0.50/min.",
-  "Up to 3 locations":           "Run multiple branches from a single dashboard.",
-  "Priority support":            "4-hour response time in a dedicated support queue.",
-  "1,600 min/month":             "~160–200 calls per day. Overage billed at €0.40/min.",
-  "Unlimited locations":         "Any number of business branches — no extra cost.",
-  "Dedicated success manager":   "A named contact who handles onboarding and ongoing questions.",
+  "100 min/month":                     "~3 calls per day. Hard cap — voicemail takes over when the bucket is spent.",
+  "250 min/month":                     "~8 calls per day. Hard cap — voicemail takes over when the bucket is spent.",
+  "500 min/month":                     "~15 calls per day. Hard cap — voicemail takes over when the bucket is spent.",
+  "1,000 min/month":                   "~30+ calls per day. Hard cap — voicemail takes over when the bucket is spent.",
+  "Bookings synced to your calendar":  "Google, Outlook, Apple, and iCal — real-time two-way sync.",
+  "Weekly performance email":          "Every Monday: bookings handled, minutes used, top call hours.",
+  "Call recordings on demand":         "Any call from the last 30 days, downloadable as MP3.",
+  "All 7 supported languages":         "Greek · English · Spanish · Portuguese · French · German · Arabic. Agent locks to the caller's language on first substantive word.",
 }
 
 // Map a country code to a sensible default currency
@@ -69,7 +69,7 @@ export function Pricing({ defaultCountry = "GR" }: { defaultCountry?: CountryCod
 
   return (
     <section id="pricing" className="py-24 sm:py-32 bg-muted/20">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
 
         {/* Header */}
         <div className="text-center mb-10">
@@ -242,18 +242,14 @@ export function Pricing({ defaultCountry = "GR" }: { defaultCountry?: CountryCod
           </div>
         </div>
 
-        {/* Tier cards
+        {/* Tier cards — 4 hard-cap tiers
             Mobile: CSS scroll-snap carousel (no JS, native momentum, peek shows next card)
-            Desktop: standard 3-col grid */}
+            Tablet: 2-col grid · Desktop: 4-col grid */}
         <div className="relative">
-          <div className="flex md:grid md:grid-cols-3 gap-4 md:gap-5 overflow-x-auto md:overflow-visible snap-x snap-mandatory scroll-smooth no-scrollbar -mx-4 px-4 sm:-mx-6 sm:px-6 md:mx-0 md:px-0 pb-3 md:pb-0">
+          <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-4 overflow-x-auto md:overflow-visible snap-x snap-mandatory scroll-smooth no-scrollbar -mx-4 px-4 sm:-mx-6 sm:px-6 md:mx-0 md:px-0 pb-3 md:pb-0">
           {quotes.map((q, index) => {
             const { tier } = q
-            const perMinute = q.currency.tierMonthly[tier.id] / tier.minutesPerMonth
-            const overagePerMinute = q.currency.overageByTier[tier.id]
-            const prev = index > 0 ? SUBSCRIPTION_TIERS[index-1] : null
-            const prevPerMinute = prev ? q.currency.tierMonthly[prev.id] / prev.minutesPerMonth : null
-            const savingsPct = (prev && prevPerMinute) ? Math.round((1 - perMinute/prevPerMinute)*100) : null
+            const minutesLine = `${tier.minutesPerMonth.toLocaleString("en-US")} min/month`
             const showStrike = !!q.promo && q.netPreHoliday !== q.netEffective
             const isPopular = tier.badge === "Most popular"
 
@@ -304,13 +300,15 @@ export function Pricing({ defaultCountry = "GR" }: { defaultCountry?: CountryCod
                         )}
 
                         <div className="flex items-end gap-1.5">
-                          <span className="text-4xl font-heading font-extrabold">{q.formatted.netEffective}</span>
-                          <span className="text-muted-foreground text-sm mb-1.5">/{q.per}</span>
+                          <span className="text-4xl font-heading font-extrabold">
+                            {cycle === "yearly" ? q.formatted.monthlyEquivalent : q.formatted.netEffective}
+                          </span>
+                          <span className="text-muted-foreground text-sm mb-1.5">/mo</span>
                         </div>
 
                         {cycle === "yearly" && (
                           <p className="text-xs text-muted-foreground mt-0.5">
-                            {q.formatted.monthlyEquivalent}/mo billed annually
+                            billed {q.formatted.yearlyTotal}/yr
                           </p>
                         )}
                       </motion.div>
@@ -372,9 +370,9 @@ export function Pricing({ defaultCountry = "GR" }: { defaultCountry?: CountryCod
                     </p>
                   </div>
 
-                  {/* Feature pills */}
+                  {/* Feature list — exactly 5 bullets: tier-specific minutes + 4 shared */}
                   <ul className="space-y-2 flex-1">
-                    {tier.features.map(f => (
+                    {[minutesLine, ...FEATURES_ON_EVERY_PLAN].map(f => (
                       <li key={f} className="flex items-center gap-2 text-sm">
                         <CheckCircle size={14} className="text-primary shrink-0" />
                         {FEATURE_TIPS[f] ? (
@@ -386,38 +384,12 @@ export function Pricing({ defaultCountry = "GR" }: { defaultCountry?: CountryCod
                         )}
                       </li>
                     ))}
-
-                    {/* Per-minute badge */}
-                    <li className="flex items-center gap-2 text-sm">
-                      <Tag size={14} className="text-muted-foreground shrink-0" />
-                      <span className="text-muted-foreground">
-                        {formatMoney(perMinute, q.currency)}/min included
-                      </span>
-                    </li>
-
-                    {/* Overage badge */}
-                    <li className="flex items-center gap-2 text-sm">
-                      <Tag size={14} className="text-muted-foreground shrink-0" />
-                      <span className="text-muted-foreground">
-                        Overage {formatMoney(overagePerMinute, q.currency)}/min
-                      </span>
-                    </li>
-
-                    {/* Upgrade value chip */}
-                    {savingsPct !== null && savingsPct > 0 && (
-                      <li>
-                        <span className="text-xs font-semibold text-green-600 dark:text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full">
-                          -{savingsPct}% /min vs {SUBSCRIPTION_TIERS[index-1].name}
-                        </span>
-                      </li>
-                    )}
                   </ul>
 
                   {/* CTA */}
                   <motion.a
-                    href={tier.id === "enterprise"
-                      ? "/demo"
-                      : `/api/checkout?plan=${tier.id}&billing=${cycle === "yearly" ? "annual" : "monthly"}`}
+                    // All 4 tiers self-serve via Stripe Checkout — no "Book a demo" special case
+                    href={`/api/checkout?plan=${tier.id}&billing=${cycle === "yearly" ? "annual" : "monthly"}`}
                     className="flex items-center justify-center h-11 rounded-full font-semibold text-sm transition-all relative overflow-hidden group"
                     style={{
                       background: isPopular ? tier.color : "transparent",
@@ -427,7 +399,7 @@ export function Pricing({ defaultCountry = "GR" }: { defaultCountry?: CountryCod
                     whileTap={{ scale:0.97 }}
                   >
                     <span className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none" />
-                    {tier.id === "enterprise" ? "Book a demo" : `Start with ${tier.name}`}
+                    {tier.cta}
                   </motion.a>
 
                   {/* Mobile-only: open bottom sheet with full plan details */}
@@ -456,44 +428,33 @@ export function Pricing({ defaultCountry = "GR" }: { defaultCountry?: CountryCod
             const q = quotes[sheetIdx]
             const { tier } = q
             const isPopular = tier.badge === "Most popular"
-            const perMinute = q.currency.tierMonthly[tier.id] / tier.minutesPerMonth
-            const overagePerMinute = q.currency.overageByTier[tier.id]
+            const minutesLine = `${tier.minutesPerMonth.toLocaleString("en-US")} min/month`
             return (
               <div className="flex flex-col gap-6">
                 {/* Price recap */}
                 <div>
                   <div className="flex items-end gap-1.5">
-                    <span className="text-4xl font-heading font-extrabold">{q.formatted.netEffective}</span>
-                    <span className="text-muted-foreground text-sm mb-1.5">/{q.per}</span>
+                    <span className="text-4xl font-heading font-extrabold">
+                      {cycle === "yearly" ? q.formatted.monthlyEquivalent : q.formatted.netEffective}
+                    </span>
+                    <span className="text-muted-foreground text-sm mb-1.5">/mo</span>
                   </div>
                   {cycle === "yearly" && (
-                    <p className="text-xs text-muted-foreground mt-0.5">{q.formatted.monthlyEquivalent}/mo billed annually</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">billed {q.formatted.yearlyTotal}/yr</p>
                   )}
-                  {cycle === "yearly" && q.annualSavings > 0 && (
-                    <span className="inline-block mt-2 text-xs font-semibold text-green-600 dark:text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full">
-                      Save {q.formatted.annualSavings}/yr
-                    </span>
-                  )}
+                  <p className="text-xs text-muted-foreground/80 mt-2">{tier.profile}</p>
                 </div>
 
-                {/* Features */}
+                {/* Features — minutes line + 4 shared bullets */}
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Included</p>
                   <ul className="space-y-3">
-                    {tier.features.map(f => (
+                    {[minutesLine, ...FEATURES_ON_EVERY_PLAN].map(f => (
                       <li key={f} className="flex items-center gap-3 text-sm">
                         <CheckCircle size={15} className="text-primary shrink-0" />
                         <span>{f}</span>
                       </li>
                     ))}
-                    <li className="flex items-center gap-3 text-sm">
-                      <Tag size={15} className="text-muted-foreground shrink-0" />
-                      <span className="text-muted-foreground">{formatMoney(perMinute, q.currency)}/min included</span>
-                    </li>
-                    <li className="flex items-center gap-3 text-sm">
-                      <Tag size={15} className="text-muted-foreground shrink-0" />
-                      <span className="text-muted-foreground">Overage {formatMoney(overagePerMinute, q.currency)}/min</span>
-                    </li>
                   </ul>
                 </div>
 
@@ -513,11 +474,9 @@ export function Pricing({ defaultCountry = "GR" }: { defaultCountry?: CountryCod
                   <p className="text-muted-foreground/70 text-xs pt-1">{q.vat.explanation}</p>
                 </div>
 
-                {/* CTA */}
+                {/* CTA — all tiers self-serve */}
                 <a
-                  href={tier.id === "enterprise"
-                    ? "/demo"
-                    : `/api/checkout?plan=${tier.id}&billing=${cycle === "yearly" ? "annual" : "monthly"}`}
+                  href={`/api/checkout?plan=${tier.id}&billing=${cycle === "yearly" ? "annual" : "monthly"}`}
                   onClick={() => setSheetIdx(null)}
                   className="flex items-center justify-center h-12 rounded-full font-semibold text-sm"
                   style={{
@@ -526,20 +485,28 @@ export function Pricing({ defaultCountry = "GR" }: { defaultCountry?: CountryCod
                     border: `2px solid ${tier.color}`,
                   }}
                 >
-                  {tier.id === "enterprise" ? "Book a demo" : `Start with ${tier.name}`}
+                  {tier.cta}
                 </a>
               </div>
             )
           })()}
         </BottomSheet>
 
-        {/* Fine print */}
-        <p className="mt-8 text-center text-xs text-muted-foreground">
-          {country.flag} Taxes shown for <strong>{country.name}</strong>
-          {country.note ? ` — ${country.note}` : ""}.
-          {" "}Overage minutes billed at the per-tier rate shown above.
-          {" "}All prices exclude applicable taxes unless shown otherwise.
-        </p>
+        {/* Under-grid microcopy — hard-cap explainer + geo-swapped tax line */}
+        <div className="mt-10 max-w-3xl mx-auto text-center space-y-3">
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            All plans include bookings synced to your calendar, a weekly performance email,
+            call recordings on demand, and all 7 supported languages. Minutes are a hard
+            monthly cap — calls route to voicemail once the bucket is spent until the next
+            billing cycle or an upgrade. You&apos;ll get email alerts at 75% and 90% of your
+            bucket so you&apos;re never surprised.
+          </p>
+          <p className="text-xs text-muted-foreground/80">
+            {country.flag} Taxes shown for <strong>{country.name}</strong>
+            {country.note ? ` — ${country.note}` : ""}.
+            {" "}Prices shown ex-VAT — tax calculated at checkout.
+          </p>
+        </div>
 
       </div>
     </section>

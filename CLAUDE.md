@@ -1,4 +1,5 @@
 @AGENTS.md
+@C:/Users/medin/.claude/shared-rules.md
 
 # Timebooking Pro — CLAUDE.md
 
@@ -25,7 +26,7 @@ Never ask "should I push/deploy?" — just do it as part of every task.
 | AI | Claude API (`claude-sonnet-4-6`) |
 | Payments | Stripe |
 | Secrets | Doppler |
-| Hosting | Vercel (`calbliss.vercel.app`) |
+| Hosting | Vercel (`timebookingpro.com`) |
 
 ---
 
@@ -48,3 +49,24 @@ Never ask "should I push/deploy?" — just do it as part of every task.
 - Never use `SELECT *` — explicit column list always
 - Never expose Supabase service-role key in frontend code
 - TypeScript strict mode — no `any`
+
+---
+
+## Pricing — constraints (do not drift)
+
+> Canonical source: https://dashboard-sooty-seven-64.vercel.app/dashboard
+> Settings → Subscription. If this CLAUDE.md disagrees with that page,
+> the dashboard wins. Request an updated handoff PDF before changing prices.
+
+- 4 tiers, EUR: Light €99 · Standard €179 · Busy €299 · Heavy €499 (monthly).
+- Minutes per month: 100 / 250 / 500 / 1,000. Hard cap — NO overage, ever.
+- Yearly = flat 20% off monthly. Toggle defaults to Monthly.
+- Badges: Standard = "Most popular"; Heavy = "Best value". No other badges.
+- Per-card feature list = exactly 5 bullets (minutes + 4 shared). Nothing else.
+- DO NOT add "locations", "support tier", "overage rate", or "per-min included"
+  as feature bullets. These are not part of the pricing model.
+- DO NOT write "up to X minutes" — write "X min/month".
+- DO NOT invent discounts. Any promo code must come from the canonical source.
+- Show prices ex-VAT with "Prices shown ex-VAT — tax calculated at checkout."
+- All 4 tier CTAs are self-serve Stripe Checkout — no "Book a demo" CTA on
+  any tier. Book-a-demo belongs on the top-nav, not in pricing.

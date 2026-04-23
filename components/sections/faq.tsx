@@ -13,6 +13,18 @@ import {
 
 const FAQS = [
   {
+    q: "What happens when I run out of minutes?",
+    a: "Your bill stays flat — we don't charge overage. New calls route to voicemail until the next billing cycle or an upgrade. You'll get email alerts at 75% and 90% of your bucket so you're never surprised.",
+  },
+  {
+    q: "Can I use one plan across multiple locations?",
+    a: "Yes. Minutes are a single pool you can use across any number of locations — we don't track or limit where they're spent. Pick the plan that matches your total monthly call volume.",
+  },
+  {
+    q: "What if my volume changes month to month?",
+    a: "Upgrade or downgrade any time from the weekly performance email — changes prorate against the current cycle.",
+  },
+  {
     q: "How long does it take to set up?",
     a: "Most agents are live within 24 hours. We handle the entire setup — you just need to tell us your business name, hours, and services.",
   },
