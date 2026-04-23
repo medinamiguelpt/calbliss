@@ -144,7 +144,6 @@ function ScrollySection() {
   })
 
   return (
-    {/* Tall outer div for scroll tracking — sticky inner div holds all content */}
     <div ref={sectionRef} className="relative min-h-[140vh]">
       <div className="sticky top-32">
         <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-start">
