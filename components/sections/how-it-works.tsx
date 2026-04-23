@@ -147,14 +147,14 @@ function ScrollySection() {
             return (
               <motion.button
                 key={title}
-                onClick={() => setActiveStep(i)}
+                onMouseEnter={() => setActiveStep(i)}
+                onFocus={() => setActiveStep(i)}
                 animate={{
                   opacity: isActive ? 1 : isPast ? 0.5 : 0.3,
                   scale: isActive ? 1 : 0.97,
                 }}
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                className="flex items-start gap-5 text-left w-full"
-                whileHover={{ opacity: 0.85 }}
+                className="flex items-start gap-5 text-left w-full cursor-default"
               >
                 <div className="relative shrink-0">
                   <div
