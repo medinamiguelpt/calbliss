@@ -165,6 +165,87 @@ function LiveRevenue({ initialValue, delay = 0.8, intervalMs = 7000, inView = tr
   )
 }
 
+function CallTimer({ inView }: { inView: boolean }) {
+  const [seconds, setSeconds] = useState(0)
+  useEffect(() => {
+    if (!inView) return
+    const id = setInterval(() => setSeconds(s => s + 1), 1000)
+    return () => clearInterval(id)
+  }, [inView])
+  const mm = String(Math.floor(seconds / 60)).padStart(2, "0")
+  const ss = String(seconds % 60).padStart(2, "0")
+  return <span className="tabular-nums">{mm}:{ss}</span>
+}
+
+// iMessage-style "typing" dots — 3 dots bouncing in sequence
+function TypingDots({ dark = false }: { dark?: boolean }) {
+  const color = dark ? "bg-white/70" : "bg-muted-foreground/50"
+  return (
+    <span className="inline-flex items-center gap-1 py-1">
+      {[0, 0.15, 0.3].map((delay, i) => (
+        <motion.span
+          key={i}
+          className={`block w-1.5 h-1.5 rounded-full ${color}`}
+          animate={{ y: [0, -3, 0], opacity: [0.4, 1, 0.4] }}
+          transition={{ duration: 0.9, repeat: Infinity, ease: "easeInOut", delay }}
+        />
+      ))}
+    </span>
+  )
+}
+
+const CHAT_BUBBLES = [
+  { side: "left"  as const, text: "Hi! I'd like to book a haircut for tomorrow afternoon." },
+  { side: "right" as const, text: "Of course! I have 2 PM and 4 PM free tomorrow. Which works best for you?" },
+  { side: "left"  as const, text: "2 PM is perfect, thank you!" },
+]
+
+// Each bubble shows typing dots first, then the message — staggered like a real conversation
+function ChatSequence({ inView }: { inView: boolean }) {
+  const [stage, setStage] = useState(-1) // -1 = not started, 0/2/4 = typing, 1/3/5 = bubble shown
+  useEffect(() => {
+    if (!inView) return
+    const timers: ReturnType<typeof setTimeout>[] = []
+    let t = 600
+    CHAT_BUBBLES.forEach((_, i) => {
+      timers.push(setTimeout(() => setStage(i * 2), t))     // show typing dots
+      t += 500 + i * 100
+      timers.push(setTimeout(() => setStage(i * 2 + 1), t)) // replace with bubble
+      t += 900
+    })
+    return () => timers.forEach(clearTimeout)
+  }, [inView])
+
+  return (
+    <div className="space-y-2.5 min-h-[140px]">
+      {CHAT_BUBBLES.map(({ side, text }, i) => {
+        const typingStage = i * 2
+        const bubbleStage = i * 2 + 1
+        const showTyping = stage === typingStage
+        const showBubble = stage >= bubbleStage
+        if (!showTyping && !showBubble) return null
+
+        const isLeft = side === "left"
+        const base   = "rounded-2xl px-3.5 py-2.5 text-sm max-w-[85%]"
+        const corner = isLeft ? "rounded-tl-sm" : "rounded-tr-sm ml-auto"
+        const fill   = isLeft ? "bg-muted text-foreground" : "bg-primary text-primary-foreground"
+
+        return (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 8, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ type: "spring", stiffness: 380, damping: 28 }}
+            className={`${base} ${corner} ${fill}`}
+          >
+            {showBubble ? text : <TypingDots dark={!isLeft} />}
+          </motion.div>
+        )
+      })}
+    </div>
+  )
+}
+
 function HeroMockup() {
   const containerRef = useRef<HTMLDivElement>(null)
   const inView = useInView(containerRef, { once: true, margin: "-50px" })
@@ -188,21 +269,11 @@ function HeroMockup() {
           </div>
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
             <Phone size={11} />
-            Active call
+            <CallTimer inView={inView} />
           </div>
         </div>
 
-        <div className="space-y-2.5">
-          <div className="bg-muted rounded-2xl rounded-tl-sm px-3.5 py-2.5 text-sm text-foreground max-w-[85%]">
-            Hi! I&apos;d like to book a haircut for tomorrow afternoon.
-          </div>
-          <div className="bg-primary text-primary-foreground rounded-2xl rounded-tr-sm px-3.5 py-2.5 text-sm ml-auto max-w-[85%]">
-            Of course! I have 2 PM and 4 PM free tomorrow. Which works best for you?
-          </div>
-          <div className="bg-muted rounded-2xl rounded-tl-sm px-3.5 py-2.5 text-sm text-foreground max-w-[85%]">
-            2 PM is perfect, thank you!
-          </div>
-        </div>
+        <ChatSequence inView={inView} />
 
         <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/20 rounded-xl px-3 py-2.5">
           <CheckCircle size={15} className="text-green-500 shrink-0" />

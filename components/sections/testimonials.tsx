@@ -323,6 +323,18 @@ export function Testimonials() {
   const dragStartX = useRef(0)
   const total = TESTIMONIALS.length
 
+  // Faked "people viewing" counter — fluctuates between 8 and 24 every ~6s
+  const [viewing, setViewing] = useState(14)
+  useEffect(() => {
+    const id = setInterval(() => {
+      setViewing(v => {
+        const drift = Math.floor(Math.random() * 5) - 2 // -2..+2
+        return Math.max(8, Math.min(24, v + drift))
+      })
+    }, 6000)
+    return () => clearInterval(id)
+  }, [])
+
   const next = useCallback(() => setActive((p) => (p + 1) % total), [total])
   const prev = useCallback(() => setActive((p) => (p - 1 + total) % total), [total])
 
@@ -361,6 +373,35 @@ export function Testimonials() {
           >
             Real businesses, real results
           </RevealWords>
+
+          {/* "Live viewing" social-proof badge — fluctuates naturally */}
+          <motion.div
+            className="mt-5 inline-flex items-center gap-2 rounded-full bg-card border border-border px-3 py-1.5 text-xs text-muted-foreground"
+            initial={{ opacity: 0, y: 6 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: 0.3 }}
+          >
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-60 animate-ping" />
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500" />
+            </span>
+            <span>
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={viewing}
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.25 }}
+                  className="inline-block font-semibold text-foreground tabular-nums"
+                >
+                  {viewing}
+                </motion.span>
+              </AnimatePresence>{" "}
+              people viewing this page
+            </span>
+          </motion.div>
         </div>
 
         {/* 3D Coverflow — desktop */}

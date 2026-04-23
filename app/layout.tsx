@@ -11,6 +11,8 @@ import { ScrollHue } from "@/components/ui/scroll-hue"
 import { SectionSound } from "@/components/ui/section-sound"
 import { ScrollToTop } from "@/components/ui/scroll-to-top"
 import { RippleGlobal } from "@/components/ui/ripple-global"
+import { AnchorHighlight } from "@/components/ui/anchor-highlight"
+import { KeyboardShortcuts } from "@/components/ui/keyboard-shortcuts"
 import "./globals.css"
 
 const inter = Inter({
@@ -67,6 +69,8 @@ export default function RootLayout({
         <SectionSound />
         <ScrollToTop />
         <RippleGlobal />
+        <AnchorHighlight />
+        <KeyboardShortcuts />
         <CustomCursor />
         {/* Plausible Analytics — privacy-friendly, no cookies required */}
         <Script
