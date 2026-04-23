@@ -332,21 +332,40 @@ export function Pricing({ defaultCountry = "GR" }: { defaultCountry?: CountryCod
                     )}
                   </div>
 
-                  {/* Tax breakdown */}
+                  {/* Tax breakdown — values animate on country/cycle/currency change */}
                   <div className="rounded-xl border border-border/60 bg-muted/30 p-3 text-xs space-y-1.5">
-                    <div className="flex justify-between text-muted-foreground">
-                      <span>Net</span>
-                      <span>{q.formatted.netEffective}</span>
-                    </div>
-                    <div className="flex justify-between text-muted-foreground"
-                      title={q.vat.explanation}
-                      aria-describedby={`vat-note-${tier.id}`}>
-                      <span>{q.vat.label}</span>
-                      <span>{q.vat.reverseCharged ? "—" : q.formatted.vatAmount}</span>
-                    </div>
+                    {[
+                      { label: "Net",       value: q.formatted.netEffective,                         key: `net-${q.formatted.netEffective}` },
+                      { label: q.vat.label, value: q.vat.reverseCharged ? "—" : q.formatted.vatAmount, key: `vat-${q.formatted.vatAmount}-${q.vat.reverseCharged}`, hint: q.vat.explanation, hintId: `vat-note-${tier.id}` },
+                    ].map(({ label, value, key, hint, hintId }) => (
+                      <div key={label} className="flex justify-between text-muted-foreground" title={hint} aria-describedby={hintId}>
+                        <span>{label}</span>
+                        <AnimatePresence mode="wait">
+                          <motion.span
+                            key={key}
+                            initial={{ opacity:0, scale:0.88, filter:"blur(4px)" }}
+                            animate={{ opacity:1, scale:1,    filter:"blur(0px)" }}
+                            exit={{    opacity:0, scale:0.88, filter:"blur(4px)" }}
+                            transition={{ duration:0.18, ease:[0.22,1,0.36,1] }}
+                          >
+                            {value}
+                          </motion.span>
+                        </AnimatePresence>
+                      </div>
+                    ))}
                     <div className="border-t border-border/60 pt-1.5 flex justify-between font-semibold text-foreground">
                       <span>Total due</span>
-                      <span>{q.formatted.gross}/{q.per}</span>
+                      <AnimatePresence mode="wait">
+                        <motion.span
+                          key={`gross-${q.formatted.gross}`}
+                          initial={{ opacity:0, scale:0.88, filter:"blur(4px)" }}
+                          animate={{ opacity:1, scale:1,    filter:"blur(0px)" }}
+                          exit={{    opacity:0, scale:0.88, filter:"blur(4px)" }}
+                          transition={{ duration:0.18, ease:[0.22,1,0.36,1] }}
+                        >
+                          {q.formatted.gross}/{q.per}
+                        </motion.span>
+                      </AnimatePresence>
                     </div>
                     <p id={`vat-note-${tier.id}`} className="text-muted-foreground/70 text-[10px] leading-snug pt-0.5">
                       {q.vat.explanation}

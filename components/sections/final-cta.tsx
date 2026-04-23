@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence, useAnimation } from "framer-motion"
 import { ArrowRight, CheckCircle, MessageSquare, Trophy, Gift } from "lucide-react"
 import { VoiceDemo } from "@/components/ui/voice-demo"
 import confetti from "canvas-confetti"
@@ -52,6 +52,7 @@ export function FinalCTA() {
   const [emojiParticles, setEmojiParticles] = useState<EmojiParticle[]>([])
   const [copied, setCopied] = useState(false)
   const [inputFocused, setInputFocused] = useState(false)
+  const shakeControls = useAnimation()
 
   const copyReferral = useCallback(() => {
     if (!referralCode) return
@@ -75,7 +76,20 @@ export function FinalCTA() {
   }, [])
 
   useEffect(() => {
-    fetch("/api/leaderboard").then(r => r.json()).then(setLeaderboard).catch(() => null)
+    const CACHE = "tbp-leaderboard"
+    // Load stale data immediately so the UI never flashes empty
+    try {
+      const cached = localStorage.getItem(CACHE)
+      if (cached) setLeaderboard(JSON.parse(cached))
+    } catch {}
+    // Fetch fresh data in the background, update and re-cache on success
+    fetch("/api/leaderboard")
+      .then(r => r.json())
+      .then(data => {
+        setLeaderboard(data)
+        try { localStorage.setItem(CACHE, JSON.stringify(data)) } catch {}
+      })
+      .catch(() => null)
   }, [])
 
   // Brand-colored confetti burst on successful signup
@@ -112,9 +126,11 @@ export function FinalCTA() {
         if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate([80, 30, 80])
       } else {
         setState("error")
+        shakeControls.start({ x: [0, -10, 10, -8, 8, -4, 4, 0], transition: { duration: 0.5 } })
       }
     } catch {
       setState("error")
+      shakeControls.start({ x: [0, -10, 10, -8, 8, -4, 4, 0], transition: { duration: 0.5 } })
     }
   }
 
@@ -306,7 +322,7 @@ export function FinalCTA() {
               )}
             </div>
           ) : (
-            <div className="relative">
+            <motion.div className="relative" animate={shakeControls}>
               <EmojiReactions particles={emojiParticles} />
               <form
                 onSubmit={(e) => { handleSubmit(e); spawnEmojis() }}
@@ -350,7 +366,7 @@ export function FinalCTA() {
                   {state !== "loading" && <ArrowRight size={16} />}
                 </button>
               </form>
-            </div>
+            </motion.div>
           )}
           {state === "error" && (
             <p className="mt-3 text-sm text-red-400">Something went wrong — try again or email us at hello@timebookingpro.com</p>

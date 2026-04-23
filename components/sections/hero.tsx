@@ -332,9 +332,11 @@ export function Hero({ variant = "a" }: { variant?: "a" | "b" }) {
           {/* Left — Copy */}
           <div className="flex flex-col gap-6">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+              className="w-fit"
+              initial={{ opacity: 0, scale: 0.6, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              // Stiff spring + low damping = slight overshoot → "pop" character
+              transition={{ type: "spring", stiffness: 300, damping: 16, delay: 0.05 }}
             >
               <Badge
                 variant="outline"

@@ -4,6 +4,7 @@ import { useRef, useState, useEffect, Fragment, type ElementType } from "react"
 import { motion, AnimatePresence, useInView } from "framer-motion"
 import { PhoneCall, Settings2, CalendarCheck, Mic, Zap, Bell } from "lucide-react"
 import { RevealWords } from "@/components/ui/reveal-words"
+import { TiltCard } from "@/components/ui/tilt-card"
 
 const STEPS = [
   {
@@ -241,7 +242,8 @@ function ScrollySection() {
         </div>
       </div>
 
-      {/* Right: visual panel */}
+      {/* Right: visual panel — 3D tilt on mouse move, subtle (5° max, 1.008x scale) */}
+      <TiltCard maxTilt={5} scale={1.008} glare={false} className="relative" >
       <div className="relative" style={{ minHeight: 280 }}>
         <AnimatePresence mode="wait">
           {VISUAL_PANELS.map((panel, i) =>
@@ -285,6 +287,7 @@ function ScrollySection() {
           )}
         </AnimatePresence>
       </div>
+      </TiltCard>
     </div>
   )
 }
