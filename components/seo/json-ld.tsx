@@ -31,6 +31,7 @@ export function HomeJsonLd() {
       lowPrice: "229",
       highPrice: "859",
       priceCurrency: "EUR",
+      priceSpecification: { "@type": "UnitPriceSpecification", billingDuration: "P1M" },
       offerCount: 3,
     },
     aggregateRating: {

@@ -1,288 +1,366 @@
 "use client"
 
-import { useState, useRef, useCallback } from "react"
+import { useState, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { CheckCircle } from "lucide-react"
+import { CheckCircle, ChevronDown, Tag } from "lucide-react"
+import { SUBSCRIPTION_TIERS, quote, YEARLY_DISCOUNT, activeHolidayPromo, type BillingCycle } from "@/lib/pricing"
+import { CURRENCIES, CURRENCY_ORDER, formatMoney, type CurrencyCode } from "@/lib/currencies"
+import { COUNTRIES, COUNTRY_ORDER, isPlausibleVatId, VENDOR_COUNTRY, type CountryCode } from "@/lib/vat"
 import { SpotlightCard } from "@/components/ui/spotlight-card"
-import { CountUp } from "@/components/sections/features"
 
-type CoinParticle = { id: number; x: number; delay: number; emoji: string }
-let coinId = 0
-const COIN_EMOJIS = ["💰", "🪙", "✨", "💸", "🎉"]
-
-const PLANS = [
-  {
-    name: "Starter",
-    monthly: 229,
-    annual: 183,
-    description: "Perfect for solo operators and small shops.",
-    perks: [
-      "200 minutes/month",
-      "1 location",
-      "Email support",
-      "€0.60/min overage",
-    ],
-    cta: "Get started",
-    popular: false,
-    badge: null,
-  },
-  {
-    name: "Professional",
-    monthly: 429,
-    annual: 343,
-    description: "For growing barbershops with higher call volume.",
-    perks: [
-      "600 minutes/month",
-      "Up to 3 locations",
-      "Priority support",
-      "€0.50/min overage",
-    ],
-    cta: "Get started",
-    popular: true,
-    badge: "Most popular",
-  },
-  {
-    name: "Enterprise",
-    monthly: 859,
-    annual: 687,
-    description: "For multi-location or high-volume businesses.",
-    perks: [
-      "1,600 minutes/month",
-      "Unlimited locations",
-      "Dedicated success manager",
-      "€0.40/min overage",
-    ],
-    cta: "Contact us",
-    popular: false,
-    badge: "Best value",
-  },
-]
-
-function PricingCard({
-  name, price, originalPrice, annualPrice, description, perks, cta, popular, annual,
-}: {
-  name: string; price: number; originalPrice: number; annualPrice: number; description: string
-  perks: string[]; cta: string; popular: boolean; annual: boolean
-}) {
-  const href = name === "Enterprise"
-    ? "/demo"
-    : `/api/checkout?plan=${name.toLowerCase()}&billing=${annual ? "annual" : "monthly"}`
-
-  return (
-    <motion.div
-      whileHover={{ y: -6 }}
-      transition={{ type: "spring", stiffness: 300, damping: 22 }}
-    >
-      <SpotlightCard
-        className={`relative rounded-2xl border p-7 flex flex-col gap-6 transition-shadow duration-300 ${
-          popular
-            ? "border-primary/60 bg-gradient-to-b from-primary/10 to-primary/5 shadow-2xl shadow-primary/20 ring-1 ring-primary/20 hover:shadow-[0_24px_64px_-12px_rgba(124,58,237,0.45)]"
-            : "border-border bg-card hover:shadow-[0_20px_48px_-12px_rgba(124,58,237,0.18)] hover:border-primary/25"
-        }`}
-      >
-        <div>
-          <p className="font-heading font-bold text-lg mb-1">{name}</p>
-          <p className="text-muted-foreground text-sm">{description}</p>
-        </div>
-
-        <div className="flex items-end gap-2">
-          <AnimatePresence mode="wait">
-            <motion.span
-              key={price}
-              className="text-4xl font-heading font-extrabold"
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 8 }}
-              transition={{ duration: 0.2 }}
-            >
-              €{price}
-            </motion.span>
-          </AnimatePresence>
-          <div className="flex flex-col mb-1">
-            <span className="text-muted-foreground text-sm">/mo</span>
-            {annual && <span className="text-xs text-muted-foreground line-through">€{originalPrice}</span>}
-          </div>
-          {annual && (
-            <span className="mb-1 text-xs font-semibold text-green-600 dark:text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full">
-              Save €{(originalPrice - annualPrice) * 12}/yr
-            </span>
-          )}
-        </div>
-
-        <ul className="space-y-2.5 flex-1">
-          {perks.map((perk) => {
-            const match = perk.match(/^([\d,]+)(\s.+)$/)
-            return (
-              <li key={perk} className="flex items-start gap-2.5 text-sm">
-                <CheckCircle size={15} className="text-primary mt-0.5 shrink-0" />
-                <span>
-                  {match ? (
-                    <>
-                      <CountUp to={parseInt(match[1].replace(/,/g, ""))} duration={1.4} />
-                      {match[2]}
-                    </>
-                  ) : perk}
-                </span>
-              </li>
-            )
-          })}
-        </ul>
-
-        <motion.a
-          href={href}
-          className={`group relative overflow-hidden rounded-full font-semibold h-11 flex items-center justify-center text-sm ${
-            popular
-              ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
-              : "bg-transparent border-2 border-border hover:border-primary/40 hover:bg-primary/5 text-foreground"
-          }`}
-          whileTap={{ scale: 0.96 }}
-          transition={{ type: "spring", stiffness: 400, damping: 22 }}
-        >
-          <span
-            className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none"
-            aria-hidden
-          />
-          {cta}
-        </motion.a>
-      </SpotlightCard>
-    </motion.div>
-  )
+// Map a country code to a sensible default currency
+function defaultCurrencyFor(country: CountryCode): CurrencyCode {
+  const map: Partial<Record<CountryCode, CurrencyCode>> = {
+    GB:"GBP", US:"USD", CA:"CAD", AU:"AUD", JP:"JPY",
+    NO:"NOK", SE:"SEK", DK:"DKK", PL:"PLN", AE:"AED", CH:"CHF", NZ:"AUD",
+  }
+  return map[country] ?? "EUR"
 }
 
-export function Pricing() {
-  const [annual, setAnnual] = useState(false)
-  const [coins, setCoins] = useState<CoinParticle[]>([])
-  const toggleRef = useRef<HTMLDivElement>(null)
+export function Pricing({ defaultCountry = "GR" }: { defaultCountry?: CountryCode }) {
+  const [cycle, setCycle] = useState<BillingCycle>("monthly")
+  const [currencyCode, setCurrencyCode] = useState<CurrencyCode>(defaultCurrencyFor(defaultCountry))
+  const [countryCode, setCountryCode] = useState<CountryCode>(defaultCountry)
+  const [isBusiness, setIsBusiness] = useState(false)
+  const [vatId, setVatId] = useState("")
 
-  const spawnCoins = useCallback(() => {
-    const count = 5
-    const newCoins: CoinParticle[] = Array.from({ length: count }, (_, i) => ({
-      id: ++coinId,
-      x: (Math.random() - 0.5) * 120,
-      delay: i * 0.07,
-      emoji: COIN_EMOJIS[Math.floor(Math.random() * COIN_EMOJIS.length)],
-    }))
-    setCoins((p) => [...p, ...newCoins])
-    setTimeout(() => setCoins((p) => p.filter((c) => !newCoins.find((n) => n.id === c.id))), 1800)
-  }, [])
+  const country = COUNTRIES[countryCode]
+  const showVatId = isBusiness && country.eu && countryCode !== VENDOR_COUNTRY
+  const vatIdValid = showVatId ? isPlausibleVatId(country, vatId) : false
+  const hasValidVatId = showVatId && vatIdValid
+  const promo = useMemo(() => activeHolidayPromo(cycle), [cycle])
+
+  const quotes = useMemo(() =>
+    SUBSCRIPTION_TIERS.map(tier => quote({ tier, cycle, currencyCode, countryCode, isBusiness, hasValidVatId })),
+    [cycle, currencyCode, countryCode, isBusiness, hasValidVatId]
+  )
+
+  const yearlyPct = Math.round(YEARLY_DISCOUNT * 100)
 
   return (
     <section id="pricing" className="py-24 sm:py-32 bg-muted/20">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
-        <div className="text-center mb-12">
-          <motion.p
-            className="text-sm font-semibold uppercase tracking-widest text-primary mb-3"
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4 }}
-          >
+
+        {/* Header */}
+        <div className="text-center mb-10">
+          <motion.p className="text-sm font-semibold uppercase tracking-widest text-primary mb-3"
+            initial={{ opacity:0, y:12 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.4 }}>
             Pricing
           </motion.p>
-          <motion.h2
-            className="text-3xl sm:text-4xl lg:text-5xl font-heading font-extrabold leading-tight tracking-tight"
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-          >
-            Simple, honest pricing
+          <motion.h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-extrabold leading-tight tracking-tight"
+            initial={{ opacity:0, y:12 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.4, delay:0.1 }}>
+            Simple, transparent pricing
           </motion.h2>
-          <motion.p
-            className="mt-4 text-lg text-muted-foreground max-w-md mx-auto"
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: 0.2 }}
-          >
-            No hidden fees. No long-term contracts. Cancel any time.
+          <motion.p className="mt-4 text-lg text-muted-foreground max-w-xl mx-auto"
+            initial={{ opacity:0, y:12 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.4, delay:0.2 }}>
+            No setup fees. No contracts. Cancel any time.
           </motion.p>
-
-          {/* Billing toggle */}
-          <motion.div
-            ref={toggleRef}
-            className="relative mt-8 inline-flex items-center gap-3 bg-muted rounded-full p-1"
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: 0.3 }}
-          >
-            {/* Coin particles */}
-            <AnimatePresence>
-              {coins.map((coin) => (
-                <motion.span
-                  key={coin.id}
-                  className="pointer-events-none absolute text-lg select-none"
-                  style={{ left: `calc(50% + ${coin.x}px)`, bottom: "50%" }}
-                  initial={{ y: 0, opacity: 1, scale: 0.5 }}
-                  animate={{ y: -100, opacity: 0, scale: 1.2 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 1.2, delay: coin.delay, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  {coin.emoji}
-                </motion.span>
-              ))}
-            </AnimatePresence>
-
-            <button
-              onClick={() => setAnnual(false)}
-              className={`relative px-5 py-2 rounded-full text-sm font-semibold transition-colors ${
-                !annual ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              Monthly
-            </button>
-            <button
-              onClick={() => { setAnnual(true); if (!annual) spawnCoins() }}
-              className={`relative px-5 py-2 rounded-full text-sm font-semibold transition-colors flex items-center gap-2 ${
-                annual ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              Annual
-              <span className="text-[10px] font-bold bg-green-500/15 text-green-600 dark:text-green-400 px-1.5 py-0.5 rounded-full">
-                −20%
-              </span>
-            </button>
-          </motion.div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 items-start">
-          {PLANS.map(({ name, monthly, annual: annualPrice, description, perks, cta, popular }, i) => {
-            const price = annual ? annualPrice : monthly
-            const originalPrice = monthly
-            return (
-              <motion.div
-                key={name}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: i * 0.1 }}
+        {/* Holiday promo banner */}
+        <AnimatePresence>
+          {promo && (
+            <motion.div
+              key={promo.id}
+              initial={{ opacity:0, y:-12, scale:0.98 }}
+              animate={{ opacity:1, y:0, scale:1 }}
+              exit={{ opacity:0, y:-8, scale:0.98 }}
+              transition={{ duration:0.35, ease:[0.22,1,0.36,1] }}
+              className="mb-8 rounded-2xl px-5 py-4 flex flex-col sm:flex-row sm:items-center gap-3 border"
+              style={{ background:`${promo.color}12`, borderColor:`${promo.color}30` }}
+            >
+              <span className="text-2xl">{promo.emoji}</span>
+              <div className="flex-1 min-w-0">
+                <p className="font-heading font-bold text-sm" style={{ color:promo.color }}>{promo.name}</p>
+                <p className="text-sm text-muted-foreground">{promo.tagline}</p>
+              </div>
+              <span className="shrink-0 font-mono text-xs font-bold px-3 py-1.5 rounded-lg border border-dashed"
+                style={{ color:promo.color, borderColor:`${promo.color}50`, background:`${promo.color}08` }}>
+                {promo.code}
+              </span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Controls row */}
+        <div className="flex flex-wrap items-end gap-4 mb-6">
+          {/* Currency */}
+          <div className="flex flex-col gap-1">
+            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Currency</label>
+            <div className="relative">
+              <select
+                value={currencyCode}
+                onChange={e => setCurrencyCode(e.target.value as CurrencyCode)}
+                className="appearance-none pl-3 pr-8 h-9 rounded-lg border border-border bg-card text-sm text-foreground outline-none focus:border-primary/50 transition-colors cursor-pointer"
+                aria-label="Select currency"
               >
-                <PricingCard
-                  name={name}
-                  price={price}
-                  originalPrice={originalPrice}
-                  annualPrice={annualPrice}
-                  description={description}
-                  perks={perks}
-                  cta={cta}
-                  popular={popular}
-                  annual={annual}
+                {CURRENCY_ORDER.map(code => {
+                  const c = CURRENCIES[code]
+                  return <option key={code} value={code}>{c.flag} {c.code} — {c.name}</option>
+                })}
+              </select>
+              <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+            </div>
+          </div>
+
+          {/* Country */}
+          <div className="flex flex-col gap-1">
+            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Billing country</label>
+            <div className="relative">
+              <select
+                value={countryCode}
+                onChange={e => { setCountryCode(e.target.value as CountryCode); setVatId("") }}
+                className="appearance-none pl-3 pr-8 h-9 rounded-lg border border-border bg-card text-sm text-foreground outline-none focus:border-primary/50 transition-colors cursor-pointer"
+                aria-label="Select billing country"
+              >
+                {COUNTRY_ORDER.map(code => {
+                  const c = COUNTRIES[code]
+                  const pct = c.vatRate > 0 ? ` · ${Math.round(c.vatRate*100)}% ${c.taxLabel}` : " · No tax"
+                  return <option key={code} value={code}>{c.flag} {c.name}{pct}</option>
+                })}
+              </select>
+              <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+            </div>
+          </div>
+
+          {/* Business checkbox */}
+          <label className="flex items-center gap-2 cursor-pointer h-9 text-sm text-foreground select-none">
+            <input
+              type="checkbox"
+              checked={isBusiness}
+              onChange={e => { setIsBusiness(e.target.checked); setVatId("") }}
+              className="w-4 h-4 rounded accent-primary cursor-pointer"
+            />
+            Buying for a business
+          </label>
+        </div>
+
+        {/* VAT ID input */}
+        <AnimatePresence>
+          {showVatId && (
+            <motion.div
+              initial={{ opacity:0, height:0 }} animate={{ opacity:1, height:"auto" }} exit={{ opacity:0, height:0 }}
+              transition={{ duration:0.25 }}
+              className="mb-6 overflow-hidden"
+            >
+              <div className="flex flex-col gap-1 max-w-xs">
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                  VAT ID (optional — enables reverse charge)
+                </label>
+                <input
+                  type="text"
+                  value={vatId}
+                  onChange={e => setVatId(e.target.value)}
+                  placeholder={country.vatIdExample ?? "e.g. DE123456789"}
+                  aria-describedby="vat-explanation"
+                  className={`h-9 px-3 rounded-lg border text-sm text-foreground bg-card outline-none transition-colors ${
+                    vatId.length > 2
+                      ? vatIdValid ? "border-green-500/60 focus:border-green-500" : "border-destructive/60 focus:border-destructive"
+                      : "border-border focus:border-primary/50"
+                  }`}
                 />
+                {vatId.length > 2 && !vatIdValid && (
+                  <p className="text-xs text-destructive">Invalid format — check your VAT ID</p>
+                )}
+                <p id="vat-explanation" className="text-xs text-muted-foreground">
+                  {quotes[0]?.vat.explanation}
+                </p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Billing cycle toggle */}
+        <div className="flex justify-center mb-10">
+          <div className="inline-flex items-center rounded-full bg-card border border-border p-1 gap-1">
+            {(["monthly","yearly"] as BillingCycle[]).map(c => (
+              <button
+                key={c}
+                onClick={() => setCycle(c)}
+                className={`relative px-5 h-8 rounded-full text-sm font-semibold transition-all duration-300 ${
+                  cycle === c ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {c === "monthly" ? "Monthly" : "Yearly"}
+                {c === "yearly" && (
+                  <span className={`ml-1.5 text-xs font-bold px-1.5 py-0.5 rounded-full transition-colors ${
+                    cycle === "yearly" ? "bg-white/20 text-white" : "bg-green-500/15 text-green-600 dark:text-green-400"
+                  }`}>
+                    -{yearlyPct}%
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Tier cards */}
+        <div className="grid md:grid-cols-3 gap-5">
+          {quotes.map((q, index) => {
+            const { tier } = q
+            const perMinute = q.currency.tierMonthly[tier.id] / tier.minutesPerMonth
+            const overagePerMinute = q.currency.overageByTier[tier.id]
+            const prev = index > 0 ? SUBSCRIPTION_TIERS[index-1] : null
+            const prevPerMinute = prev ? q.currency.tierMonthly[prev.id] / prev.minutesPerMonth : null
+            const savingsPct = (prev && prevPerMinute) ? Math.round((1 - perMinute/prevPerMinute)*100) : null
+            const showStrike = !!q.promo && q.netPreHoliday !== q.netEffective
+            const isPopular = tier.badge === "Most popular"
+
+            return (
+              <motion.div key={tier.id}
+                initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}
+                transition={{ duration:0.45, delay:index*0.1 }}
+                whileHover={{ y:-4 }}
+              >
+                <SpotlightCard className={`relative rounded-2xl border p-6 flex flex-col gap-5 h-full transition-shadow duration-300 ${
+                  isPopular
+                    ? "border-primary/60 bg-gradient-to-b from-primary/10 to-primary/5 shadow-2xl shadow-primary/20 ring-1 ring-primary/20"
+                    : "border-border bg-card hover:shadow-xl hover:border-primary/25"
+                }`}>
+
+                  {/* Badge */}
+                  {tier.badge && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                      <span className="text-xs font-bold px-3 py-1 rounded-full text-white shadow-lg"
+                        style={{ background: tier.color }}>
+                        {tier.badge}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Name */}
+                  <div className="mt-1">
+                    <p className="font-heading font-bold text-lg" style={{ color: tier.color }}>{tier.name}</p>
+                  </div>
+
+                  {/* Price */}
+                  <div>
+                    <AnimatePresence mode="wait">
+                      <motion.div key={`${cycle}-${currencyCode}-${countryCode}-${tier.id}`}
+                        initial={{ opacity:0, y:-6 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0, y:6 }}
+                        transition={{ duration:0.2 }}>
+
+                        {showStrike && (
+                          <p className="text-sm text-muted-foreground line-through mb-0.5">
+                            {q.formatted.netPreHoliday}/{q.per}
+                          </p>
+                        )}
+
+                        <div className="flex items-end gap-1.5">
+                          <span className="text-4xl font-heading font-extrabold">{q.formatted.netEffective}</span>
+                          <span className="text-muted-foreground text-sm mb-1.5">/{q.per}</span>
+                        </div>
+
+                        {cycle === "yearly" && (
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            {q.formatted.monthlyEquivalent}/mo billed annually
+                          </p>
+                        )}
+                      </motion.div>
+                    </AnimatePresence>
+
+                    {/* Annual savings chip */}
+                    {cycle === "yearly" && q.annualSavings > 0 && (
+                      <div className="mt-2 flex items-center gap-1.5 flex-wrap">
+                        <span className="text-xs font-semibold text-green-600 dark:text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full">
+                          Save {q.formatted.annualSavings}/yr
+                        </span>
+                        {q.promo && (
+                          <span className="text-xs font-semibold px-2 py-0.5 rounded-full"
+                            style={{ color:q.promo.color, background:`${q.promo.color}15` }}>
+                            incl. {Math.round(q.promo.discount*100)}% {q.promo.emoji} sale
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Tax breakdown */}
+                  <div className="rounded-xl border border-border/60 bg-muted/30 p-3 text-xs space-y-1.5">
+                    <div className="flex justify-between text-muted-foreground">
+                      <span>Net</span>
+                      <span>{q.formatted.netEffective}</span>
+                    </div>
+                    <div className="flex justify-between text-muted-foreground"
+                      title={q.vat.explanation}
+                      aria-describedby={`vat-note-${tier.id}`}>
+                      <span>{q.vat.label}</span>
+                      <span>{q.vat.reverseCharged ? "—" : q.formatted.vatAmount}</span>
+                    </div>
+                    <div className="border-t border-border/60 pt-1.5 flex justify-between font-semibold text-foreground">
+                      <span>Total due</span>
+                      <span>{q.formatted.gross}/{q.per}</span>
+                    </div>
+                    <p id={`vat-note-${tier.id}`} className="text-muted-foreground/70 text-[10px] leading-snug pt-0.5">
+                      {q.vat.explanation}
+                    </p>
+                  </div>
+
+                  {/* Feature pills */}
+                  <ul className="space-y-2 flex-1">
+                    {tier.features.map(f => (
+                      <li key={f} className="flex items-center gap-2 text-sm">
+                        <CheckCircle size={14} className="text-primary shrink-0" />
+                        <span>{f}</span>
+                      </li>
+                    ))}
+
+                    {/* Per-minute badge */}
+                    <li className="flex items-center gap-2 text-sm">
+                      <Tag size={14} className="text-muted-foreground shrink-0" />
+                      <span className="text-muted-foreground">
+                        {formatMoney(perMinute, q.currency)}/min included
+                      </span>
+                    </li>
+
+                    {/* Overage badge */}
+                    <li className="flex items-center gap-2 text-sm">
+                      <Tag size={14} className="text-muted-foreground shrink-0" />
+                      <span className="text-muted-foreground">
+                        Overage {formatMoney(overagePerMinute, q.currency)}/min
+                      </span>
+                    </li>
+
+                    {/* Upgrade value chip */}
+                    {savingsPct !== null && savingsPct > 0 && (
+                      <li>
+                        <span className="text-xs font-semibold text-green-600 dark:text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full">
+                          -{savingsPct}% /min vs {SUBSCRIPTION_TIERS[index-1].name}
+                        </span>
+                      </li>
+                    )}
+                  </ul>
+
+                  {/* CTA */}
+                  <motion.a
+                    href={tier.id === "enterprise"
+                      ? "/demo"
+                      : `/api/checkout?plan=${tier.id}&billing=${cycle === "yearly" ? "annual" : "monthly"}`}
+                    className="flex items-center justify-center h-11 rounded-full font-semibold text-sm transition-all relative overflow-hidden group"
+                    style={{
+                      background: isPopular ? tier.color : "transparent",
+                      color: isPopular ? "white" : tier.color,
+                      border: `2px solid ${tier.color}`,
+                    }}
+                    whileTap={{ scale:0.97 }}
+                  >
+                    <span className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none" />
+                    {tier.id === "enterprise" ? "Book a demo" : `Start with ${tier.name}`}
+                  </motion.a>
+                </SpotlightCard>
               </motion.div>
             )
           })}
         </div>
 
-        <motion.p
-          className="text-center text-sm text-muted-foreground mt-10"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: 0.4 }}
-        >
-          For free trial and testing, <a href="/demo" className="text-primary underline underline-offset-2 hover:opacity-80 transition-opacity">contact us</a>{annual ? " · Billed annually" : ""}
-        </motion.p>
+        {/* Fine print */}
+        <p className="mt-8 text-center text-xs text-muted-foreground">
+          {country.flag} Taxes shown for <strong>{country.name}</strong>
+          {country.note ? ` — ${country.note}` : ""}.
+          {" "}Overage minutes billed at the per-tier rate shown above.
+          {" "}All prices exclude applicable taxes unless shown otherwise.
+        </p>
+
       </div>
     </section>
   )
