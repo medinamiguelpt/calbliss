@@ -1,6 +1,11 @@
 /**
  * VAT / sales-tax rates by customer country.
- * Coverage: all 27 EU member states + UK, NO, CH, IS, US, CA, AU, NZ, AE, JP, SG.
+ *
+ * SCOPE: EU-27 member states only. Non-EU entries (GB, NO, CH, IS, US, CA, AU,
+ * NZ, AE, JP, SG) are retained in the COUNTRIES record for historical reference
+ * and VAT-algorithm correctness, but are NOT listed in COUNTRY_ORDER — they
+ * never appear in the country picker on the pricing page. See CLAUDE.md.
+ *
  * Vendor country is Greece (GR) — reverse charge applies for EU B2B cross-border.
  */
 
@@ -66,10 +71,14 @@ export const COUNTRIES: Record<CountryCode, Country> = {
   SG: { code:"SG", name:"Singapore",   flag:"🇸🇬", vatRate:0.09,  taxLabel:"GST", eu:false },
 };
 
+/**
+ * Pickable countries on the pricing page — EU-27 only.
+ * Greece first (vendor-country default), then the other 26 alphabetically.
+ */
 export const COUNTRY_ORDER: CountryCode[] = [
-  "GR","AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","HU","IE","IT",
-  "LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE",
-  "GB","CH","NO","IS","US","CA","AU","NZ","AE","JP","SG",
+  "GR", "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI",
+  "FR", "DE", "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL",
+  "PL", "PT", "RO", "SK", "SI", "ES", "SE",
 ];
 
 export interface VatComputation {

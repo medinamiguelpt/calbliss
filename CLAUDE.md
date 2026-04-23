@@ -70,3 +70,9 @@ Never ask "should I push/deploy?" — just do it as part of every task.
 - Show prices ex-VAT with "Prices shown ex-VAT — tax calculated at checkout."
 - All 4 tier CTAs are self-serve Stripe Checkout — no "Book a demo" CTA on
   any tier. Book-a-demo belongs on the top-nav, not in pricing.
+- EU-only scope: pricing is shown only for the 27 EU member states.
+  Do NOT list GB, NO, CH, IS, US, CA, AU, NZ, AE, JP, or SG anywhere
+  on the pricing section or the country picker.
+- Supported currencies on the pricing page: EUR (default), SEK, DKK, PLN.
+  All other EU countries use EUR.
+- Default country = GR (Greece). Default currency = EUR.

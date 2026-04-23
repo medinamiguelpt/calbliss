@@ -23,11 +23,11 @@ const FEATURE_TIPS: Record<string, string> = {
   "All 7 supported languages":         "Greek · English · Spanish · Portuguese · French · German · Arabic. Agent locks to the caller's language on first substantive word.",
 }
 
-// Map a country code to a sensible default currency
+// Map an EU country code to its default currency.
+// Only SE/DK/PL have native tables; every other EU country falls back to EUR.
 function defaultCurrencyFor(country: CountryCode): CurrencyCode {
   const map: Partial<Record<CountryCode, CurrencyCode>> = {
-    GB:"GBP", US:"USD", CA:"CAD", AU:"AUD", JP:"JPY",
-    NO:"NOK", SE:"SEK", DK:"DKK", PL:"PLN", AE:"AED", CH:"CHF", NZ:"AUD",
+    SE: "SEK", DK: "DKK", PL: "PLN",
   }
   return map[country] ?? "EUR"
 }

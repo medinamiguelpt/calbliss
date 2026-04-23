@@ -25,6 +25,10 @@ const FAQS = [
     a: "Upgrade or downgrade any time from the weekly performance email — changes prorate against the current cycle.",
   },
   {
+    q: "Do you serve customers outside the EU?",
+    a: "Not yet — we're focused on the EU market at this stage. If you're outside the EU and want to be notified when we expand, drop us a line.",
+  },
+  {
     q: "How long does it take to set up?",
     a: "Most agents are live within 24 hours. We handle the entire setup — you just need to tell us your business name, hours, and services.",
   },

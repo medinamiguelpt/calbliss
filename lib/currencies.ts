@@ -1,14 +1,15 @@
 /**
  * Currencies — per-tier local prices and locale-aware formatting.
  *
- * We do NOT convert EUR at runtime — every tier has a hand-picked, round
- * local price per currency. This mirrors how mature SaaS products handle
- * multi-currency (Linear, Notion, Vercel): psychologically clean numbers
- * in each market rather than FX output like €99 → $107.42.
+ * SCOPE: EU-only pricing. The picker shows 4 EU currencies — EUR, SEK, DKK,
+ * PLN. Non-EU currencies (USD, GBP, CHF, CAD, AUD, NOK, AED, JPY) are kept
+ * in the CURRENCIES record for type/data consistency but are NOT listed in
+ * CURRENCY_ORDER and therefore never appear in the picker. EU countries
+ * without a native table (e.g. FR, DE, IE) fall back to EUR.
  *
- * Non-EUR prices derived from the v3 EUR table (99/179/299/499) using the
- * same per-currency ratios the previous 3-tier table used, then hand-rounded
- * for local psychology. Refresh from the canonical source when promos change.
+ * We do NOT convert EUR at runtime — every tier has a hand-picked, round
+ * local price per currency. Psychologically clean numbers in each market
+ * rather than FX output like €99 → €107.42.
  */
 
 import { YEARLY_DISCOUNT, type TierPricing } from "./pricing";
@@ -54,9 +55,11 @@ export const CURRENCIES: Record<CurrencyCode, Currency> = {
     tierMonthly: { light: 16000, standard: 29000, busy: 48000, heavy: 81000 }, roundStep: 100 },
 };
 
-export const CURRENCY_ORDER: CurrencyCode[] = [
-  "EUR","USD","GBP","CHF","CAD","AUD","SEK","NOK","DKK","PLN","AED","JPY",
-];
+/**
+ * Pickable currencies on the pricing page — the 4 EU currencies with native
+ * tables. Every other EU country falls back to EUR via defaultCurrencyFor().
+ */
+export const CURRENCY_ORDER: CurrencyCode[] = ["EUR", "SEK", "DKK", "PLN"];
 
 function prettyLocal(value: number, step: number): number {
   const rounded = Math.ceil(value / step) * step;
