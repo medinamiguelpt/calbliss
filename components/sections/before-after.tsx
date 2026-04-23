@@ -81,15 +81,17 @@ export function BeforeAfter() {
               viewport={{ once: true }}
               transition={{ duration: 0.35, delay: 0.2 + i * 0.07 }}
             >
-              {/* Before */}
+              {/* Before — text gets struck through on row hover */}
               <div className={`flex items-start gap-3 px-6 py-5 border-r border-border bg-card group-hover:bg-destructive/[0.03] transition-colors ${i < ROWS.length - 1 ? "border-b" : ""}`}>
                 <X size={14} className="text-destructive/70 mt-0.5 shrink-0" />
-                <span className="text-sm text-muted-foreground leading-snug">{before}</span>
+                <span className="text-sm text-muted-foreground leading-snug transition-all duration-400 group-hover:line-through group-hover:opacity-50">
+                  {before}
+                </span>
               </div>
 
-              {/* After */}
+              {/* After — checkmark scales up on row hover */}
               <div className={`flex items-start gap-3 px-6 py-5 bg-primary/[0.03] group-hover:bg-primary/[0.06] transition-colors ${i < ROWS.length - 1 ? "border-b border-border" : ""}`}>
-                <Check size={14} className="text-primary mt-0.5 shrink-0" />
+                <Check size={14} className="text-primary mt-0.5 shrink-0 transition-transform duration-300 origin-center group-hover:scale-125" />
                 <span className="text-sm text-foreground font-medium leading-snug">{after}</span>
               </div>
             </motion.div>

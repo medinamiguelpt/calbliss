@@ -15,22 +15,27 @@ const FULL_TEXT = "TimeBookingPro creates a custom voice AI that answers calls, 
 
 function TypewriterText() {
   const [displayed, setDisplayed] = useState("")
-  const [done, setDone] = useState(false)
+  // Caret persists for 2s after typing finishes — terminal "waiting for input" feel
+  const [showCaret, setShowCaret] = useState(true)
 
   useEffect(() => {
     let i = 0
+    let fadeTimer: ReturnType<typeof setTimeout>
     const id = setInterval(() => {
       i++
       setDisplayed(FULL_TEXT.slice(0, i))
-      if (i >= FULL_TEXT.length) { clearInterval(id); setDone(true) }
+      if (i >= FULL_TEXT.length) {
+        clearInterval(id)
+        fadeTimer = setTimeout(() => setShowCaret(false), 2000)
+      }
     }, 18)
-    return () => clearInterval(id)
+    return () => { clearInterval(id); clearTimeout(fadeTimer) }
   }, [])
 
   return (
     <span>
       {displayed}
-      {!done && <span className="inline-block w-0.5 h-4 bg-primary/70 ml-0.5 animate-pulse align-middle" />}
+      {showCaret && <span className="inline-block w-0.5 h-4 bg-primary/70 ml-0.5 animate-pulse align-middle" />}
     </span>
   )
 }

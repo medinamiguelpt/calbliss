@@ -1,12 +1,51 @@
 "use client"
 
-import { useRef } from "react"
-import { motion, useInView } from "framer-motion"
+import { useRef, useEffect, useState } from "react"
+import { motion, useInView, animate } from "framer-motion"
 import { ArrowRight, Sparkles } from "lucide-react"
 
 export function StickyCTA() {
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, margin: "-80px" })
+
+  // Live counter of "agents deployed today" — starts at a plausible value,
+  // increments every 9–15s once the section is visible
+  const counterRef = useRef<HTMLSpanElement>(null)
+  const currentRef = useRef(127)
+  const [started, setStarted] = useState(false)
+
+  useEffect(() => {
+    if (!inView || started) return
+    setStarted(true)
+  }, [inView, started])
+
+  useEffect(() => {
+    if (!started) return
+    // Initial count-up from 0 → 127
+    const el = counterRef.current
+    if (!el) return
+    const initial = animate(0, currentRef.current, {
+      duration: 1.4, ease: [0.22, 1, 0.36, 1],
+      onUpdate(v) { el.textContent = String(Math.round(v)) },
+    })
+    // Then tick up occasionally
+    const tick = () => {
+      const inc = Math.floor(Math.random() * 3) + 1
+      const prev = currentRef.current
+      currentRef.current = prev + inc
+      animate(prev, currentRef.current, {
+        duration: 0.8, ease: [0.22, 1, 0.36, 1],
+        onUpdate(v) { if (el) el.textContent = String(Math.round(v)) },
+      })
+    }
+    // Track the latest timeout id so cleanup cancels the currently-scheduled tick
+    let timeoutId: ReturnType<typeof setTimeout>
+    const scheduleNext = () => {
+      timeoutId = setTimeout(() => { tick(); scheduleNext() }, 9000 + Math.random() * 6000)
+    }
+    scheduleNext()
+    return () => { initial.stop(); clearTimeout(timeoutId) }
+  }, [started])
 
   return (
     <motion.div
@@ -29,7 +68,9 @@ export function StickyCTA() {
         <div className="relative text-center sm:text-left">
           <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
             <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-            <span className="text-xs font-semibold text-green-400 uppercase tracking-wider">Agents available now</span>
+            <span className="text-xs font-semibold text-green-400 uppercase tracking-wider tabular-nums">
+              <span ref={counterRef}>0</span> agents deployed today
+            </span>
           </div>
           <p className="text-white font-heading font-extrabold text-xl sm:text-2xl leading-tight tracking-tight">
             Stop losing bookings to voicemail.

@@ -1,6 +1,8 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { useState, useMemo } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { Plus, Minus } from "lucide-react"
 import { RevealWords } from "@/components/ui/reveal-words"
 import {
   Accordion,
@@ -53,6 +55,10 @@ const FAQS = [
 ]
 
 export function FAQ() {
+  const allValues = useMemo(() => FAQS.map((_, i) => `item-${i}`), [])
+  const [open, setOpen] = useState<string[]>([])
+  const allOpen = open.length === allValues.length
+
   return (
     <section className="py-24 sm:py-32">
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
@@ -80,7 +86,35 @@ export function FAQ() {
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <Accordion className="space-y-3">
+          {/* Expand / collapse all — animates icon swap and button width */}
+          <div className="flex justify-end mb-4">
+            <button
+              onClick={() => setOpen(allOpen ? [] : allValues)}
+              className="relative flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors px-2.5 py-1 rounded-full"
+              aria-label={allOpen ? "Collapse all questions" : "Expand all questions"}
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.span
+                  key={allOpen ? "collapse" : "expand"}
+                  className="flex items-center gap-1.5"
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  {allOpen ? <Minus size={12} /> : <Plus size={12} />}
+                  {allOpen ? "Collapse all" : "Expand all"}
+                </motion.span>
+              </AnimatePresence>
+            </button>
+          </div>
+
+          <Accordion
+            className="space-y-3"
+            multiple
+            value={open}
+            onValueChange={(v) => setOpen(v as string[])}
+          >
             {FAQS.map(({ q, a }, i) => (
               <AccordionItem
                 key={i}

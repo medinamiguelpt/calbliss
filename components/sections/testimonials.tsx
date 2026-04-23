@@ -143,6 +143,7 @@ function TestimonialCard({
 }: typeof TESTIMONIALS[0] & { onPlayVideo: () => void; position: "center" | "left" | "right" | "hidden"; reducedMotion: boolean | null }) {
   const isCenter = position === "center"
   const isHidden = position === "hidden"
+  const [avatarHover, setAvatarHover] = useState(false)
 
   // Full 3D coverflow when motion is OK; simple opacity/scale crossfade when reduced
   const rotateY    = reducedMotion ? 0           : position === "left" ? -28 : position === "right" ? 28 : 0
@@ -189,8 +190,12 @@ function TestimonialCard({
           <Stars count={stars} />
           <p className="text-sm text-foreground leading-relaxed flex-1">&ldquo;{quote}&rdquo;</p>
           <div className="flex items-center gap-3 pt-2 border-t border-border">
-            <div className="relative shrink-0">
-              <div className="w-10 h-10 rounded-full bg-primary/15 border border-primary/20 flex items-center justify-center text-xs font-bold text-primary">
+            <div
+              className="relative shrink-0"
+              onMouseEnter={() => setAvatarHover(true)}
+              onMouseLeave={() => setAvatarHover(false)}
+            >
+              <div className="w-10 h-10 rounded-full bg-primary/15 border border-primary/20 flex items-center justify-center text-xs font-bold text-primary transition-transform duration-200 hover:scale-110">
                 {initials}
               </div>
               {hasVideo && isCenter && (
@@ -203,6 +208,29 @@ function TestimonialCard({
                   <Play size={12} className="text-white ml-0.5" />
                 </motion.button>
               )}
+              {/* Hover preview card — desktop only, center card only */}
+              <AnimatePresence>
+                {avatarHover && isCenter && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 6, scale: 0.92 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 6, scale: 0.92 }}
+                    transition={{ type: "spring", stiffness: 420, damping: 28 }}
+                    className="absolute bottom-full left-0 mb-3 w-60 rounded-xl border border-border bg-card shadow-2xl p-4 hidden md:block z-50 pointer-events-none"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="w-12 h-12 rounded-full bg-primary/15 border border-primary/20 flex items-center justify-center text-base font-bold text-primary shrink-0">
+                        {initials}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-heading font-bold text-sm truncate">{name}</p>
+                        <p className="text-xs text-muted-foreground leading-tight mb-1.5">{role}</p>
+                        <Stars count={stars} />
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-foreground">{name}</p>
