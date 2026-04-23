@@ -7,6 +7,7 @@ import { SUBSCRIPTION_TIERS, quote, YEARLY_DISCOUNT, activeHolidayPromo, type Bi
 import { CURRENCIES, CURRENCY_ORDER, formatMoney, type CurrencyCode } from "@/lib/currencies"
 import { COUNTRIES, COUNTRY_ORDER, isPlausibleVatId, VENDOR_COUNTRY, type CountryCode } from "@/lib/vat"
 import { SpotlightCard } from "@/components/ui/spotlight-card"
+import { BottomSheet } from "@/components/ui/bottom-sheet"
 
 // Map a country code to a sensible default currency
 function defaultCurrencyFor(country: CountryCode): CurrencyCode {
@@ -23,6 +24,7 @@ export function Pricing({ defaultCountry = "GR" }: { defaultCountry?: CountryCod
   const [countryCode, setCountryCode] = useState<CountryCode>(defaultCountry)
   const [isBusiness, setIsBusiness] = useState(false)
   const [vatId, setVatId] = useState("")
+  const [sheetIdx, setSheetIdx] = useState<number | null>(null)
 
   const country = COUNTRIES[countryCode]
   const showVatId = isBusiness && country.eu && countryCode !== VENDOR_COUNTRY
@@ -362,11 +364,106 @@ export function Pricing({ defaultCountry = "GR" }: { defaultCountry?: CountryCod
                     <span className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none" />
                     {tier.id === "enterprise" ? "Book a demo" : `Start with ${tier.name}`}
                   </motion.a>
+
+                  {/* Mobile-only: open bottom sheet with full plan details */}
+                  <button
+                    onClick={() => setSheetIdx(index)}
+                    className="md:hidden w-full pt-1 text-xs text-center text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    See all plan details ↑
+                  </button>
                 </SpotlightCard>
               </motion.div>
             )
           })}
         </div>
+
+        {/* Bottom sheet — mobile plan details */}
+        <BottomSheet
+          open={sheetIdx !== null}
+          onClose={() => setSheetIdx(null)}
+          title={sheetIdx !== null ? `${quotes[sheetIdx].tier.name} plan` : undefined}
+        >
+          {sheetIdx !== null && (() => {
+            const q = quotes[sheetIdx]
+            const { tier } = q
+            const isPopular = tier.badge === "Most popular"
+            const perMinute = q.currency.tierMonthly[tier.id] / tier.minutesPerMonth
+            const overagePerMinute = q.currency.overageByTier[tier.id]
+            return (
+              <div className="flex flex-col gap-6">
+                {/* Price recap */}
+                <div>
+                  <div className="flex items-end gap-1.5">
+                    <span className="text-4xl font-heading font-extrabold">{q.formatted.netEffective}</span>
+                    <span className="text-muted-foreground text-sm mb-1.5">/{q.per}</span>
+                  </div>
+                  {cycle === "yearly" && (
+                    <p className="text-xs text-muted-foreground mt-0.5">{q.formatted.monthlyEquivalent}/mo billed annually</p>
+                  )}
+                  {cycle === "yearly" && q.annualSavings > 0 && (
+                    <span className="inline-block mt-2 text-xs font-semibold text-green-600 dark:text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full">
+                      Save {q.formatted.annualSavings}/yr
+                    </span>
+                  )}
+                </div>
+
+                {/* Features */}
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Included</p>
+                  <ul className="space-y-3">
+                    {tier.features.map(f => (
+                      <li key={f} className="flex items-center gap-3 text-sm">
+                        <CheckCircle size={15} className="text-primary shrink-0" />
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                    <li className="flex items-center gap-3 text-sm">
+                      <Tag size={15} className="text-muted-foreground shrink-0" />
+                      <span className="text-muted-foreground">{formatMoney(perMinute, q.currency)}/min included</span>
+                    </li>
+                    <li className="flex items-center gap-3 text-sm">
+                      <Tag size={15} className="text-muted-foreground shrink-0" />
+                      <span className="text-muted-foreground">Overage {formatMoney(overagePerMinute, q.currency)}/min</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Tax breakdown */}
+                <div className="rounded-xl border border-border/60 bg-muted/30 p-4 text-sm space-y-2">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Price breakdown</p>
+                  <div className="flex justify-between text-muted-foreground">
+                    <span>Net</span><span>{q.formatted.netEffective}</span>
+                  </div>
+                  <div className="flex justify-between text-muted-foreground">
+                    <span>{q.vat.label}</span>
+                    <span>{q.vat.reverseCharged ? "—" : q.formatted.vatAmount}</span>
+                  </div>
+                  <div className="border-t border-border/60 pt-2 flex justify-between font-semibold">
+                    <span>Total due</span><span>{q.formatted.gross}/{q.per}</span>
+                  </div>
+                  <p className="text-muted-foreground/70 text-xs pt-1">{q.vat.explanation}</p>
+                </div>
+
+                {/* CTA */}
+                <a
+                  href={tier.id === "enterprise"
+                    ? "/demo"
+                    : `/api/checkout?plan=${tier.id}&billing=${cycle === "yearly" ? "annual" : "monthly"}`}
+                  onClick={() => setSheetIdx(null)}
+                  className="flex items-center justify-center h-12 rounded-full font-semibold text-sm"
+                  style={{
+                    background: isPopular ? tier.color : "transparent",
+                    color: isPopular ? "white" : tier.color,
+                    border: `2px solid ${tier.color}`,
+                  }}
+                >
+                  {tier.id === "enterprise" ? "Book a demo" : `Start with ${tier.name}`}
+                </a>
+              </div>
+            )
+          })()}
+        </BottomSheet>
 
         {/* Fine print */}
         <p className="mt-8 text-center text-xs text-muted-foreground">

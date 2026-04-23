@@ -99,6 +99,8 @@ export function FinalCTA() {
         setPosition(data.position ?? null)
         setReferralCode(data.referralCode ?? null)
         setState("success")
+        // Double-pulse haptic on mobile devices that support it
+        if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate([80, 30, 80])
       } else {
         setState("error")
       }

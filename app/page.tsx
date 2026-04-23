@@ -14,6 +14,7 @@ import { Pricing } from "@/components/sections/pricing"
 import { Calculator } from "@/components/sections/calculator"
 import { FAQ } from "@/components/sections/faq"
 import { FinalCTA } from "@/components/sections/final-cta"
+import { MobileCTA } from "@/components/ui/mobile-cta"
 import { StickyCTA } from "@/components/ui/sticky-cta"
 import { DemoModal } from "@/components/ui/demo-modal"
 import { HomeJsonLd } from "@/components/seo/json-ld"
@@ -46,6 +47,7 @@ export default async function Home() {
         <StickyCTA />
       </main>
       <Footer />
+      <MobileCTA />
       <DemoModal />
       <HomeJsonLd />
     </>

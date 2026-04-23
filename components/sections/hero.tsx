@@ -228,7 +228,7 @@ function HeadlineReveal({ plain, highlight }: { plain: string; highlight: string
   )
 }
 
-function MagneticWrap({ children }: { children: React.ReactNode }) {
+function MagneticWrap({ children, className }: { children: React.ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null)
   const rectRef = useRef<DOMRect | null>(null)
   const x = useMotionValue(0)
@@ -252,7 +252,7 @@ function MagneticWrap({ children }: { children: React.ReactNode }) {
   const onLeave = () => { x.set(0); y.set(0) }
 
   return (
-    <motion.div ref={ref} style={{ x: sx, y: sy }} onMouseMove={onMove} onMouseLeave={onLeave}>
+    <motion.div ref={ref} style={{ x: sx, y: sy }} onMouseMove={onMove} onMouseLeave={onLeave} className={className}>
       {children}
     </motion.div>
   )
@@ -366,9 +366,9 @@ export function Hero({ variant = "a" }: { variant?: "a" | "b" }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.6 }}
             >
-              {/* Primary CTA — magnetic */}
-              <MagneticWrap>
-                <div className="relative group/cta w-fit">
+              {/* Primary CTA — magnetic, full-width on mobile */}
+              <MagneticWrap className="w-full sm:w-auto">
+                <div className="relative group/cta w-full sm:w-fit">
                   <div
                     className="absolute -inset-[2px] rounded-full opacity-80 blur-[2px] group-hover/cta:opacity-100 group-hover/cta:blur-[3px] transition-all duration-300"
                     style={{ background: "conic-gradient(from var(--border-angle), #7C3AED, #A78BFA, #C4B5FD, #7C3AED)", animation: "border-spin 3s linear infinite" }}
@@ -382,7 +382,7 @@ export function Hero({ variant = "a" }: { variant?: "a" | "b" }) {
                       }
                     }} />}
                     nativeButton={false}
-                    className="relative bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-full px-7 h-12 text-base shadow-lg shadow-primary/25"
+                    className="relative w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-full px-7 h-12 text-base shadow-lg shadow-primary/25"
                   >
                     {headline.cta}
                     <ArrowRight size={18} className="ml-2" />
@@ -390,8 +390,8 @@ export function Hero({ variant = "a" }: { variant?: "a" | "b" }) {
                 </div>
               </MagneticWrap>
 
-              {/* Secondary CTA — magnetic */}
-              <MagneticWrap>
+              {/* Secondary CTA — magnetic, full-width on mobile */}
+              <MagneticWrap className="w-full sm:w-auto">
                 <Button
                   size="lg"
                   variant="outline"
@@ -402,7 +402,7 @@ export function Hero({ variant = "a" }: { variant?: "a" | "b" }) {
                     }
                     openDemoModal()
                   }}
-                  className="rounded-full px-7 h-12 text-base border-border hover:bg-muted"
+                  className="w-full sm:w-auto rounded-full px-7 h-12 text-base border-border hover:bg-muted"
                 >
                   <Calendar size={16} className="mr-2" />
                   Book a demo

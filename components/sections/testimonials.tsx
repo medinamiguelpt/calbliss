@@ -222,6 +222,60 @@ function TestimonialCard({
   )
 }
 
+// Mobile card with tap-to-expand long quotes
+function MobileTestimonialCard({
+  testimonial, onPlayVideo,
+}: { testimonial: typeof TESTIMONIALS[0]; onPlayVideo: () => void }) {
+  const [expanded, setExpanded] = useState(false)
+  const t = testimonial
+  // Long quotes benefit from expansion; short ones (~70 chars) won't need it
+  const isLong = t.quote.length > 100
+
+  return (
+    <div className="group relative rounded-2xl border border-border bg-card flex flex-col gap-4 overflow-hidden shadow-lg">
+      <div className={`absolute inset-0 bg-gradient-to-br ${t.color} opacity-40 pointer-events-none`} />
+      <div className="relative p-6 flex flex-col gap-4">
+        <Stars count={t.stars} />
+        <div>
+          <motion.p
+            className="text-sm text-foreground leading-relaxed overflow-hidden"
+            animate={{ maxHeight: expanded ? 400 : 88 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          >
+            &ldquo;{t.quote}&rdquo;
+          </motion.p>
+          {isLong && (
+            <button
+              onClick={() => setExpanded(e => !e)}
+              className="mt-1.5 text-xs font-semibold text-primary hover:text-primary/80 transition-colors"
+            >
+              {expanded ? "Show less" : "Read more"}
+            </button>
+          )}
+        </div>
+        <div className="flex items-center gap-3 pt-2 border-t border-border">
+          <div className="w-10 h-10 rounded-full bg-primary/15 border border-primary/20 flex items-center justify-center text-xs font-bold text-primary">
+            {t.initials}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-foreground">{t.name}</p>
+            <p className="text-xs text-muted-foreground">{t.role}</p>
+          </div>
+          {t.hasVideo && (
+            <button
+              onClick={onPlayVideo}
+              className="shrink-0 flex items-center gap-1.5 text-xs font-semibold text-primary"
+            >
+              <Play size={11} className="ml-0.5" />
+              Watch
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function getPosition(cardIndex: number, activeIndex: number, total: number): "center" | "left" | "right" | "hidden" {
   const diff = ((cardIndex - activeIndex) % total + total) % total
   if (diff === 0) return "center"
@@ -309,7 +363,7 @@ export function Testimonials() {
           </div>
         </div>
 
-        {/* Mobile: single card swipe */}
+        {/* Mobile: single card swipe with tap-to-expand quote */}
         <div
           className="md:hidden"
           onTouchStart={handleDragStart}
@@ -323,31 +377,10 @@ export function Testimonials() {
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <div className="group relative rounded-2xl border border-border bg-card flex flex-col gap-4 overflow-hidden shadow-lg">
-                <div className={`absolute inset-0 bg-gradient-to-br ${TESTIMONIALS[active].color} opacity-40 pointer-events-none`} />
-                <div className="relative p-6 flex flex-col gap-4">
-                  <Stars count={TESTIMONIALS[active].stars} />
-                  <p className="text-sm text-foreground leading-relaxed">&ldquo;{TESTIMONIALS[active].quote}&rdquo;</p>
-                  <div className="flex items-center gap-3 pt-2 border-t border-border">
-                    <div className="w-10 h-10 rounded-full bg-primary/15 border border-primary/20 flex items-center justify-center text-xs font-bold text-primary">
-                      {TESTIMONIALS[active].initials}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-foreground">{TESTIMONIALS[active].name}</p>
-                      <p className="text-xs text-muted-foreground">{TESTIMONIALS[active].role}</p>
-                    </div>
-                    {TESTIMONIALS[active].hasVideo && (
-                      <button
-                        onClick={() => setVideoFor(TESTIMONIALS[active].name)}
-                        className="shrink-0 flex items-center gap-1.5 text-xs font-semibold text-primary"
-                      >
-                        <Play size={11} className="ml-0.5" />
-                        Watch
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
+              <MobileTestimonialCard
+                testimonial={TESTIMONIALS[active]}
+                onPlayVideo={() => setVideoFor(TESTIMONIALS[active].name)}
+              />
             </motion.div>
           </AnimatePresence>
         </div>
