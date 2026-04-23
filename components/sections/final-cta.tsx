@@ -250,30 +250,52 @@ export function FinalCTA() {
               )}
               <p className="text-white/50 text-sm">Check your email — confirmation is on its way.</p>
 
-              {/* Milestone progress */}
+              {/* Milestone progress — each milestone springs in with a 100ms stagger */}
               {referralCode && (
-                <div className="mt-4 w-full max-w-xs">
-                  <div className="flex items-center gap-2 text-white/70 text-xs mb-3">
+                <motion.div
+                  className="mt-4 w-full max-w-xs"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.15 }}
+                >
+                  <motion.div
+                    className="flex items-center gap-2 text-white/70 text-xs mb-3"
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                  >
                     <Trophy size={13} className="text-primary-soft" />
                     <span>Refer friends to unlock rewards</span>
-                  </div>
+                  </motion.div>
                   <div className="flex gap-2 justify-center">
-                    {MILESTONES.map(({ count, reward, icon }) => (
-                      <div key={count} className="flex flex-col items-center gap-1 flex-1">
+                    {MILESTONES.map(({ count, icon }, i) => (
+                      <motion.div
+                        key={count}
+                        className="flex flex-col items-center gap-1 flex-1"
+                        initial={{ opacity: 0, scale: 0.7, y: 6 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        transition={{
+                          type: "spring", stiffness: 420, damping: 22,
+                          delay: 0.35 + i * 0.1,
+                        }}
+                      >
                         <div className="w-9 h-9 rounded-full bg-white/10 border border-white/15 flex items-center justify-center text-sm">
                           {icon}
                         </div>
                         <p className="text-[9px] text-white/40 text-center leading-tight">{count} ref{count > 1 ? "s" : ""}</p>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
-                  <button
+                  <motion.button
                     onClick={copyReferral}
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.35 + MILESTONES.length * 0.1 + 0.1 }}
                     className="mt-3 w-full flex items-center justify-center gap-2 bg-primary/20 hover:bg-primary/30 border border-primary/30 text-primary-soft text-xs font-semibold rounded-full py-2 transition-colors"
                   >
                     <Gift size={12} /> Copy referral link to share
-                  </button>
-                </div>
+                  </motion.button>
+                </motion.div>
               )}
 
               {/* Leaderboard teaser */}

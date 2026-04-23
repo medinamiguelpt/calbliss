@@ -3,6 +3,7 @@
 import { useRef, useEffect, useState } from "react"
 import { motion, useInView, animate } from "framer-motion"
 import { ArrowRight, Sparkles } from "lucide-react"
+import { particleBurst } from "@/components/ui/particle-burst"
 
 export function StickyCTA() {
   const ref = useRef<HTMLDivElement>(null)
@@ -82,6 +83,7 @@ export function StickyCTA() {
         <motion.a
           href="#get-started"
           data-ripple
+          onMouseEnter={particleBurst}
           className="relative shrink-0 group flex items-center gap-2.5 bg-primary text-white font-semibold rounded-full px-7 py-3.5 text-sm overflow-hidden shadow-xl shadow-primary/40"
           whileHover={{ scale: 1.04 }}
           whileTap={{ scale: 0.97 }}

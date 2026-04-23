@@ -10,6 +10,7 @@ import { MagneticWrap } from "@/components/ui/magnetic-wrap"
 import { openDemoModal } from "@/components/ui/demo-modal"
 import { Particles } from "@/components/ui/particles"
 import { TiltCard } from "@/components/ui/tilt-card"
+import { particleBurst } from "@/components/ui/particle-burst"
 
 const FULL_TEXT = "TimeBookingPro creates a custom voice AI that answers calls, handles bookings, and fills your calendar — automatically, 24 hours a day."
 
@@ -450,7 +451,7 @@ export function Hero({ variant = "a" }: { variant?: "a" | "b" }) {
                   />
                   <Button
                     size="lg"
-                    render={<a href="#get-started" onClick={() => {
+                    render={<a href="#get-started" onMouseEnter={particleBurst} onClick={() => {
                       if (typeof window !== "undefined" && (window as Window & { plausible?: (e: string, o?: object) => void }).plausible) {
                         (window as Window & { plausible?: (e: string, o?: object) => void }).plausible?.("hero-cta-click", { props: { variant } })
                       }

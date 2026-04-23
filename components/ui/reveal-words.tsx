@@ -1,6 +1,6 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, useReducedMotion } from "framer-motion"
 import { cn } from "@/lib/utils"
 
 type Tag = "h1" | "h2" | "h3" | "h4"
@@ -19,6 +19,13 @@ interface RevealWordsProps {
  * Splits text into words and reveals them with a staggered slide-up.
  * Replace static <motion.h2 whileInView> patterns with this for a more
  * expressive entrance without adding extra markup.
+ *
+ * Reliability:
+ * - `amount: "some"` triggers as soon as ANY part of the word is in view
+ *   (default would be "all" which requires full visibility — bad for big
+ *   headlines that are taller than the shrunken detection area).
+ * - `useReducedMotion()` returns a safe, non-animated fallback so text
+ *   never stays hidden due to the clipped initial y: 110% state.
  */
 export function RevealWords({
   children,
@@ -27,21 +34,27 @@ export function RevealWords({
   stagger = 0.07,
   delay = 0,
 }: RevealWordsProps) {
+  const prefersReducedMotion = useReducedMotion()
   const words = children.split(" ")
+
+  // Fallback: render plain text when motion is reduced — never risk invisible words
+  if (prefersReducedMotion) {
+    return <Tag className={cn("", className)}>{children}</Tag>
+  }
 
   return (
     <Tag className={cn("", className)}>
       {words.map((word, i) => (
         <span
           key={i}
-          className="inline-block overflow-hidden"
+          className="inline-block overflow-hidden align-bottom"
           style={{ marginRight: "0.28em" }}
         >
           <motion.span
             className="inline-block"
             initial={{ y: "110%", opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true, margin: "-20px" }}
+            viewport={{ once: true, amount: "some" }}
             transition={{
               duration: 0.5,
               delay: delay + i * stagger,

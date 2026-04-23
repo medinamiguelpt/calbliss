@@ -71,33 +71,59 @@ export function VoiceDemo() {
   const [messages, setMessages] = useState<{ speaker: "agent" | "user"; text: string }[]>([])
   const [speaking, setSpeaking] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [hovering, setHovering] = useState(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  // TTS blob cache — hovering the button preloads the first line so audio plays instantly on click
+  const ttsCache = useRef<Map<string, Blob>>(new Map())
+  const preloadStarted = useRef(false)
 
-  const playTTS = useCallback(async (text: string) => {
-    setSpeaking(true)
+  const fetchTTS = useCallback(async (text: string): Promise<Blob | null> => {
+    const cached = ttsCache.current.get(text)
+    if (cached) return cached
     try {
       const res = await fetch("/api/tts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text }),
       })
-      if (!res.ok) {
-        await new Promise(r => setTimeout(r, text.length * 45))
-        setSpeaking(false)
-        return
-      }
+      if (!res.ok) return null
       const blob = await res.blob()
-      const url = URL.createObjectURL(blob)
-      const audio = new Audio(url)
-      audioRef.current = audio
-      audio.onended = () => { setSpeaking(false); URL.revokeObjectURL(url) }
-      await audio.play()
+      ttsCache.current.set(text, blob)
+      return blob
     } catch {
-      await new Promise(r => setTimeout(r, text.length * 40))
-      setSpeaking(false)
+      return null
     }
   }, [])
+
+  // Warm the cache for the first agent line on hover of the trigger button
+  const preloadFirstLine = useCallback(() => {
+    setHovering(true)
+    if (preloadStarted.current) return
+    preloadStarted.current = true
+    const first = SCRIPT.find(m => m.speaker === "agent")
+    if (first) fetchTTS(first.text)
+  }, [fetchTTS])
+
+  const playTTS = useCallback(async (text: string) => {
+    setSpeaking(true)
+    const blob = await fetchTTS(text)
+    if (!blob) {
+      await new Promise(r => setTimeout(r, text.length * 45))
+      setSpeaking(false)
+      return
+    }
+    const url = URL.createObjectURL(blob)
+    const audio = new Audio(url)
+    audioRef.current = audio
+    audio.onended = () => { setSpeaking(false); URL.revokeObjectURL(url) }
+    try {
+      await audio.play()
+    } catch {
+      setSpeaking(false)
+      URL.revokeObjectURL(url)
+    }
+  }, [fetchTTS])
 
   const startCall = useCallback(async () => {
     setPhase("active")
@@ -149,13 +175,16 @@ export function VoiceDemo() {
     <>
       <button
         onClick={() => setOpen(true)}
+        onMouseEnter={preloadFirstLine}
+        onMouseLeave={() => setHovering(false)}
         className="inline-flex items-center gap-2.5 bg-white/10 hover:bg-white/15 text-white border border-white/20 rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
       >
         <span className="flex items-center gap-[2px] h-3.5">
           {[0.4, 0.9, 0.6, 1, 0.5].map((h, i) => (
             <motion.span key={i} className="w-[2px] rounded-full bg-primary-soft block" style={{ height: "100%" }}
-              animate={{ scaleY: [h, 1, h * 0.5, 0.9, h] }}
-              transition={{ duration: 1.1, repeat: Infinity, delay: i * 0.1 }}
+              // On hover the bars pulse larger + faster — visual hint that the voice is warming up
+              animate={{ scaleY: hovering ? [h, 1.2, h * 0.3, 1.1, h] : [h, 1, h * 0.5, 0.9, h] }}
+              transition={{ duration: hovering ? 0.65 : 1.1, repeat: Infinity, delay: i * 0.1, ease: "easeInOut" }}
             />
           ))}
         </span>
