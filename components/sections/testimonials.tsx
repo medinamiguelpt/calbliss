@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useEffect, useState, useCallback } from "react"
-import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion"
+import { motion, AnimatePresence, useMotionValue, useSpring, useReducedMotion } from "framer-motion"
 import { Star, ChevronLeft, ChevronRight, Play, X } from "lucide-react"
 
 const TESTIMONIALS = [
@@ -138,16 +138,17 @@ function VideoModal({ name, onClose }: { name: string; onClose: () => void }) {
 }
 
 function TestimonialCard({
-  name, role, quote, stars, initials, color, hasVideo, videoLabel, onPlayVideo, position,
-}: typeof TESTIMONIALS[0] & { onPlayVideo: () => void; position: "center" | "left" | "right" | "hidden" }) {
+  name, role, quote, stars, initials, color, hasVideo, videoLabel, onPlayVideo, position, reducedMotion,
+}: typeof TESTIMONIALS[0] & { onPlayVideo: () => void; position: "center" | "left" | "right" | "hidden"; reducedMotion: boolean | null }) {
   const isCenter = position === "center"
   const isHidden = position === "hidden"
 
-  const rotateY = position === "left" ? -28 : position === "right" ? 28 : 0
-  const scale = isCenter ? 1 : 0.82
-  const opacity = isHidden ? 0 : isCenter ? 1 : 0.55
-  const z = isCenter ? 10 : 0
-  const translateX = position === "left" ? "-14%" : position === "right" ? "14%" : "0%"
+  // Full 3D coverflow when motion is OK; simple opacity/scale crossfade when reduced
+  const rotateY    = reducedMotion ? 0           : position === "left" ? -28 : position === "right" ? 28 : 0
+  const scale      = reducedMotion ? (isCenter ? 1 : 0.94)  : isCenter ? 1 : 0.82
+  const opacity    = isHidden ? 0 : isCenter ? 1 : reducedMotion ? 0.45 : 0.55
+  const z          = isCenter ? 10 : 0
+  const translateX = reducedMotion ? "0%" : position === "left" ? "-14%" : position === "right" ? "14%" : "0%"
 
   // Subtle content parallax on mouse hover — desktop/center card only
   // Touch events don't fire onMouseMove so this is naturally mobile-safe
@@ -285,6 +286,7 @@ function getPosition(cardIndex: number, activeIndex: number, total: number): "ce
 }
 
 export function Testimonials() {
+  const reducedMotion = useReducedMotion()
   const [active, setActive] = useState(0)
   const [paused, setPaused] = useState(false)
   const [videoFor, setVideoFor] = useState<string | null>(null)
@@ -347,7 +349,8 @@ export function Testimonials() {
         >
           <div
             className="relative mx-auto flex items-center justify-center"
-            style={{ perspective: "1200px", height: 380 }}
+            // Remove 3D perspective when user prefers reduced motion
+            style={reducedMotion ? { height: 380 } : { perspective: "1200px", height: 380 }}
           >
             {TESTIMONIALS.map((t, i) => {
               const pos = getPosition(i, active, total)
@@ -356,6 +359,7 @@ export function Testimonials() {
                   key={t.name}
                   {...t}
                   position={pos}
+                  reducedMotion={reducedMotion}
                   onPlayVideo={() => setVideoFor(t.name)}
                 />
               )
@@ -372,10 +376,10 @@ export function Testimonials() {
           <AnimatePresence mode="wait">
             <motion.div
               key={active}
-              initial={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0, x: reducedMotion ? 0 : 20 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.3 }}
+              exit={{ opacity: 0, x: reducedMotion ? 0 : -20 }}
+              transition={{ duration: reducedMotion ? 0.15 : 0.3 }}
             >
               <MobileTestimonialCard
                 testimonial={TESTIMONIALS[active]}

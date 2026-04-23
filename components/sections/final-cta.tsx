@@ -291,6 +291,12 @@ export function FinalCTA() {
                   placeholder="your@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  onFocus={(e) => {
+                    // On mobile, virtual keyboard pushes content up; scroll the input
+                    // back into center view after the keyboard finishes opening (~300ms)
+                    const el = e.currentTarget
+                    setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "center" }), 300)
+                  }}
                   className="flex-1 w-full rounded-full px-5 h-13 bg-white/10 border border-white/20 text-white placeholder:text-white/35 text-sm outline-none focus:border-primary-soft/60 transition-colors"
                 />
                 <button

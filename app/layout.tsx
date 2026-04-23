@@ -9,6 +9,7 @@ import { PageIntro } from "@/components/ui/page-intro"
 import { ScrollProgress } from "@/components/ui/scroll-progress"
 import { ScrollHue } from "@/components/ui/scroll-hue"
 import { SectionSound } from "@/components/ui/section-sound"
+import { ScrollToTop } from "@/components/ui/scroll-to-top"
 import "./globals.css"
 
 const inter = Inter({
@@ -63,6 +64,7 @@ export default function RootLayout({
         <ScrollHue />
         <AmbientShift />
         <SectionSound />
+        <ScrollToTop />
         <CustomCursor />
         {/* Plausible Analytics — privacy-friendly, no cookies required */}
         <Script

@@ -381,6 +381,10 @@
     border: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
   }
 
+  /* ── Hide scrollbar while keeping scroll functionality ── */
+  .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+
   /* ── Magnetic button base ─────────────────────────────── */
   .magnetic {
     transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);

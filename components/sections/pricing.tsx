@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { CheckCircle, ChevronDown, Tag } from "lucide-react"
 import { SUBSCRIPTION_TIERS, quote, YEARLY_DISCOUNT, activeHolidayPromo, type BillingCycle } from "@/lib/pricing"
@@ -25,6 +25,20 @@ export function Pricing({ defaultCountry = "GR" }: { defaultCountry?: CountryCod
   const [isBusiness, setIsBusiness] = useState(false)
   const [vatId, setVatId] = useState("")
   const [sheetIdx, setSheetIdx] = useState<number | null>(null)
+  const [pressedTierIdx, setPressedTierIdx] = useState<number | null>(null)
+  const pressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const handleTierTouchStart = (idx: number) => () => {
+    if (pressTimerRef.current) clearTimeout(pressTimerRef.current)
+    pressTimerRef.current = setTimeout(() => {
+      setPressedTierIdx(idx)
+      if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate(40)
+      setTimeout(() => setPressedTierIdx(null), 600)
+    }, 400)
+  }
+  const handleTierTouchEnd = () => {
+    if (pressTimerRef.current) clearTimeout(pressTimerRef.current)
+  }
 
   const country = COUNTRIES[countryCode]
   const showVatId = isBusiness && country.eu && countryCode !== VENDOR_COUNTRY
@@ -212,8 +226,11 @@ export function Pricing({ defaultCountry = "GR" }: { defaultCountry?: CountryCod
           </div>
         </div>
 
-        {/* Tier cards */}
-        <div className="grid md:grid-cols-3 gap-5">
+        {/* Tier cards
+            Mobile: CSS scroll-snap carousel (no JS, native momentum, peek shows next card)
+            Desktop: standard 3-col grid */}
+        <div className="relative">
+          <div className="flex md:grid md:grid-cols-3 gap-4 md:gap-5 overflow-x-auto md:overflow-visible snap-x snap-mandatory scroll-smooth no-scrollbar -mx-4 px-4 sm:-mx-6 sm:px-6 md:mx-0 md:px-0 pb-3 md:pb-0">
           {quotes.map((q, index) => {
             const { tier } = q
             const perMinute = q.currency.tierMonthly[tier.id] / tier.minutesPerMonth
@@ -229,7 +246,12 @@ export function Pricing({ defaultCountry = "GR" }: { defaultCountry?: CountryCod
                 initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}
                 transition={{ duration:0.45, delay:index*0.1 }}
                 whileHover={{ y:-4 }}
-                className="relative pt-4"
+                // min-w makes each card take ~82vw on mobile (peek shows next card)
+                // snap-center snaps each card to the center of the scroll container
+                className={`relative pt-4 min-w-[82vw] sm:min-w-[68vw] md:min-w-0 flex-shrink-0 md:flex-shrink snap-center transition-transform duration-150 ${pressedTierIdx === index ? "scale-[1.03]" : ""}`}
+                onTouchStart={handleTierTouchStart(index)}
+                onTouchEnd={handleTierTouchEnd}
+                onTouchCancel={handleTierTouchEnd}
               >
                 {/* Badge — outside SpotlightCard to avoid overflow:hidden clipping */}
                 {tier.badge && (
@@ -376,6 +398,9 @@ export function Pricing({ defaultCountry = "GR" }: { defaultCountry?: CountryCod
               </motion.div>
             )
           })}
+          </div>
+          {/* Right-edge fade — signals there's more to swipe, mobile only */}
+          <div className="md:hidden absolute right-0 inset-y-0 w-10 bg-gradient-to-l from-background/70 to-transparent pointer-events-none" aria-hidden />
         </div>
 
         {/* Bottom sheet — mobile plan details */}
