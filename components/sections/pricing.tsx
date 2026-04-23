@@ -211,27 +211,26 @@ export function Pricing({ defaultCountry = "GR" }: { defaultCountry?: CountryCod
                 initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}
                 transition={{ duration:0.45, delay:index*0.1 }}
                 whileHover={{ y:-4 }}
+                className="relative pt-4"
               >
+                {/* Badge — outside SpotlightCard to avoid overflow:hidden clipping */}
+                {tier.badge && (
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10">
+                    <span className="text-xs font-bold px-3 py-1 rounded-full text-white shadow-lg whitespace-nowrap"
+                      style={{ background: tier.color }}>
+                      {tier.badge}
+                    </span>
+                  </div>
+                )}
+
                 <SpotlightCard className={`relative rounded-2xl border p-6 flex flex-col gap-5 h-full transition-shadow duration-300 ${
                   isPopular
                     ? "border-primary/60 bg-gradient-to-b from-primary/10 to-primary/5 shadow-2xl shadow-primary/20 ring-1 ring-primary/20"
                     : "border-border bg-card hover:shadow-xl hover:border-primary/25"
                 }`}>
 
-                  {/* Badge */}
-                  {tier.badge && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                      <span className="text-xs font-bold px-3 py-1 rounded-full text-white shadow-lg"
-                        style={{ background: tier.color }}>
-                        {tier.badge}
-                      </span>
-                    </div>
-                  )}
-
                   {/* Name */}
-                  <div className="mt-1">
-                    <p className="font-heading font-bold text-lg" style={{ color: tier.color }}>{tier.name}</p>
-                  </div>
+                  <p className="font-heading font-bold text-lg" style={{ color: tier.color }}>{tier.name}</p>
 
                   {/* Price */}
                   <div>
