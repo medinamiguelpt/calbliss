@@ -3,12 +3,20 @@
 import { useState, useMemo } from "react"
 import { motion } from "framer-motion"
 import { ArrowRight, TrendingUp } from "lucide-react"
+import { SUBSCRIPTION_TIERS } from "@/lib/pricing"
 
-const PLANS = [
-  { name: "Starter",      price: 229, maxCalls: 200  },
-  { name: "Professional", price: 429, maxCalls: 600  },
-  { name: "Enterprise",   price: 859, maxCalls: 1600 },
-]
+// Each tier's monthly minute bucket converted to an approximate call cap,
+// assuming ~1.1 min per booking call (matches the brief's self-select profiles:
+// Light ~3 calls/day · Standard ~8 · Busy ~15 · Heavy ~30+).
+// Sourced from lib/pricing.ts so future price/minute changes flow through here.
+const AVG_MIN_PER_CALL = 1.1
+
+const PLANS = SUBSCRIPTION_TIERS.map(tier => ({
+  id: tier.id,
+  name: tier.name,
+  price: tier.monthly,
+  maxCalls: Math.floor(tier.minutesPerMonth / AVG_MIN_PER_CALL),
+}))
 
 function formatCurrency(n: number) {
   return n >= 1000
@@ -169,7 +177,7 @@ export function Calculator({ headline = "See what missed calls cost you" }: { he
               </div>
 
               <a
-                href={`/api/checkout?plan=${stats.recommended.name.toLowerCase()}`}
+                href={`/api/checkout?plan=${stats.recommended.id}&billing=monthly`}
                 className="flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold rounded-full h-12 text-sm shadow-lg shadow-primary/25 transition-colors"
               >
                 Start with {stats.recommended.name}
