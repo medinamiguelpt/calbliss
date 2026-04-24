@@ -9,10 +9,6 @@ const ROWS = [
     after:  "Agent picks up in under 2 seconds",
   },
   {
-    before: "Call goes to voicemail",
-    after:  "Caller welcomed in their language",
-  },
-  {
     before: "Customer books with a competitor",
     after:  "Booking confirmed in under 90 seconds",
   },
