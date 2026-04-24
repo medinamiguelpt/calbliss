@@ -14,7 +14,7 @@ const footerUnsubscribe = `<p style="color:#6B6880;font-size:11px;margin:16px 0 
 const EMAILS: Record<number, { subject: string; html: (email: string) => string }> = {
   1: {
     subject: `Your ${BRAND_NAME} agent is almost ready`,
-    html: (email) => `
+    html: (_email) => `
 <!DOCTYPE html><html><body style="margin:0;padding:0;background:#FAFAFF;font-family:system-ui,sans-serif;">
 <div style="max-width:520px;margin:40px auto;background:#fff;border-radius:16px;border:1px solid #E4DCFF;overflow:hidden;">
   <div style="background:#0D0714;padding:32px 40px;">

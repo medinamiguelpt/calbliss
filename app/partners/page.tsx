@@ -1,5 +1,5 @@
 import { Metadata } from "next"
-import { CheckCircle, ArrowRight, Users, TrendingUp, DollarSign, Zap, Shield, Globe } from "lucide-react"
+import { CheckCircle, ArrowRight, Users, DollarSign, Zap, Shield, Globe } from "lucide-react"
 import Link from "next/link"
 import { Logo } from "@/components/logo"
 

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useCallback } from "react"
+import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { Phone, PhoneOff, Volume2, Mic } from "lucide-react"
 
@@ -332,13 +333,13 @@ export function VoiceDemo() {
                   </div>
                   <p className="text-white font-bold text-lg mb-2">Booking confirmed!</p>
                   <p className="text-white/50 text-sm mb-6">That&apos;s exactly how your callers experience TimeBookingPro — 24/7.</p>
-                  <a
+                  <Link
                     href="/#get-started"
                     onClick={close}
-                    className="block w-full bg-primary hover:bg-primary/90 text-white font-semibold rounded-full py-3 text-sm transition-colors shadow-lg shadow-primary/30 mb-3"
+                    className="block w-full bg-primary hover:bg-primary/90 text-white font-semibold rounded-full py-3 text-sm transition-colors shadow-lg shadow-primary/30 mb-3 text-center"
                   >
                     Get your own agent
-                  </a>
+                  </Link>
                   <button onClick={close} className="text-white/40 hover:text-white/70 text-sm transition-colors">
                     Close
                   </button>

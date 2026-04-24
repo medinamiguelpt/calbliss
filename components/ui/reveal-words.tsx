@@ -1,7 +1,6 @@
 "use client"
 
 import { motion, useReducedMotion } from "framer-motion"
-import { cn } from "@/lib/utils"
 
 type Tag = "h1" | "h2" | "h3" | "h4"
 

@@ -351,7 +351,9 @@ export function Testimonials() {
   const handleDragEnd = (e: React.TouchEvent | React.MouseEvent) => {
     const endX = "changedTouches" in e ? e.changedTouches[0].clientX : e.clientX
     const diff = dragStartX.current - endX
-    if (Math.abs(diff) > 40) diff > 0 ? next() : prev()
+    if (Math.abs(diff) < 40) return
+    if (diff > 0) next()
+    else prev()
   }
 
   return (

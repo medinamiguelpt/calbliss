@@ -1,11 +1,11 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { motion } from "framer-motion"
 import Link from "next/link"
 import { Logo } from "@/components/logo"
 import {
-  Phone, Calendar, TrendingUp, Settings, CheckCircle,
+  Phone, Calendar, TrendingUp, CheckCircle,
   Clock, Users, Star, ArrowRight, ExternalLink, Zap
 } from "lucide-react"
 
@@ -23,8 +23,8 @@ const UPCOMING = [
   { name: "Leo K.", time: "Wed 23 Apr, 11:00 AM", service: "Haircut", confirmed: false },
 ]
 
-function StatCard({ icon: Icon, label, value, sub, color = "primary" }: {
-  icon: React.ElementType; label: string; value: string; sub?: string; color?: string
+function StatCard({ icon: Icon, label, value, sub }: {
+  icon: React.ElementType; label: string; value: string; sub?: string
 }) {
   return (
     <motion.div

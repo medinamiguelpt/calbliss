@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import Link from "next/link"
 import { useTheme } from "next-themes"
 import { Sun, Moon, Menu, X } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
@@ -83,9 +84,9 @@ export function Navbar() {
         scrolled ? "h-14" : "h-16 max-w-6xl mx-auto px-4 sm:px-6"
       )}>
         {/* Logo */}
-        <a href="/" aria-label="TimeBookingPro home" className="flex items-center">
+        <Link href="/" aria-label="TimeBookingPro home" className="flex items-center">
           <Logo iconSize={32} />
-        </a>
+        </Link>
 
         {/* Desktop nav links — subtle magnetic pull on hover */}
         <ul className="hidden md:flex items-center gap-8">
