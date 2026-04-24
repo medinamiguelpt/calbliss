@@ -14,7 +14,6 @@ import { Calculator } from "@/components/sections/calculator"
 import { FAQ } from "@/components/sections/faq"
 import { FinalCTA } from "@/components/sections/final-cta"
 import { MobileCTA } from "@/components/ui/mobile-cta"
-import { StickyCTA } from "@/components/ui/sticky-cta"
 import { DemoModal } from "@/components/ui/demo-modal"
 import { HomeJsonLd } from "@/components/seo/json-ld"
 import { WaveDivider } from "@/components/ui/wave-divider"
@@ -43,7 +42,6 @@ export default async function Home() {
         <Calculator  headline={pickTagline("calculator")} />
         <FAQ         headline={pickTagline("faq")} />
         <FinalCTA    headline={pickTagline("finalCta")} />
-        <StickyCTA />
       </main>
       <Footer />
       <MobileCTA />

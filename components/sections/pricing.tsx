@@ -10,6 +10,7 @@ import { SpotlightCard } from "@/components/ui/spotlight-card"
 import { BottomSheet } from "@/components/ui/bottom-sheet"
 import { RevealWords } from "@/components/ui/reveal-words"
 import { Tooltip } from "@/components/ui/tooltip"
+import { particleBurst } from "@/components/ui/particle-burst"
 
 // Tooltips for the minutes bullet (tier-specific) and shared bullets
 const FEATURE_TIPS: Record<string, string> = {
@@ -192,6 +193,11 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
             const minutesLine = `${tier.minutesPerMonth.toLocaleString("en-US")} min/month`
             const showStrike = !!q.promo && q.netPreHoliday !== q.netEffective
             const isPopular = tier.badge === "Most popular"
+            // Per-minute savings vs. the previous tier (dashboard shows this chip below the feature list)
+            const perMin = tier.monthly / tier.minutesPerMonth
+            const prev = index > 0 ? SUBSCRIPTION_TIERS[index - 1] : null
+            const prevPerMin = prev ? prev.monthly / prev.minutesPerMonth : null
+            const savingsPct = prevPerMin ? Math.round((1 - perMin / prevPerMin) * 100) : 0
 
             return (
               <motion.div key={tier.id}
@@ -326,10 +332,18 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
                     ))}
                   </ul>
 
+                  {/* Per-minute savings chip vs. previous tier — matches canonical dashboard */}
+                  {savingsPct > 0 && prev && (
+                    <span className="inline-flex w-fit items-center text-xs font-semibold text-green-600 dark:text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full">
+                      −{savingsPct}% /min vs. {prev.name}
+                    </span>
+                  )}
+
                   {/* CTA */}
                   <motion.a
                     // All 4 tiers self-serve via Stripe Checkout — no "Book a demo" special case
                     href={`/api/checkout?plan=${tier.id}&billing=${cycle === "yearly" ? "annual" : "monthly"}`}
+                    onMouseEnter={particleBurst}
                     className="flex items-center justify-center h-11 rounded-full font-semibold text-sm transition-all relative overflow-hidden group"
                     style={{
                       background: isPopular ? tier.color : "transparent",
