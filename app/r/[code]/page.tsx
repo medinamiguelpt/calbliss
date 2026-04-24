@@ -112,7 +112,7 @@ export default function ReferralPage() {
                 </button>
               </form>
 
-              <p className="mt-4 text-xs text-muted-foreground">No credit card · Live in 24 h · Cancel any time</p>
+              <p className="mt-4 text-xs text-muted-foreground">Live in 24 h · Cancel any time</p>
             </>
           )}
         </motion.div>

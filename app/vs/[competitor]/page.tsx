@@ -165,7 +165,6 @@ export default async function VsPage({ params }: Props) {
             >
               Try TimeBookingPro free for 14 days <ArrowRight size={15} />
             </Link>
-            <p className="mt-3 text-xs text-muted-foreground">No credit card required</p>
           </div>
         </section>
 
@@ -242,7 +241,7 @@ export default async function VsPage({ params }: Props) {
             Make the switch today
           </h2>
           <p className="text-muted-foreground mb-8 max-w-sm mx-auto">
-            14-day free trial. No credit card. Live in under 24 hours.
+            14-day free trial. Live in under 24 hours.
           </p>
           <Link
             href="/#get-started"

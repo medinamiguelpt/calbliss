@@ -91,7 +91,7 @@ const CATEGORIES = [
       },
       {
         q: "Do you offer a free trial?",
-        a: "Yes — all plans come with a 14-day free trial. No credit card required to start. You'll only be billed if you decide to continue after the trial.",
+        a: "Yes — all plans come with a 14-day free trial. You'll only be billed if you decide to continue after the trial.",
       },
       {
         q: "Can I switch plans?",

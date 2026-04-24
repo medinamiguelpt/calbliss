@@ -440,7 +440,7 @@ export function Hero({ variant = "a" }: { variant?: "a" | "b" }) {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.75 }}
             >
-              No credit card required · Live in under 24 hours
+              Live in under 24 hours
             </motion.p>
           </div>
 

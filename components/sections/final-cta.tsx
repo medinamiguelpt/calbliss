@@ -386,7 +386,7 @@ export function FinalCTA({ headline = "Their calendar won't fill *itself*, yours
           {state === "error" && (
             <p className="mt-3 text-sm text-red-400">Something went wrong — try again or email us at hello@timebookingpro.com</p>
           )}
-          <p className="mt-4 text-xs text-white/30">No credit card required · Live in 24 h · Unsubscribe any time</p>
+          <p className="mt-4 text-xs text-white/30">Live in 24 h · Unsubscribe any time</p>
         </motion.div>
       </div>
     </section>

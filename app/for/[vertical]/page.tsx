@@ -190,7 +190,7 @@ export default async function VerticalPage({ params }: Props) {
                 Book a demo
               </Link>
             </div>
-            <p className="mt-4 text-xs text-muted-foreground">14-day free trial · No credit card required</p>
+            <p className="mt-4 text-xs text-muted-foreground">14-day free trial</p>
           </div>
         </section>
 
@@ -271,7 +271,7 @@ export default async function VerticalPage({ params }: Props) {
             >
               {copy.cta} — free for 14 days <ArrowRight size={15} />
             </Link>
-            <p className="mt-4 text-xs text-muted-foreground">No credit card · Live in 24 h · Cancel any time</p>
+            <p className="mt-4 text-xs text-muted-foreground">Live in 24 h · Cancel any time</p>
           </div>
         </section>
       </main>
