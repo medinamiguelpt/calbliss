@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { Inter, Plus_Jakarta_Sans } from "next/font/google"
 import Script from "next/script"
 import { NextIntlClientProvider } from "next-intl"
-import { getLocale, getMessages } from "next-intl/server"
+import { getLocale, getMessages, getTranslations } from "next-intl/server"
 import { Providers } from "@/components/providers"
 import { AmbientShift } from "@/components/ui/ambient-shift"
 import { CookieBanner } from "@/components/ui/cookie-banner"
@@ -30,25 +30,27 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   display: "swap",
 })
 
-export const metadata: Metadata = {
-  title: "TimeBookingPro — Your bookings, handled.",
-  description:
-    "TimeBookingPro builds AI voice agents that handle bookings and appointments for barbershops and small businesses — 24/7, automatically.",
-  metadataBase: new URL("https://timebookingpro.com"),
-  openGraph: {
-    title: "TimeBookingPro — Your bookings, handled.",
-    description:
-      "AI voice agents that handle bookings for your business — 24/7, automatically.",
-    type: "website",
-    url: "https://timebookingpro.com",
-    siteName: "TimeBookingPro",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "TimeBookingPro — Your bookings, handled.",
-    description:
-      "AI voice agents that handle bookings for your business — 24/7, automatically.",
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  const [locale, t] = await Promise.all([getLocale(), getTranslations("metadata")])
+
+  return {
+    title: t("title"),
+    description: t("description"),
+    metadataBase: new URL("https://timebookingpro.com"),
+    openGraph: {
+      title: t("ogTitle"),
+      description: t("ogDescription"),
+      type: "website",
+      url: "https://timebookingpro.com",
+      siteName: t("siteName"),
+      locale,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t("twitterTitle"),
+      description: t("twitterDescription"),
+    },
+  }
 }
 
 export default async function RootLayout({

@@ -35,7 +35,7 @@ export async function POST(req: Request) {
     phone ? sendSmsConfirmation(phone, position) : Promise.resolve(),
   ])
 
-  console.log(`[waitlist] New signup: ${email} (source: ${source}, position: ${position})`)
+  console.log(`[waitlist] New signup (source: ${source}, position: ${position})`)
   return NextResponse.json({ ok: true, position, referralCode })
 }
 

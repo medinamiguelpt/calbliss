@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     notifyDemo({ name, email, business }),
   ])
 
-  console.log(`[demo] Request from ${name} <${email}> — ${business || "no business"}`)
+  console.log(`[demo] Request received (business: ${business || "unknown"})`)
   return NextResponse.json({ ok: true })
 }
 
