@@ -16,7 +16,7 @@ function formatCurrency(n: number) {
     : "€" + Math.round(n)
 }
 
-export function Calculator() {
+export function Calculator({ headline = "See what missed calls cost you" }: { headline?: string }) {
   const [dailyCalls, setDailyCalls]     = useState(20)
   const [bookingValue, setBookingValue] = useState(22)
   const [missRate, setMissRate]         = useState(30)
@@ -44,13 +44,14 @@ export function Calculator() {
             Revenue calculator
           </motion.p>
           <motion.h2
+            key={headline}
             className="text-3xl sm:text-4xl lg:text-5xl font-heading font-extrabold leading-tight tracking-tight"
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.4, delay: 0.1 }}
           >
-            See what missed calls cost you
+            {headline}
           </motion.h2>
           <motion.p
             className="mt-4 text-lg text-muted-foreground max-w-lg mx-auto"

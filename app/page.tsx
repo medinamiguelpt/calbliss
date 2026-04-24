@@ -1,4 +1,5 @@
 import { headers } from "next/headers"
+import { pickTagline } from "@/lib/taglines"
 import { Navbar } from "@/components/layout/navbar"
 import { Footer } from "@/components/layout/footer"
 import { Hero } from "@/components/sections/hero"
@@ -30,18 +31,18 @@ export default async function Home() {
       <main className="flex flex-col">
         <Hero variant={variant} />
         <TechStrip />
-        <HowItWorks />
-        <AgentNamer />
+        <HowItWorks  headline={pickTagline("howItWorks")} />
+        <AgentNamer  headline={pickTagline("agentNamer")} />
         <WaveDivider opacity={0.5} />
-        <Features />
-        <BeforeAfter />
+        <Features    headline={pickTagline("features")} />
+        <BeforeAfter headline={pickTagline("beforeAfter")} />
         <WaveDivider opacity={0.6} flip />
-        <ForWho />
-        <Pricing />
+        <ForWho      headline={pickTagline("forWho")} />
+        <Pricing     headline={pickTagline("pricing")} />
         <WaveDivider opacity={0.5} />
-        <Calculator />
-        <FAQ />
-        <FinalCTA />
+        <Calculator  headline={pickTagline("calculator")} />
+        <FAQ         headline={pickTagline("faq")} />
+        <FinalCTA    headline={pickTagline("finalCta")} />
         <StickyCTA />
       </main>
       <Footer />

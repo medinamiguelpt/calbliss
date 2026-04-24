@@ -122,7 +122,7 @@ const FEATURES: Feature[] = [
   },
 ]
 
-export function Features() {
+export function Features({ headline = "Everything your business needs" }: { headline?: string }) {
   return (
     <section id="features" className="py-24 sm:py-32">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
@@ -134,10 +134,11 @@ export function Features() {
             Features
           </motion.p>
           <RevealWords
+            key={headline}
             className="text-3xl sm:text-4xl lg:text-5xl font-heading font-extrabold leading-tight tracking-tight"
             delay={0.1}
           >
-            Everything your business needs
+            {headline}
           </RevealWords>
           <motion.p className="mt-4 text-lg text-muted-foreground max-w-xl mx-auto"
             initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.2 }}>

@@ -67,7 +67,7 @@ const TABS = [
   },
 ]
 
-export function ForWho() {
+export function ForWho({ headline = "Built for every booking business" }: { headline?: string }) {
   return (
     <section className="py-24 sm:py-32 bg-muted/30">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
@@ -82,13 +82,14 @@ export function ForWho() {
             Who it&apos;s for
           </motion.p>
           <motion.h2
+            key={headline}
             className="text-3xl sm:text-4xl lg:text-5xl font-heading font-extrabold leading-tight tracking-tight"
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.4, delay: 0.1 }}
           >
-            Built for every booking business
+            {headline}
           </motion.h2>
         </div>
 

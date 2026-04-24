@@ -41,7 +41,30 @@ const MILESTONES = [
 
 let particleCounter = 0
 
-export function FinalCTA() {
+// Parse *segments* of the headline — odd segments render in the gradient-text style,
+// so each random variant can pick which word(s) get the flair.
+function HighlightedHeadline({ text }: { text: string }) {
+  const parts = text.split("*")
+  return (
+    <>
+      {parts.map((part, i) =>
+        i % 2 === 1 ? (
+          <span
+            key={i}
+            className="bg-gradient-to-r from-primary-soft via-white to-primary-soft bg-clip-text text-transparent"
+            style={{ WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}
+          >
+            {part}
+          </span>
+        ) : (
+          <span key={i}>{part}</span>
+        )
+      )}
+    </>
+  )
+}
+
+export function FinalCTA({ headline = "Their calendar won't fill *itself*, yours will." }: { headline?: string }) {
   const [email, setEmail] = useState("")
   const [state, setState] = useState<"idle" | "loading" | "success" | "error">("idle")
   const [position, setPosition] = useState<number | null>(null)
@@ -187,17 +210,14 @@ export function FinalCTA() {
         </motion.p>
 
         <motion.h2
+          key={headline}
           className="text-4xl sm:text-5xl lg:text-6xl font-heading font-extrabold text-white leading-[1.1] tracking-tight mb-6"
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.4, delay: 0.1 }}
         >
-          Their calendar won&apos;t fill{" "}
-          <span className="bg-gradient-to-r from-primary-soft via-white to-primary-soft bg-clip-text text-transparent" style={{ WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-            itself
-          </span>
-          , yours will.
+          <HighlightedHeadline text={headline} />
         </motion.h2>
 
         <motion.p

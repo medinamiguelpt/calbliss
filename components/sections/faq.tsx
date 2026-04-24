@@ -70,7 +70,7 @@ const FAQS = [
   },
 ]
 
-export function FAQ() {
+export function FAQ({ headline = "Frequently asked questions" }: { headline?: string }) {
   const allValues = useMemo(() => FAQS.map((_, i) => `item-${i}`), [])
   const [open, setOpen] = useState<string[]>([])
   const allOpen = open.length === allValues.length
@@ -89,10 +89,11 @@ export function FAQ() {
             FAQ
           </motion.p>
           <RevealWords
+            key={headline}
             className="text-3xl sm:text-4xl font-heading font-extrabold leading-tight tracking-tight"
             delay={0.1}
           >
-            Frequently asked questions
+            {headline}
           </RevealWords>
         </div>
 

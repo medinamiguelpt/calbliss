@@ -23,7 +23,7 @@ function getEasterEgg(name: string): string | null {
   return EASTER_EGGS[name.toLowerCase().trim()] ?? null
 }
 
-export function AgentNamer() {
+export function AgentNamer({ headline = "Meet your AI teammate" }: { headline?: string }) {
   const [name, setName] = useState("")
   const [business, setBusiness] = useState("")
   const [suggestions, setSuggestions] = useState(DEFAULT_SUGGESTIONS)
@@ -63,13 +63,14 @@ export function AgentNamer() {
             Your agent
           </motion.p>
           <motion.h2
+            key={headline}
             className="text-3xl sm:text-4xl lg:text-5xl font-heading font-extrabold leading-tight tracking-tight"
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.4, delay: 0.1 }}
           >
-            Meet your AI teammate
+            {headline}
           </motion.h2>
           <motion.p
             className="mt-4 text-lg text-muted-foreground max-w-lg mx-auto"

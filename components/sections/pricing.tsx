@@ -33,7 +33,7 @@ function currencyForCountry(country: CountryCode): CurrencyCode {
 
 const DEFAULT_COUNTRY: CountryCode = "GR"
 
-export function Pricing() {
+export function Pricing({ headline = "Simple, transparent pricing" }: { headline?: string }) {
   const [cycle, setCycle] = useState<BillingCycle>("monthly")
   const [countryCode, setCountryCode] = useState<CountryCode>(DEFAULT_COUNTRY)
   const [sheetIdx, setSheetIdx] = useState<number | null>(null)
@@ -76,10 +76,11 @@ export function Pricing() {
             Pricing
           </motion.p>
           <RevealWords
+            key={headline}
             className="text-3xl sm:text-4xl lg:text-5xl font-heading font-extrabold leading-tight tracking-tight"
             delay={0.1}
           >
-            Simple, transparent pricing
+            {headline}
           </RevealWords>
           <motion.p className="mt-4 text-lg text-muted-foreground max-w-xl mx-auto"
             initial={{ opacity:0, y:12 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.4, delay:0.2 }}>

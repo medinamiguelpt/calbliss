@@ -292,7 +292,7 @@ function ScrollySection() {
   )
 }
 
-export function HowItWorks() {
+export function HowItWorks({ headline = "Up and running in 24 hours" }: { headline?: string }) {
   return (
     <section id="how-it-works" className="py-24 sm:py-32 overflow-hidden">
       <style>{`
@@ -316,10 +316,11 @@ export function HowItWorks() {
             How it works
           </motion.p>
           <RevealWords
+            key={headline}
             className="text-3xl sm:text-4xl lg:text-5xl font-heading font-extrabold leading-tight tracking-tight"
             delay={0.1}
           >
-            Up and running in 24 hours
+            {headline}
           </RevealWords>
           <motion.p
             className="mt-4 text-lg text-muted-foreground max-w-xl mx-auto"

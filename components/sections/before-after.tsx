@@ -26,7 +26,7 @@ const ROWS = [
   },
 ]
 
-export function BeforeAfter() {
+export function BeforeAfter({ headline = "What changes when you add an agent" }: { headline?: string }) {
   return (
     <section className="py-24 sm:py-32 bg-muted/20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
@@ -40,10 +40,11 @@ export function BeforeAfter() {
             The difference
           </motion.p>
           <motion.h2
+            key={headline}
             className="text-3xl sm:text-4xl lg:text-5xl font-heading font-extrabold leading-tight tracking-tight"
             initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.1 }}
           >
-            What changes when you add an agent
+            {headline}
           </motion.h2>
         </div>
 
