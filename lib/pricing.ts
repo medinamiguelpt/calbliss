@@ -4,7 +4,7 @@
  *
  * MODEL: hard-cap. All tiers have a monthly minute bucket. When exhausted,
  * new calls route to voicemail until the next billing cycle or an upgrade.
- * No overage charges. Customers get email alerts at 75% and 90% usage.
+ * No overage charges. Customers get email alerts at 25%, 50%, 75%, and 90% usage.
  *
  * Yearly billing applies a flat discount (YEARLY_DISCOUNT). Holiday promos
  * stack on top of the already-discounted price with `stacking: "multiply"`
@@ -29,8 +29,6 @@ export interface TierPricing {
   minutesPerMonth: number;
   /** Short descriptor shown under the tier */
   profile: string;
-  /** Call-to-action label, per-tier */
-  cta: string;
   /** Marketing badge, optional */
   badge?: "Most popular" | "Best value";
 }
@@ -54,7 +52,6 @@ export const SUBSCRIPTION_TIERS: TierPricing[] = [
     monthly: 99,
     minutesPerMonth: 100,
     profile: "Small or quieter business — ~3 calls/day",
-    cta: "Start with Light",
   },
   {
     id: "standard",
@@ -63,7 +60,6 @@ export const SUBSCRIPTION_TIERS: TierPricing[] = [
     monthly: 179,
     minutesPerMonth: 250,
     profile: "Busy single location — ~8 calls/day",
-    cta: "Start with Standard",
     badge: "Most popular",
   },
   {
@@ -73,7 +69,6 @@ export const SUBSCRIPTION_TIERS: TierPricing[] = [
     monthly: 299,
     minutesPerMonth: 500,
     profile: "High volume or a couple of locations — ~15 calls/day",
-    cta: "Start with Busy",
   },
   {
     id: "heavy",
@@ -82,7 +77,6 @@ export const SUBSCRIPTION_TIERS: TierPricing[] = [
     monthly: 499,
     minutesPerMonth: 1000,
     profile: "Multi-location or very high volume — ~30+ calls/day",
-    cta: "Start with Heavy",
     badge: "Best value",
   },
 ];
@@ -90,8 +84,7 @@ export const SUBSCRIPTION_TIERS: TierPricing[] = [
 /** Shared feature bullets — rendered on every plan card, alongside the minutes line. */
 export const FEATURES_ON_EVERY_PLAN = [
   "Bookings synced to your calendar",
-  "Weekly performance email",
-  "Call recordings on demand",
+  "Performance email",
   "All 7 supported languages",
 ];
 

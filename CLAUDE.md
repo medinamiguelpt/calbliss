@@ -62,14 +62,15 @@ Never ask "should I push/deploy?" — just do it as part of every task.
 - Minutes per month: 100 / 250 / 500 / 1,000. Hard cap — NO overage, ever.
 - Yearly = flat 20% off monthly. Toggle defaults to Monthly.
 - Badges: Standard = "Most popular"; Heavy = "Best value". No other badges.
-- Per-card feature list = exactly 5 bullets (minutes + 4 shared). Nothing else.
+- Per-card feature list = minutes line + the 3 shared bullets in
+  `FEATURES_ON_EVERY_PLAN`. Nothing else.
 - DO NOT add "locations", "support tier", "overage rate", or "per-min included"
   as feature bullets. These are not part of the pricing model.
 - DO NOT write "up to X minutes" — write "X min/month".
 - DO NOT invent discounts. Any promo code must come from the canonical source.
 - Show prices ex-VAT with "Prices shown ex-VAT — tax calculated at checkout."
-- All 4 tier CTAs are self-serve Stripe Checkout — no "Book a demo" CTA on
-  any tier. Book-a-demo belongs on the top-nav, not in pricing.
+- No per-tier CTA buttons on pricing cards. The waitlist email form at the
+  bottom of the homepage is the only conversion entry point.
 - EU-only scope: pricing is shown only for the 27 EU member states.
   Do NOT list GB, NO, CH, IS, US, CA, AU, NZ, AE, JP, or SG anywhere
   on the pricing section or the country picker.

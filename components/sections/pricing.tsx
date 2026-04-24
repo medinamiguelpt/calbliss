@@ -18,8 +18,7 @@ const FEATURE_TIPS: Record<string, string> = {
   "500 min/month":                     "~15 calls per day. Hard cap — voicemail takes over when the bucket is spent.",
   "1,000 min/month":                   "~30+ calls per day. Hard cap — voicemail takes over when the bucket is spent.",
   "Bookings synced to your calendar":  "Google, Outlook, Apple, and iCal — real-time two-way sync.",
-  "Weekly performance email":          "Every Monday: bookings handled, minutes used, top call hours.",
-  "Call recordings on demand":         "Any call from the last 30 days, downloadable as MP3.",
+  "Performance email":                 "Bookings handled, minutes used, top call hours — sent straight to your inbox.",
   "All 7 supported languages":         "Greek · English · Spanish · Portuguese · French · German · Arabic. Agent locks to the caller's language on first substantive word.",
 }
 
@@ -315,7 +314,7 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
                     </p>
                   </div>
 
-                  {/* Feature list — exactly 5 bullets: tier-specific minutes + 4 shared */}
+                  {/* Feature list — tier-specific minutes line + shared bullets */}
                   <ul className="space-y-2 flex-1">
                     {[minutesLine, ...FEATURES_ON_EVERY_PLAN].map(f => (
                       <li key={f} className="flex items-center gap-2 text-sm">
@@ -337,22 +336,6 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
                       −{savingsPct}% /min vs. {prev.name}
                     </span>
                   )}
-
-                  {/* CTA */}
-                  <motion.a
-                    // All 4 tiers self-serve via Stripe Checkout — no "Book a demo" special case
-                    href={`/api/checkout?plan=${tier.id}&billing=${cycle === "yearly" ? "annual" : "monthly"}`}
-                    className="flex items-center justify-center h-11 rounded-full font-semibold text-sm transition-all relative overflow-hidden group"
-                    style={{
-                      background: isPopular ? tier.color : "transparent",
-                      color: isPopular ? "white" : tier.color,
-                      border: `2px solid ${tier.color}`,
-                    }}
-                    whileTap={{ scale:0.97 }}
-                  >
-                    <span className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none" />
-                    {tier.cta}
-                  </motion.a>
 
                   {/* Mobile-only: open bottom sheet with full plan details */}
                   <button
@@ -379,7 +362,6 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
           {sheetIdx !== null && (() => {
             const q = quotes[sheetIdx]
             const { tier } = q
-            const isPopular = tier.badge === "Most popular"
             const minutesLine = `${tier.minutesPerMonth.toLocaleString("en-US")} min/month`
             return (
               <div className="flex flex-col gap-6">
@@ -397,7 +379,7 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
                   <p className="text-xs text-muted-foreground/80 mt-2">{tier.profile}</p>
                 </div>
 
-                {/* Features — minutes line + 4 shared bullets */}
+                {/* Features — minutes line + shared bullets */}
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Included</p>
                   <ul className="space-y-3">
@@ -426,19 +408,6 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
                   <p className="text-muted-foreground/70 text-xs pt-1">{q.vat.explanation}</p>
                 </div>
 
-                {/* CTA — all tiers self-serve */}
-                <a
-                  href={`/api/checkout?plan=${tier.id}&billing=${cycle === "yearly" ? "annual" : "monthly"}`}
-                  onClick={() => setSheetIdx(null)}
-                  className="flex items-center justify-center h-12 rounded-full font-semibold text-sm"
-                  style={{
-                    background: isPopular ? tier.color : "transparent",
-                    color: isPopular ? "white" : tier.color,
-                    border: `2px solid ${tier.color}`,
-                  }}
-                >
-                  {tier.cta}
-                </a>
               </div>
             )
           })()}
@@ -447,11 +416,11 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
         {/* Under-grid microcopy — hard-cap explainer + geo-swapped tax line */}
         <div className="mt-10 max-w-3xl mx-auto text-center space-y-3">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            All plans include bookings synced to your calendar, a weekly performance email,
-            call recordings on demand, and all 7 supported languages. Minutes are a hard
-            monthly cap — calls route to voicemail once the bucket is spent until the next
-            billing cycle or an upgrade. You&apos;ll get email alerts at 75% and 90% of your
-            bucket so you&apos;re never surprised.
+            All plans include bookings synced to your calendar, a performance email, and all
+            7 supported languages. Minutes are a hard monthly cap — calls route to voicemail
+            once the bucket is spent until the next billing cycle or an upgrade. You&apos;ll
+            get email alerts at 25%, 50%, 75%, and 90% of your bucket so you&apos;re never
+            surprised.
           </p>
           <p className="text-xs text-muted-foreground/80">
             {country.flag} Taxes shown for <strong>{country.name}</strong>
