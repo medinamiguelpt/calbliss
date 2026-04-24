@@ -310,22 +310,21 @@ function HeroMockup() {
 function HeadlineReveal({ plain, highlight }: { plain: string; highlight: string }) {
   const words = useMemo(() => plain.split(" "), [plain])
   return (
-    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-extrabold leading-[1.1] tracking-tight text-balance">
+    // leading-[1.15] gives descenders (y, p, g, j) room to breathe without overflow clipping
+    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-extrabold leading-[1.15] tracking-tight text-balance">
       {words.map((word, i) => (
-        <span key={i} className="inline-block overflow-hidden" style={{ marginRight: "0.28em" }}>
-          <motion.span
-            className="inline-block"
-            initial={{ y: "110%" }}
-            animate={{ y: 0 }}
-            transition={{ duration: 0.55, delay: 0.05 + i * 0.09, ease: [0.22, 1, 0.36, 1] }}
-          >
-            {word}
-          </motion.span>
-        </span>
+        <motion.span
+          key={i}
+          className="inline-block"
+          style={{ marginRight: "0.28em" }}
+          initial={{ y: 16, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.55, delay: 0.05 + i * 0.09, ease: [0.22, 1, 0.36, 1] }}
+        >
+          {word}
+        </motion.span>
       ))}
-      <span className="inline-block text-shimmer">
-        {highlight}
-      </span>
+      <span className="inline-block text-shimmer">{highlight}</span>
     </h1>
   )
 }

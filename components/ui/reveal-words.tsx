@@ -16,16 +16,14 @@ interface RevealWordsProps {
 }
 
 /**
- * Splits text into words and reveals them with a staggered slide-up.
- * Replace static <motion.h2 whileInView> patterns with this for a more
- * expressive entrance without adding extra markup.
+ * Splits text into words and reveals them with a staggered fade + small rise.
  *
- * Reliability:
- * - `amount: "some"` triggers as soon as ANY part of the word is in view
- *   (default would be "all" which requires full visibility — bad for big
- *   headlines that are taller than the shrunken detection area).
- * - `useReducedMotion()` returns a safe, non-animated fallback so text
- *   never stays hidden due to the clipped initial y: 110% state.
+ * Earlier iterations used `overflow: hidden` + `y: 110%` to clip words off-screen
+ * until they animated up. That caused two regressions: descenders (y, p, g, j) got
+ * clipped at the clip edge, and whenever the IntersectionObserver failed to fire,
+ * words stayed permanently invisible below the clip. The current implementation
+ * uses no clipping — words fade in from y:14 so failure mode = text visible, just
+ * not animated. Which is the correct failure mode for a headline.
  */
 export function RevealWords({
   children,
@@ -37,33 +35,28 @@ export function RevealWords({
   const prefersReducedMotion = useReducedMotion()
   const words = children.split(" ")
 
-  // Fallback: render plain text when motion is reduced — never risk invisible words
   if (prefersReducedMotion) {
-    return <Tag className={cn("", className)}>{children}</Tag>
+    return <Tag className={className}>{children}</Tag>
   }
 
   return (
-    <Tag className={cn("", className)}>
+    <Tag className={className}>
       {words.map((word, i) => (
-        <span
-          key={i}
-          className="inline-block overflow-hidden align-bottom"
+        <motion.span
+          key={`${word}-${i}`}
+          className="inline-block"
           style={{ marginRight: "0.28em" }}
+          initial={{ y: 14, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          viewport={{ once: true, amount: 0.1 }}
+          transition={{
+            duration: 0.55,
+            delay: delay + i * stagger,
+            ease: [0.22, 1, 0.36, 1],
+          }}
         >
-          <motion.span
-            className="inline-block"
-            initial={{ y: "110%", opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true, amount: "some" }}
-            transition={{
-              duration: 0.5,
-              delay: delay + i * stagger,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-          >
-            {word}
-          </motion.span>
-        </span>
+          {word}
+        </motion.span>
       ))}
     </Tag>
   )
