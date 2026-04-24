@@ -2,7 +2,7 @@
 
 import { useRef, useEffect } from "react"
 import { motion, useInView, animate } from "framer-motion"
-import { Clock, Globe, CalendarDays, MessageSquare, ShieldCheck, BarChart3 } from "lucide-react"
+import { Clock, Globe, CalendarDays, MessageSquare } from "lucide-react"
 import { SpotlightCard } from "@/components/ui/spotlight-card"
 import { Globe3D } from "@/components/ui/globe-3d"
 import { RevealWords } from "@/components/ui/reveal-words"
@@ -56,7 +56,7 @@ const FEATURES: Feature[] = [
     accent: "#7C3AED",
     accentBg: "rgba(124,58,237,0.08)",
     span: "wide",
-    stat: { value: 0, suffix: "", label: "missed calls — ever" },
+    stat: { value: 24, suffix: "/7", label: "live, always" },
   },
   {
     icon: MessageSquare,
@@ -89,7 +89,7 @@ const FEATURES: Feature[] = [
     body: "Bookings go straight into your calendar in real time. Zero double-bookings, zero manual entry.",
     accent: "#F59E0B",
     accentBg: "rgba(245,158,11,0.08)",
-    span: "normal",
+    span: "wide",
     extra: (
       <div className="flex flex-wrap gap-1.5 mt-3">
         {INTEGRATIONS.map(({ name, color }) => (
@@ -100,25 +100,6 @@ const FEATURES: Feature[] = [
         ))}
       </div>
     ),
-  },
-  {
-    icon: ShieldCheck,
-    iconAnim: "group-hover:scale-110 group-hover:rotate-[-8deg]",
-    title: "Tailored to your brand",
-    body: "Name, personality, script — your words, your agent.",
-    accent: "#EC4899",
-    accentBg: "rgba(236,72,153,0.08)",
-    span: "normal",
-  },
-  {
-    icon: BarChart3,
-    iconAnim: "group-hover:-translate-y-1 group-hover:scale-y-110",
-    title: "Live dashboard",
-    body: "Track calls, bookings, and revenue in real time. Know what your agent is doing, always.",
-    accent: "#7C3AED",
-    accentBg: "rgba(124,58,237,0.08)",
-    span: "wide",
-    stat: { value: 34, prefix: "+", suffix: "%", label: "more bookings on average" },
   },
 ]
 
@@ -142,7 +123,7 @@ export function Features({ headline = "Everything your business needs" }: { head
           </RevealWords>
           <motion.p className="mt-4 text-lg text-muted-foreground max-w-xl mx-auto"
             initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.2 }}>
-            One agent. Zero missed calls. A calendar that fills itself.
+            One agent. Live 24/7. A calendar that fills itself.
           </motion.p>
         </div>
 

@@ -18,7 +18,7 @@ const ROWS = [
   },
   {
     before: "8 missed bookings this week",
-    after:  "0 missed bookings — ever",
+    after:  "Every booking captured, 24/7",
   },
   {
     before: "Weekend calls go unanswered",

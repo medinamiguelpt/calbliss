@@ -24,7 +24,7 @@ const COMPETITORS: Record<string, CompConfig> = {
     label: "a Human Receptionist",
     tagline: "vs. Human Receptionist",
     headline: "AI answers every call for $49/mo. Your receptionist costs $3,500/mo.",
-    subheadline: "TimeBookingPro handles bookings 24/7 with zero sick days, zero lunch breaks, and zero missed calls.",
+    subheadline: "TimeBookingPro handles bookings 24/7 with zero sick days, zero lunch breaks, and zero downtime.",
     monthlyPrice: "~$3,500",
     weaknesses: ["Only works office hours", "Gets sick, takes holidays", "Can't handle call surges", "Costs 70× more"],
     rows: [
