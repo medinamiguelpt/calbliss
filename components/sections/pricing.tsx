@@ -88,24 +88,24 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
           </motion.p>
         </div>
 
-        {/* Holiday promo banner */}
+        {/* Holiday promo banner — single-row, compact */}
         <AnimatePresence>
           {promo && (
             <motion.div
               key={promo.id}
-              initial={{ opacity:0, y:-12, scale:0.98 }}
-              animate={{ opacity:1, y:0, scale:1 }}
-              exit={{ opacity:0, y:-8, scale:0.98 }}
-              transition={{ duration:0.35, ease:[0.22,1,0.36,1] }}
-              className="mb-8 rounded-2xl px-5 py-4 flex flex-col sm:flex-row sm:items-center gap-3 border"
+              initial={{ opacity:0, y:-8 }}
+              animate={{ opacity:1, y:0 }}
+              exit={{ opacity:0, y:-6 }}
+              transition={{ duration:0.3, ease:[0.22,1,0.36,1] }}
+              className="mb-6 rounded-xl px-3.5 py-2 flex items-center gap-2.5 border"
               style={{ background:`${promo.color}12`, borderColor:`${promo.color}30` }}
             >
-              <span className="text-2xl">{promo.emoji}</span>
-              <div className="flex-1 min-w-0">
-                <p className="font-heading font-bold text-sm" style={{ color:promo.color }}>{promo.name}</p>
-                <p className="text-sm text-muted-foreground">{promo.tagline}</p>
-              </div>
-              <span className="shrink-0 font-mono text-xs font-bold px-3 py-1.5 rounded-lg border border-dashed"
+              <span className="text-base shrink-0" aria-hidden>{promo.emoji}</span>
+              <p className="flex-1 min-w-0 text-sm leading-snug truncate sm:whitespace-normal sm:truncate-none">
+                <span className="font-heading font-bold" style={{ color:promo.color }}>{promo.name}</span>
+                <span className="hidden sm:inline text-muted-foreground"> — {promo.tagline}</span>
+              </p>
+              <span className="shrink-0 font-mono text-[11px] font-bold px-2 py-0.5 rounded-md border border-dashed"
                 style={{ color:promo.color, borderColor:`${promo.color}50`, background:`${promo.color}08` }}>
                 {promo.code}
               </span>
