@@ -11,10 +11,7 @@ import { BeforeAfter } from "@/components/sections/before-after"
 import { ForWho } from "@/components/sections/for-who"
 import { Pricing } from "@/components/sections/pricing"
 import { Calculator } from "@/components/sections/calculator"
-import { FAQ } from "@/components/sections/faq"
 import { FinalCTA } from "@/components/sections/final-cta"
-import { MobileCTA } from "@/components/ui/mobile-cta"
-import { DemoModal } from "@/components/ui/demo-modal"
 import { HomeJsonLd } from "@/components/seo/json-ld"
 import { WaveDivider } from "@/components/ui/wave-divider"
 
@@ -40,12 +37,9 @@ export default async function Home() {
         <Pricing     headline={pickTagline("pricing")} />
         <WaveDivider opacity={0.5} />
         <Calculator  headline={pickTagline("calculator")} />
-        <FAQ         headline={pickTagline("faq")} />
         <FinalCTA    headline={pickTagline("finalCta")} />
       </main>
       <Footer />
-      <MobileCTA />
-      <DemoModal />
       <HomeJsonLd />
     </>
   )

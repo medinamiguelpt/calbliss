@@ -3,11 +3,8 @@
 import { useRef, useEffect, useMemo, useState } from "react"
 import { motion, animate, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence, useInView } from "framer-motion"
 // useMotionValue + useSpring kept for hero blob parallax
-import { ArrowRight, CheckCircle, Phone, Calendar } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { CheckCircle, Phone } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
-import { MagneticWrap } from "@/components/ui/magnetic-wrap"
-import { openDemoModal } from "@/components/ui/demo-modal"
 import { Particles } from "@/components/ui/particles"
 import { TiltCard } from "@/components/ui/tilt-card"
 
@@ -334,8 +331,8 @@ function HeadlineReveal({ plain, highlight }: { plain: string; highlight: string
 
 
 const HEADLINES = {
-  a: { plain: "Give your business", highlight: "its own AI agent", cta: "Get your agent" },
-  b: { plain: "Stop losing bookings", highlight: "while you sleep",  cta: "Start free trial" },
+  a: { plain: "Give your business", highlight: "its own AI agent" },
+  b: { plain: "Stop losing bookings", highlight: "while you sleep" },
 }
 
 export function Hero({ variant = "a" }: { variant?: "a" | "b" }) {
@@ -436,56 +433,6 @@ export function Hero({ variant = "a" }: { variant?: "a" | "b" }) {
             >
               <TypewriterText />
             </motion.p>
-
-            <motion.div
-              className="flex flex-col sm:flex-row gap-3 pt-2"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
-            >
-              {/* Primary CTA — magnetic, full-width on mobile */}
-              <MagneticWrap className="w-full sm:w-auto">
-                <div className="relative group/cta w-full sm:w-fit">
-                  <div
-                    className="absolute -inset-[2px] rounded-full opacity-80 blur-[2px] group-hover/cta:opacity-100 group-hover/cta:blur-[3px] transition-all duration-300"
-                    style={{ background: "conic-gradient(from var(--border-angle), #7C3AED, #A78BFA, #C4B5FD, #7C3AED)", animation: "border-spin 3s linear infinite" }}
-                    aria-hidden
-                  />
-                  <Button
-                    size="lg"
-                    render={<a href="#get-started" onClick={() => {
-                      if (typeof window !== "undefined" && (window as Window & { plausible?: (e: string, o?: object) => void }).plausible) {
-                        (window as Window & { plausible?: (e: string, o?: object) => void }).plausible?.("hero-cta-click", { props: { variant } })
-                      }
-                    }} />}
-                    nativeButton={false}
-                    className="relative w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-full px-7 h-12 text-base shadow-lg shadow-primary/25"
-                  >
-                    {headline.cta}
-                    <ArrowRight size={18} className="ml-2" />
-                  </Button>
-                </div>
-              </MagneticWrap>
-
-              {/* Secondary CTA — magnetic, full-width on mobile */}
-              <MagneticWrap className="w-full sm:w-auto">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  nativeButton={false}
-                  onClick={() => {
-                    if (typeof window !== "undefined" && (window as Window & { plausible?: (e: string, o?: object) => void }).plausible) {
-                      (window as Window & { plausible?: (e: string, o?: object) => void }).plausible?.("hero-demo-click", { props: { variant } })
-                    }
-                    openDemoModal()
-                  }}
-                  className="w-full sm:w-auto rounded-full px-7 h-12 text-base border-border hover:bg-muted"
-                >
-                  <Calendar size={16} className="mr-2" />
-                  Book a demo
-                </Button>
-              </MagneticWrap>
-            </motion.div>
 
             <motion.p
               className="text-sm text-muted-foreground"

@@ -2,8 +2,7 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Sparkles, Phone, Mic, Wand2, Loader2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Phone, Mic, Wand2, Loader2 } from "lucide-react"
 
 const DEFAULT_SUGGESTIONS = ["Max", "Nova", "Aria", "Leo", "Sage", "Zara"]
 
@@ -165,16 +164,6 @@ export function AgentNamer({ headline = "Meet your AI teammate" }: { headline?: 
                 </p>
               )}
             </div>
-
-            <Button
-              size="lg"
-              render={<a href="#get-started" />}
-              nativeButton={false}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-full px-7 h-12 text-base shadow-lg shadow-primary/25 w-fit"
-            >
-              <Sparkles size={16} className="mr-2" />
-              Get my agent
-            </Button>
           </motion.div>
 
           {/* Right — Live Preview Card */}

@@ -56,13 +56,6 @@ export const TAGLINES = {
     "Run the numbers on your shop",
     "Do the math in seconds",
   ],
-  faq: [
-    "Frequently asked questions",
-    "Answers to common questions",
-    "The things people ask first",
-    "Good questions, straight answers",
-    "Questions we hear the most",
-  ],
   finalCta: [
     "Their calendar won't fill *itself*, yours will.",
     "Your agent, live *by tomorrow*",

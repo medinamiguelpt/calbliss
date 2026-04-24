@@ -6,7 +6,6 @@ import { useTheme } from "next-themes"
 import { Sun, Moon, Menu, X } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Logo } from "@/components/logo"
-import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 const NAV_LINKS = [
@@ -150,14 +149,6 @@ export function Navbar() {
             </AnimatePresence>
           </motion.button>
 
-          <a
-            href="#get-started"
-            data-ripple
-            className="shimmer-btn hidden md:inline-flex items-center justify-center bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-full px-5 h-9 text-sm transition-colors"
-          >
-            Get Started
-          </a>
-
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle menu"
@@ -231,20 +222,6 @@ export function Navbar() {
                   </motion.li>
                 )
               })}
-              <motion.li
-                className="pt-2"
-                initial={{ opacity: 0, x: -12 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: NAV_LINKS.length * 0.06 }}
-              >
-                <Button
-                  render={<a href="#get-started" onClick={() => setMobileOpen(false)} />}
-                  nativeButton={false}
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-full"
-                >
-                  Get Started
-                </Button>
-              </motion.li>
             </ul>
           </motion.div>
         )}

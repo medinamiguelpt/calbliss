@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from "react"
 import { motion, AnimatePresence, useAnimation } from "framer-motion"
 import { ArrowRight, CheckCircle, MessageSquare, Trophy, Gift } from "lucide-react"
-import { VoiceDemo } from "@/components/ui/voice-demo"
 
 const EMOJIS = ["📅", "📞", "✅", "🎉", "💜", "⚡", "🚀", "🤖"]
 
@@ -205,24 +204,14 @@ export function FinalCTA({ headline = "Their calendar won't fill *itself*, yours
         </motion.h2>
 
         <motion.p
-          className="text-lg text-white/60 mb-6 max-w-xl mx-auto"
+          className="text-lg text-white/60 mb-8 max-w-xl mx-auto"
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.4, delay: 0.2 }}
         >
-          Join businesses that never miss a booking. Your AI agent will be live in under 24 hours.
+          Join the businesses that book 24/7. Your AI agent will be live in under 24 hours.
         </motion.p>
-
-        <motion.div
-          className="flex justify-center mb-8"
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: 0.25 }}
-        >
-          <VoiceDemo />
-        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 12 }}
