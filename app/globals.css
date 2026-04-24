@@ -122,6 +122,48 @@
     border-radius: inherit;
   }
 
+  /* Minimum hover feedback for every interactive element.
+     A subtle brightness shift so everything reacts to cursor presence — even
+     elements without their own explicit hover treatment. Components that DO
+     set a hover style (e.g. `hover:bg-primary/90`) naturally compose: both
+     the custom style AND this brightness shift apply together. */
+  a,
+  button,
+  summary,
+  [role="button"],
+  [role="link"],
+  [role="tab"],
+  [role="menuitem"] {
+    transition:
+      filter 0.18s ease,
+      background-color 0.18s ease,
+      color 0.18s ease,
+      border-color 0.18s ease,
+      transform 0.18s ease;
+  }
+
+  a:hover,
+  button:not(:disabled):hover,
+  summary:hover,
+  [role="button"]:not([aria-disabled="true"]):hover,
+  [role="link"]:hover,
+  [role="tab"]:not([aria-disabled="true"]):hover,
+  [role="menuitem"]:hover {
+    filter: brightness(1.1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    a,
+    button,
+    summary,
+    [role="button"],
+    [role="link"],
+    [role="tab"],
+    [role="menuitem"] {
+      transition: none;
+    }
+  }
+
   html {
     @apply scroll-smooth;
     overflow-x: hidden;
