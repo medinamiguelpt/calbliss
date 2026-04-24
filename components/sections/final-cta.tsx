@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from "react"
 import { motion, AnimatePresence, useAnimation } from "framer-motion"
 import { ArrowRight, CheckCircle, MessageSquare, Trophy, Gift } from "lucide-react"
 import { VoiceDemo } from "@/components/ui/voice-demo"
-import confetti from "canvas-confetti"
 
 const EMOJIS = ["📅", "📞", "✅", "🎉", "💜", "⚡", "🚀", "🤖"]
 
@@ -114,21 +113,6 @@ export function FinalCTA({ headline = "Their calendar won't fill *itself*, yours
       })
       .catch(() => null)
   }, [])
-
-  // Brand-colored confetti burst on successful signup
-  useEffect(() => {
-    if (state !== "success") return
-    let animId: number
-    const end = Date.now() + 1600
-    const COLORS = ["#7C3AED", "#A78BFA", "#C4B5FD", "#FFFFFF"]
-    const frame = () => {
-      confetti({ particleCount: 3, angle: 60,  spread: 55, origin: { x: 0, y: 0.75 }, colors: COLORS })
-      confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1, y: 0.75 }, colors: COLORS })
-      if (Date.now() < end) animId = requestAnimationFrame(frame)
-    }
-    animId = requestAnimationFrame(frame)
-    return () => { cancelAnimationFrame(animId); confetti.reset() }
-  }, [state])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

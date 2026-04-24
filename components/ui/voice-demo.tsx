@@ -8,7 +8,7 @@ import { Phone, PhoneOff, Volume2, Mic } from "lucide-react"
 const SCRIPT: { speaker: "agent" | "user"; text: string; options?: string[] }[] = [
   {
     speaker: "agent",
-    text: "Thank you for calling Tony's Barbershop. This is Max — how can I help you today?",
+    text: "Thank you for calling Greek Barber Festival. This is Kostas — how can I help you today?",
     options: ["Book a haircut", "What are your hours?", "Reschedule an appointment"],
   },
   {
@@ -217,7 +217,7 @@ export function VoiceDemo() {
                 <div className="w-14 h-14 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center mx-auto mb-3">
                   <span className="text-2xl">✂️</span>
                 </div>
-                <p className="font-bold text-white text-base">Tony&apos;s Barbershop</p>
+                <p className="font-bold text-white text-base">Greek Barber Festival</p>
                 <p className="text-white/50 text-xs mt-0.5">AI Agent Demo</p>
               </div>
 

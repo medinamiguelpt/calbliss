@@ -4,7 +4,6 @@ import Script from "next/script"
 import { Providers } from "@/components/providers"
 import { AmbientShift } from "@/components/ui/ambient-shift"
 import { CookieBanner } from "@/components/ui/cookie-banner"
-import { CustomCursor } from "@/components/ui/custom-cursor"
 import { PageIntro } from "@/components/ui/page-intro"
 import { ScrollProgress } from "@/components/ui/scroll-progress"
 import { ScrollHue } from "@/components/ui/scroll-hue"
@@ -71,7 +70,6 @@ export default function RootLayout({
         <RippleGlobal />
         <AnchorHighlight />
         <KeyboardShortcuts />
-        <CustomCursor />
         {/* Plausible Analytics — privacy-friendly, no cookies required */}
         <Script
           defer

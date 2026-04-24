@@ -45,8 +45,8 @@ function StatCard({ icon: Icon, label, value, sub }: {
 
 export default function DashboardPage() {
   const [tab, setTab] = useState<"calls" | "upcoming" | "settings">("calls")
-  const [agentName, setAgentName] = useState("Max")
-  const [businessName, setBusinessName] = useState("Tony's Barbershop")
+  const [agentName, setAgentName] = useState("Kostas")
+  const [businessName, setBusinessName] = useState("Greek Barber Festival")
   const [saved, setSaved] = useState(false)
 
   const save = () => {

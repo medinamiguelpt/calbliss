@@ -8,7 +8,6 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Logo } from "@/components/logo"
 import { Button } from "@/components/ui/button"
 import { MagneticWrap } from "@/components/ui/magnetic-wrap"
-import { particleBurst } from "@/components/ui/particle-burst"
 import { cn } from "@/lib/utils"
 
 const NAV_LINKS = [
@@ -155,7 +154,6 @@ export function Navbar() {
           <a
             href="#get-started"
             data-ripple
-            onMouseEnter={particleBurst}
             className="shimmer-btn hidden md:inline-flex items-center justify-center bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-full px-5 h-9 text-sm transition-colors"
           >
             Get Started
