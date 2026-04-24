@@ -10,7 +10,6 @@ import { SpotlightCard } from "@/components/ui/spotlight-card"
 import { BottomSheet } from "@/components/ui/bottom-sheet"
 import { RevealWords } from "@/components/ui/reveal-words"
 import { Tooltip } from "@/components/ui/tooltip"
-import { particleBurst } from "@/components/ui/particle-burst"
 
 // Tooltips for the minutes bullet (tier-specific) and shared bullets
 const FEATURE_TIPS: Record<string, string> = {
@@ -343,7 +342,6 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
                   <motion.a
                     // All 4 tiers self-serve via Stripe Checkout — no "Book a demo" special case
                     href={`/api/checkout?plan=${tier.id}&billing=${cycle === "yearly" ? "annual" : "monthly"}`}
-                    onMouseEnter={particleBurst}
                     className="flex items-center justify-center h-11 rounded-full font-semibold text-sm transition-all relative overflow-hidden group"
                     style={{
                       background: isPopular ? tier.color : "transparent",
