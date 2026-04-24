@@ -32,7 +32,7 @@ const STEPS = [
 
 const FLOW_NODES = [
   { Icon: PhoneCall,    label: "Customer calls",     sub: "Any number · Any hour" },
-  { Icon: Mic,          label: "Agent answers",       sub: "Voice AI · < 1 second" },
+  { Icon: Mic,          label: "Agent answers",       sub: "Voice AI · Very fast" },
   { Icon: Zap,          label: "Booking processed",   sub: "Intent understood" },
   { Icon: CalendarCheck,label: "Slot confirmed",      sub: "Calendar synced live" },
   { Icon: Bell,         label: "Both notified",       sub: "SMS · Email" },
