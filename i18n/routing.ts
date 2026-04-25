@@ -3,22 +3,35 @@ import { defineRouting } from "next-intl/routing"
 /**
  * Supported locales on timebookingpro.com.
  *
- * Adding a locale:
- * 1. Add the code to `locales` below (keep alphabetical after `en`).
- * 2. Create `messages/<code>.json` with the same key-shape as `en.json`.
- * 3. That's it — the `[locale]` segment + middleware pick it up automatically.
+ * Locale codes are region-suffixed where ambiguity matters (es could be LatAm,
+ * pt could be Brazilian, etc.) so the Accept-Language matching and SEO tags
+ * are precise. URL prefixes stay short via `prefixes` mapping below.
  *
- * The voice agent supports 7 languages per product scope: Greek, English,
- * Spanish, Portuguese, French, German, Arabic. We start with English and
- * add translations as they're ready.
+ * Adding a locale:
+ * 1. Add the code to `locales`.
+ * 2. Add a URL prefix in `prefixes` (unless the locale code already works as a clean URL).
+ * 3. Create `messages/<code>.json` with the same key shape as `en.json`.
+ * 4. Update LOCALE_META in components/ui/locale-switcher.tsx with the flag + label.
  */
 export const routing = defineRouting({
-  locales: ["en"] as const,
+  locales: ["en", "el", "es-ES", "pt-PT", "fr-FR", "de-DE", "ar-SA"] as const,
   defaultLocale: "en",
-  // `as-needed` keeps `/` on the default locale — no `/en` prefix — so
-  // existing links, SEO, and inbound traffic don't break. Non-default
-  // locales get a prefix: `/fr`, `/de`, etc.
-  localePrefix: "as-needed",
+  // `as-needed` keeps `/` on the default locale — no `/en` prefix — so existing
+  // links, SEO, and inbound traffic don't break. Non-default locales get their
+  // mapped prefix.
+  localePrefix: {
+    mode: "as-needed",
+    prefixes: {
+      "es-ES": "/es",
+      "pt-PT": "/pt",
+      "fr-FR": "/fr",
+      "de-DE": "/de",
+      "ar-SA": "/ar",
+    },
+  },
 })
 
 export type Locale = (typeof routing.locales)[number]
+
+/** Locales that render right-to-left. Layout sets <html dir="rtl"> for these. */
+export const RTL_LOCALES = new Set<Locale>(["ar-SA"])

@@ -1,4 +1,5 @@
 import { headers } from "next/headers"
+import { setRequestLocale } from "next-intl/server"
 import { pickTagline } from "@/lib/taglines"
 import { Navbar } from "@/components/layout/navbar"
 import { Footer } from "@/components/layout/footer"
@@ -15,7 +16,12 @@ import { FinalCTA } from "@/components/sections/final-cta"
 import { HomeJsonLd } from "@/components/seo/json-ld"
 import { WaveDivider } from "@/components/ui/wave-divider"
 
-export default async function Home() {
+export default async function Home(
+  { params }: { params: Promise<{ locale: string }> }
+) {
+  const { locale } = await params
+  setRequestLocale(locale)
+
   const headersList = await headers()
   const variant = (headersList.get("x-variant") ?? "a") as "a" | "b"
   // Pricing section default is deterministic (GR / EUR) per the unified-picker brief —

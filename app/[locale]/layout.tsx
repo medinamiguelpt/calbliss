@@ -1,8 +1,10 @@
 import type { Metadata } from "next"
 import { Inter, Plus_Jakarta_Sans } from "next/font/google"
 import Script from "next/script"
-import { NextIntlClientProvider } from "next-intl"
-import { getLocale, getMessages, getTranslations } from "next-intl/server"
+import { notFound } from "next/navigation"
+import { NextIntlClientProvider, hasLocale } from "next-intl"
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server"
+import { routing, RTL_LOCALES, type Locale } from "@/i18n/routing"
 import { Providers } from "@/components/providers"
 import { AmbientShift } from "@/components/ui/ambient-shift"
 import { CookieBanner } from "@/components/ui/cookie-banner"
@@ -14,7 +16,7 @@ import { ScrollToTop } from "@/components/ui/scroll-to-top"
 import { RippleGlobal } from "@/components/ui/ripple-global"
 import { AnchorHighlight } from "@/components/ui/anchor-highlight"
 import { KeyboardShortcuts } from "@/components/ui/keyboard-shortcuts"
-import "./globals.css"
+import "../globals.css"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -30,8 +32,18 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   display: "swap",
 })
 
-export async function generateMetadata(): Promise<Metadata> {
-  const [locale, t] = await Promise.all([getLocale(), getTranslations("metadata")])
+/** Pre-render every locale at build time. */
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }))
+}
+
+export async function generateMetadata(
+  { params }: { params: Promise<{ locale: string }> }
+): Promise<Metadata> {
+  const { locale } = await params
+  if (!hasLocale(routing.locales, locale)) notFound()
+
+  const t = await getTranslations({ locale, namespace: "metadata" })
 
   return {
     title: t("title"),
@@ -55,13 +67,24 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function RootLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
-  const locale = await getLocale()
+  params,
+}: Readonly<{
+  children: React.ReactNode
+  params: Promise<{ locale: string }>
+}>) {
+  const { locale } = await params
+  if (!hasLocale(routing.locales, locale)) notFound()
+
+  // Required for static rendering of dynamic [locale] segment.
+  setRequestLocale(locale)
+
   const messages = await getMessages()
+  const dir = RTL_LOCALES.has(locale as Locale) ? "rtl" : "ltr"
 
   return (
     <html
       lang={locale}
+      dir={dir}
       suppressHydrationWarning
       className={`${inter.variable} ${plusJakartaSans.variable} h-full`}
     >

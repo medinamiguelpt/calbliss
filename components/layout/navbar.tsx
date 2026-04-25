@@ -6,6 +6,7 @@ import { useTheme } from "next-themes"
 import { Sun, Moon, Menu, X } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Logo } from "@/components/logo"
+import { LocaleSwitcher } from "@/components/ui/locale-switcher"
 import { cn } from "@/lib/utils"
 
 const NAV_LINKS = [
@@ -115,7 +116,11 @@ export function Navbar() {
         </ul>
 
         {/* Right side actions */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          <div className="hidden md:block">
+            <LocaleSwitcher variant="navbar" />
+          </div>
+
           <motion.button
             onClick={toggleTheme}
             aria-label="Toggle theme"
@@ -222,6 +227,14 @@ export function Navbar() {
                   </motion.li>
                 )
               })}
+              <motion.li
+                className="pt-2 px-3"
+                initial={{ opacity: 0, x: -12 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: NAV_LINKS.length * 0.06 }}
+              >
+                <LocaleSwitcher variant="navbar" />
+              </motion.li>
             </ul>
           </motion.div>
         )}

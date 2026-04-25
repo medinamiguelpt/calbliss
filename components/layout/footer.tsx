@@ -1,4 +1,5 @@
 import { Logo } from "@/components/logo"
+import { LocaleSwitcher } from "@/components/ui/locale-switcher"
 
 const LINKS = {
   Product: [
@@ -58,7 +59,10 @@ export function Footer() {
 
         <div className="mt-12 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
           <p>© {new Date().getFullYear()} TimeBookingPro. All rights reserved.</p>
-          <p>Made with care for independent businesses.</p>
+          <div className="flex items-center gap-4">
+            <p>Made with care for independent businesses.</p>
+            <LocaleSwitcher variant="compact" />
+          </div>
         </div>
       </div>
     </footer>
