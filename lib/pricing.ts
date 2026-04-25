@@ -192,11 +192,6 @@ export const HOLIDAY_PROMOS: HolidayPromo[] = [
   },
 ];
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Helpers
-// ─────────────────────────────────────────────────────────────────────────────
-
-/** Round up to the nearest €1, then subtract 1 — e.g. 2198.40 → 2199. */
 /** Pick the first active promo for a given date, scoped to a billing cycle. */
 export function activeHolidayPromo(cycle: BillingCycle, now: Date = new Date()): HolidayPromo | null {
   const today = now.toISOString().slice(0, 10);
