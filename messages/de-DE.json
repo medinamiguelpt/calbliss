@@ -1,7 +1,7 @@
 {
   "taglines": {
     "howItWorks": [
-      "Drei Schritte zu einem vollautomatisierten Agenten"
+      "Drei Schritte zu einem vollautomatischen KI-System"
     ],
     "features": [
       "Alles, was Ihr Unternehmen braucht",
@@ -300,8 +300,8 @@
     "goToStepLabel": "Weiter zu Schritt {n}",
     "steps": [
       {
-        "title": "Wir richten Ihren Agenten ein",
-        "body": "Teilen Sie uns Ihren Firmennamen, Ihre Öffnungszeiten und Ihre Dienstleistungen mit. Wir erstellen und schulen Ihren persönlichen KI-Agenten in weniger als 24 Stunden."
+        "title": "Wir richten Ihr KI-System ein",
+        "body": "Teilen Sie uns Ihren Firmennamen, Ihre Öffnungszeiten und Ihre Dienstleistungen mit. Wir erstellen und schulen Ihr persönliches KI-System in weniger als 24 Stunden."
       },
       {
         "title": "Es nimmt jeden Anruf entgegen",
@@ -342,7 +342,7 @@
     ],
     "visualPanels": [
       {
-        "title": "Agent konfiguriert",
+        "title": "KI-System konfiguriert",
         "lines": [
           "Firmenname ✓",
           "Öffnungszeiten festgelegt ✓",

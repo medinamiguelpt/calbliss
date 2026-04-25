@@ -1,7 +1,7 @@
 {
   "taglines": {
     "howItWorks": [
-      "Trois étapes pour un agent entièrement automatisé"
+      "Trois étapes pour un système d'IA entièrement automatisé"
     ],
     "features": [
       "Tout ce dont votre entreprise a besoin",
@@ -300,8 +300,8 @@
     "goToStepLabel": "Passez à l'étape {n}",
     "steps": [
       {
-        "title": "Nous configurons votre agent",
-        "body": "Indiquez-nous le nom de votre entreprise, vos horaires d'ouverture et les services que vous proposez. Nous créons et formons votre assistant IA personnalisé en moins de 24 heures."
+        "title": "Nous configurons votre système d'IA",
+        "body": "Indiquez-nous le nom de votre entreprise, vos horaires d'ouverture et les services que vous proposez. Nous créons et formons votre système d'IA personnalisé en moins de 24 heures."
       },
       {
         "title": "Il répond à tous les appels",
@@ -342,7 +342,7 @@
     ],
     "visualPanels": [
       {
-        "title": "Agent configuré",
+        "title": "Système d'IA configuré",
         "lines": [
           "Raison sociale ✓",
           "Horaires définis ✓",
