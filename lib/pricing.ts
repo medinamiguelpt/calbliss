@@ -81,12 +81,12 @@ export const SUBSCRIPTION_TIERS: TierPricing[] = [
   },
 ];
 
-/** Shared feature bullets — rendered on every plan card, alongside the minutes line. */
-export const FEATURES_ON_EVERY_PLAN = [
-  "Bookings synced to your calendar",
-  "Performance email",
-  "All 7 supported languages",
-];
+/**
+ * Stable keys for the shared feature bullets — text comes from
+ * messages.pricing.features.{key} at render time so all 7 locales translate.
+ */
+export const FEATURE_KEYS = ["calendarSync", "performanceEmail", "languages"] as const
+export type FeatureKey = (typeof FEATURE_KEYS)[number]
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Holiday / seasonal promotions

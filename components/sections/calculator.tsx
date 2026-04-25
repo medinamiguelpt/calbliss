@@ -27,6 +27,7 @@ function formatCurrency(n: number) {
 
 export function Calculator({ headline = "See what missed calls cost you" }: { headline?: string }) {
   const t = useTranslations("calculator")
+  const tPricing = useTranslations("pricing")
   const [dailyCalls, setDailyCalls]     = useState(20)
   const [bookingValue, setBookingValue] = useState(22)
   const [missRate, setMissRate]         = useState(30)
@@ -165,7 +166,10 @@ export function Calculator({ headline = "See what missed calls cost you" }: { he
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold text-primary mb-0.5">{t("recommendedPlanLabel")}</p>
                     <p className="text-sm font-heading font-bold text-foreground">
-                      {t("planLine", { name: stats.recommended.name, price: stats.recommended.price })}
+                      {t("planLine", {
+                        name: tPricing(`tiers.${stats.recommended.id}.name`),
+                        price: stats.recommended.price,
+                      })}
                     </p>
                     <p className="text-xs text-muted-foreground mt-1">
                       {t.rich("roiLine", {

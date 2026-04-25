@@ -54,6 +54,96 @@
       }
     ]
   },
+  "pricing": {
+    "eyebrow": "Tarifs",
+    "subheadline": "Pas de frais d'installation. Pas de contrat. Résiliez à tout moment.",
+    "countryLabel": "Pays",
+    "selectCountryAriaLabel": "Sélectionnez un pays",
+    "cycleMonthly": "Mensuel",
+    "cycleYearly": "Annuellement",
+    "cycleSavings": "-{pct}%",
+    "minutesLine": "{n} min/mois",
+    "perMonthSuffix": "/mo",
+    "perYearSuffix": "/an",
+    "yearlyBilling": "facturé à {amount} par an",
+    "annualSavingsChip": "Économisez {amount} par an",
+    "promoChip": "y compris {pct} % {emoji} soldes",
+    "perMinSavings": "−{pct} % /min contre {prevName}",
+    "netLabel": "Net",
+    "totalDueLabel": "Montant total dû",
+    "priceBreakdownHeading": "Détail des prix",
+    "seeAllPlanDetails": "Voir tous les détails de l'offre ↑",
+    "sheetTitle": "{name} plan",
+    "includedHeading": "Inclus",
+    "microcopyHardCap": "Toutes les formules comprennent la synchronisation des réservations avec votre calendrier, un e-mail de suivi et les 7 langues prises en charge. Le nombre de minutes est plafonné chaque mois : une fois ce quota épuisé, les appels sont redirigés vers la messagerie vocale jusqu'au prochain cycle de facturation ou jusqu'à ce que vous passiez à une formule supérieure. Vous recevrez des alertes par e-mail lorsque vous aurez utilisé 25 %, 50 %, 75 % et 90 % de votre quota, afin que vous ne soyez jamais pris au dépourvu.",
+    "taxLine": "{flag} Les taxes indiquées concernent le site {country}{note}. Les prix affichés s'entendent hors TVA — la TVA est calculée lors du paiement.",
+    "taxLineNoteSeparator": " — ",
+    "tiers": {
+      "light": {
+        "name": "Light",
+        "profile": "Petite entreprise ou entreprise peu active — environ 3 appels par jour"
+      },
+      "standard": {
+        "name": "Standard",
+        "profile": "Un site très fréquenté — environ 8 appels par jour"
+      },
+      "busy": {
+        "name": "Busy",
+        "profile": "Un volume important ou quelques sites — environ 15 appels par jour"
+      },
+      "heavy": {
+        "name": "Heavy",
+        "profile": "Plusieurs sites ou volume très élevé — environ 30 appels ou plus par jour"
+      }
+    },
+    "badges": {
+      "mostPopular": "Les plus populaires",
+      "bestValue": "Le meilleur rapport qualité-prix"
+    },
+    "features": {
+      "calendarSync": "Réservations synchronisées avec votre agenda",
+      "performanceEmail": "E-mail de suivi",
+      "languages": "Les 7 langues prises en charge"
+    },
+    "featureTips": {
+      "minutes100": "Environ 3 appels par jour. Limite stricte : la messagerie vocale prend le relais une fois le quota épuisé.",
+      "minutes250": "Environ 8 appels par jour. Limite stricte : la messagerie vocale prend le relais une fois ce quota épuisé.",
+      "minutes500": "Environ 15 appels par jour. Limite stricte : la messagerie vocale prend le relais une fois ce quota épuisé.",
+      "minutes1000": "Environ 30 appels par jour. Limite stricte : la messagerie vocale prend le relais une fois ce quota atteint.",
+      "calendarSync": "Google, Outlook, Apple et iCal — synchronisation bidirectionnelle en temps réel.",
+      "performanceEmail": "Les réservations traitées, les minutes utilisées, les heures de plus forte affluence — tout cela directement dans votre boîte de réception.",
+      "languages": "Grec · Anglais · Espagnol · Portugais · Français · Allemand · Arabe. L'agent se verrouille sur la langue de l'appelant dès le premier mot significatif."
+    },
+    "countries": {
+      "GR": "Grèce",
+      "AT": "Autriche",
+      "BE": "Belgique",
+      "BG": "Bulgarie",
+      "HR": "Croatie",
+      "CY": "Chypre",
+      "CZ": "Tchéquie",
+      "DK": "Danemark",
+      "EE": "Estonie",
+      "FI": "Finlande",
+      "FR": "France",
+      "DE": "Allemagne",
+      "HU": "Hongrie",
+      "IE": "Irlande",
+      "IT": "Italie",
+      "LV": "Lettonie",
+      "LT": "Lituanie",
+      "LU": "Luxembourg",
+      "MT": "Malte",
+      "NL": "Pays-Bas",
+      "PL": "Pologne",
+      "PT": "Portugal",
+      "RO": "Roumanie",
+      "SK": "Slovaquie",
+      "SI": "Slovénie",
+      "ES": "Espagne",
+      "SE": "Suède"
+    }
+  },
   "calculator": {
     "eyebrow": "Calculateur de revenus",
     "subheadline": "Réglez les curseurs en fonction de votre entreprise — consultez instantanément vos chiffres réels.",

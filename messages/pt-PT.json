@@ -54,6 +54,96 @@
       }
     ]
   },
+  "pricing": {
+    "eyebrow": "Preços",
+    "subheadline": "Sem taxas de instalação. Sem contratos. Pode cancelar a qualquer momento.",
+    "countryLabel": "País",
+    "selectCountryAriaLabel": "Selecione o país",
+    "cycleMonthly": "Mensal",
+    "cycleYearly": "Anual",
+    "cycleSavings": "-{pct}%",
+    "minutesLine": "{n} min/mês",
+    "perMonthSuffix": "/mês",
+    "perYearSuffix": "/ano",
+    "yearlyBilling": "cobrado {amount} por ano",
+    "annualSavingsChip": "Poupe {amount} por ano",
+    "promoChip": "incl. {pct} % {emoji} promoção",
+    "perMinSavings": "−{pct} % /min vs. {prevName}",
+    "netLabel": "Líquido",
+    "totalDueLabel": "Total a pagar",
+    "priceBreakdownHeading": "Discriminação de preços",
+    "seeAllPlanDetails": "Ver todos os detalhes do plano ↑",
+    "sheetTitle": "{name} plano",
+    "includedHeading": "Incluído",
+    "microcopyHardCap": "Todos os planos incluem reservas sincronizadas com o seu calendário, um e-mail de desempenho e os 7 idiomas suportados. Os minutos têm um limite mensal fixo — as chamadas são encaminhadas para o correio de voz assim que o limite for atingido, até ao próximo ciclo de faturação ou até que seja efetuada uma atualização. Receberá alertas por e-mail quando atingir 25%, 50%, 75% e 90% do seu limite, para que nunca seja apanhado de surpresa.",
+    "taxLine": "{flag} Os impostos apresentados referem-se a <bold>{country}</bold>{note}. Os preços apresentados não incluem IVA — o imposto é calculado no momento do pagamento.",
+    "taxLineNoteSeparator": " — ",
+    "tiers": {
+      "light": {
+        "name": "Light",
+        "profile": "Empresas de pequena dimensão ou com menor volume de atividade — cerca de 3 chamadas por dia"
+      },
+      "standard": {
+        "name": "Standard",
+        "profile": "Local movimentado — cerca de 8 chamadas por dia"
+      },
+      "busy": {
+        "name": "Busy",
+        "profile": "Volume elevado ou algumas localizações — cerca de 15 chamadas por dia"
+      },
+      "heavy": {
+        "name": "Heavy",
+        "profile": "Várias localizações ou volume muito elevado — cerca de 30 ou mais chamadas por dia"
+      }
+    },
+    "badges": {
+      "mostPopular": "Mais populares",
+      "bestValue": "A melhor relação qualidade/preço"
+    },
+    "features": {
+      "calendarSync": "Reservas sincronizadas com o seu calendário",
+      "performanceEmail": "E-mail de desempenho",
+      "languages": "Todas as 7 línguas suportadas"
+    },
+    "featureTips": {
+      "minutes100": "Cerca de 3 chamadas por dia. Limite máximo — o correio de voz entra em ação quando o limite for atingido.",
+      "minutes250": "Cerca de 8 chamadas por dia. Limite máximo — o correio de voz entra em ação quando o limite for atingido.",
+      "minutes500": "Cerca de 15 chamadas por dia. Limite máximo — o correio de voz entra em ação quando o limite for atingido.",
+      "minutes1000": "Cerca de 30 ou mais chamadas por dia. Limite máximo — o correio de voz entra em ação quando o limite for atingido.",
+      "calendarSync": "Google, Outlook, Apple e iCal — sincronização bidirecional em tempo real.",
+      "performanceEmail": "Reservas processadas, minutos utilizados, horários de maior volume de chamadas — tudo enviado diretamente para a sua caixa de entrada.",
+      "languages": "Grego · Inglês · Espanhol · Português · Francês · Alemão · Árabe. O agente define o idioma do interlocutor com base na primeira palavra significativa."
+    },
+    "countries": {
+      "GR": "Grécia",
+      "AT": "Áustria",
+      "BE": "Bélgica",
+      "BG": "Bulgária",
+      "HR": "Croácia",
+      "CY": "Chipre",
+      "CZ": "República Checa",
+      "DK": "Dinamarca",
+      "EE": "Estónia",
+      "FI": "Finlândia",
+      "FR": "França",
+      "DE": "Alemanha",
+      "HU": "Hungria",
+      "IE": "Irlanda",
+      "IT": "Itália",
+      "LV": "Letónia",
+      "LT": "Lituânia",
+      "LU": "Luxemburgo",
+      "MT": "Malta",
+      "NL": "Países Baixos",
+      "PL": "Polónia",
+      "PT": "Portugal",
+      "RO": "Roménia",
+      "SK": "Eslováquia",
+      "SI": "Eslovénia",
+      "ES": "Espanha",
+      "SE": "Suécia"
+    }
+  },
   "calculator": {
     "eyebrow": "Calculadora de receitas",
     "subheadline": "Ajuste os controles deslizantes de acordo com a sua empresa — veja os seus números reais instantaneamente.",

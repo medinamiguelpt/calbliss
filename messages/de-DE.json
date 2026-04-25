@@ -54,6 +54,96 @@
       }
     ]
   },
+  "pricing": {
+    "eyebrow": "Preise",
+    "subheadline": "Keine Einrichtungsgebühren. Keine Vertragsbindung. Jederzeit kündbar.",
+    "countryLabel": "Land",
+    "selectCountryAriaLabel": "Land auswählen",
+    "cycleMonthly": "monatlich",
+    "cycleYearly": "Jährlich",
+    "cycleSavings": "-{pct}%",
+    "minutesLine": "{n} Min./Monat",
+    "perMonthSuffix": "/Monat",
+    "perYearSuffix": "/Jahr",
+    "yearlyBilling": "Rechnungspreis: {amount} pro Jahr",
+    "annualSavingsChip": "Sparen Sie {amount} pro Jahr",
+    "promoChip": "inkl. {pct} % {emoji} sale",
+    "perMinSavings": "–{pct} % /min gegenüber {prevName}",
+    "netLabel": "Netto",
+    "totalDueLabel": "Gesamtbetrag",
+    "priceBreakdownHeading": "Preisaufschlüsselung",
+    "seeAllPlanDetails": "Alle Details zum Tarif anzeigen ↑",
+    "sheetTitle": "{name} Plan",
+    "includedHeading": "Im Lieferumfang enthalten",
+    "microcopyHardCap": "Alle Tarife umfassen die Synchronisierung von Buchungen mit Ihrem Kalender, eine Leistungsübersicht per E-Mail sowie alle 7 unterstützten Sprachen. Die Gesprächsminuten unterliegen einer festen monatlichen Obergrenze – sobald das Kontingent aufgebraucht ist, werden Anrufe bis zum nächsten Abrechnungszeitraum oder einem Upgrade an die Voicemail weitergeleitet. Sie erhalten E-Mail-Benachrichtigungen bei 25 %, 50 %, 75 % und 90 % Ihres Kontingents, damit Sie nie unvorbereitet sind.",
+    "taxLine": "{flag} Die angegebenen Preise gelten für <bold>{country}</bold>{note}. Die angegebenen Preise verstehen sich ohne Mehrwertsteuer – die Steuer wird an der Kasse berechnet.",
+    "taxLineNoteSeparator": " — ",
+    "tiers": {
+      "light": {
+        "name": "Light",
+        "profile": "Kleines oder ruhigeres Geschäft – ca. 3 Anrufe pro Tag"
+      },
+      "standard": {
+        "name": "Standard",
+        "profile": "Ein geschäftiger Standort – ca. 8 Anrufe pro Tag"
+      },
+      "busy": {
+        "name": "Busy",
+        "profile": "Hohes Aufkommen oder mehrere Standorte – ca. 15 Anrufe pro Tag"
+      },
+      "heavy": {
+        "name": "Heavy",
+        "profile": "An mehreren Standorten oder sehr hohes Aufkommen – ca. 30+ Anrufe pro Tag"
+      }
+    },
+    "badges": {
+      "mostPopular": "Am beliebtesten",
+      "bestValue": "Das beste Preis-Leistungs-Verhältnis"
+    },
+    "features": {
+      "calendarSync": "Termine, die mit Ihrem Kalender synchronisiert wurden",
+      "performanceEmail": "Leistungs-E-Mail",
+      "languages": "Alle 7 unterstützten Sprachen"
+    },
+    "featureTips": {
+      "minutes100": "~3 Anrufe pro Tag. Strenge Obergrenze – sobald das Kontingent aufgebraucht ist, wird die Voicemail aktiviert.",
+      "minutes250": "~8 Anrufe pro Tag. Strenge Obergrenze – sobald das Kontingent aufgebraucht ist, wird die Voicemail aktiviert.",
+      "minutes500": "~15 Anrufe pro Tag. Strenge Obergrenze – sobald das Kontingent aufgebraucht ist, wird die Voicemail aktiviert.",
+      "minutes1000": "~30+ Anrufe pro Tag. Strenge Obergrenze – sobald das Kontingent aufgebraucht ist, wird die Voicemail aktiviert.",
+      "calendarSync": "Google, Outlook, Apple und iCal – bidirektionale Synchronisierung in Echtzeit.",
+      "performanceEmail": "Bearbeitete Buchungen, verbrauchte Minuten, Spitzenzeiten bei Anrufen – direkt in Ihren Posteingang.",
+      "languages": "Griechisch · Englisch · Spanisch · Portugiesisch · Französisch · Deutsch · Arabisch. Der Agent passt sich beim ersten inhaltlichen Wort an die Sprache des Anrufers an."
+    },
+    "countries": {
+      "GR": "Griechenland",
+      "AT": "Österreich",
+      "BE": "Belgien",
+      "BG": "Bulgarien",
+      "HR": "Kroatien",
+      "CY": "Zypern",
+      "CZ": "Tschechien",
+      "DK": "Dänemark",
+      "EE": "Estland",
+      "FI": "Finnland",
+      "FR": "Frankreich",
+      "DE": "Deutschland",
+      "HU": "Ungarn",
+      "IE": "Irland",
+      "IT": "Italien",
+      "LV": "Lettland",
+      "LT": "Litauen",
+      "LU": "Luxemburg",
+      "MT": "Malta",
+      "NL": "Niederlande",
+      "PL": "Polen",
+      "PT": "Portugal",
+      "RO": "Rumänien",
+      "SK": "Slowakei",
+      "SI": "Slowenien",
+      "ES": "Spanien",
+      "SE": "Schweden"
+    }
+  },
   "calculator": {
     "eyebrow": "Umsatzrechner",
     "subheadline": "Passen Sie die Schieberegler an Ihr Unternehmen an – sehen Sie Ihre tatsächlichen Zahlen sofort.",
@@ -109,7 +199,7 @@
       {
         "label": "Nagel- und Kosmetikstudios",
         "headline": "Sorgen Sie dafür, dass Ihr Stuhl immer besetzt ist, ohne einen Finger zu rühren",
-        "body": "Von Gel-Behandlungen bis hin zu Wimpernverlängerungen – Ihr Berater kennt Ihr Leistungsangebot und bucht jedes Mal den passenden Termin bei der richtigen Kosmetikerin.",
+        "body": "Von Gel-Behandlungen bis hin zu Wimpernverlängerungen – Ihr Berater kennt Ihr Leistungsangebot und bucht jedes Mal den passenden Termin bei der richtigen Fachkraft.",
         "perks": [
           "Techniker nach Fachgebiet",
           "Berücksichtigt Unterschiede in der Dienstdauer",
@@ -259,13 +349,13 @@
       "glados": "Test… Test… Buchung bestätigt. 🧪",
       "jarvis": "Sehr geehrter Herr, Ihr Termin um 10 Uhr ist bestätigt und Ihr Kalender ist vollständig auf dem neuesten Stand. 🦾",
       "friday": "Online und zu Ihren Diensten. Alle Anrufe werden beantwortet. 🤖",
-      "clippy": "Es sieht so aus, als wollten Sie einen Termin vereinbaren. Das übernehme ich gerne für Sie. 📎",
+      "clippy": "Es sieht so aus, als wollten Sie einen Termin vereinbaren. Lassen Sie mich das für Sie erledigen. 📎",
       "watson": "Ganz einfach, mein lieber Kunde – Ihr Termin ist frei. 🔍"
     }
   },
   "hero": {
     "badge": "✦ KI-gestützte Buchungsagenten",
-    "typewriter": "TimeBookingPro erstellt für Sie eine Sprach-KI, die Anrufe entgegennimmt, Termine verwaltet und Ihren Kalender füllt – automatisch und rund um die Uhr.",
+    "typewriter": "TimeBookingPro erstellt für Sie eine Sprach-KI, die Anrufe entgegennimmt, Buchungen bearbeitet und Ihren Kalender füllt – automatisch und rund um die Uhr.",
     "headlines": {
       "a": {
         "plain": "Geben Sie Ihrem Unternehmen",

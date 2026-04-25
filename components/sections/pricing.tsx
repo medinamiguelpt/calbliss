@@ -2,8 +2,9 @@
 
 import { useState, useMemo, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { useTranslations } from "next-intl"
 import { CheckCircle, ChevronDown } from "lucide-react"
-import { SUBSCRIPTION_TIERS, FEATURES_ON_EVERY_PLAN, quote, YEARLY_DISCOUNT, activeHolidayPromo, type BillingCycle } from "@/lib/pricing"
+import { SUBSCRIPTION_TIERS, FEATURE_KEYS, quote, YEARLY_DISCOUNT, activeHolidayPromo, type BillingCycle, type FeatureKey } from "@/lib/pricing"
 import { type CurrencyCode } from "@/lib/currencies"
 import { COUNTRIES, COUNTRY_ORDER, type CountryCode } from "@/lib/vat"
 import { SpotlightCard } from "@/components/ui/spotlight-card"
@@ -11,15 +12,12 @@ import { BottomSheet } from "@/components/ui/bottom-sheet"
 import { RevealWords } from "@/components/ui/reveal-words"
 import { Tooltip } from "@/components/ui/tooltip"
 
-// Tooltips for the minutes bullet (tier-specific) and shared bullets
-const FEATURE_TIPS: Record<string, string> = {
-  "100 min/month":                     "~3 calls per day. Hard cap — voicemail takes over when the bucket is spent.",
-  "250 min/month":                     "~8 calls per day. Hard cap — voicemail takes over when the bucket is spent.",
-  "500 min/month":                     "~15 calls per day. Hard cap — voicemail takes over when the bucket is spent.",
-  "1,000 min/month":                   "~30+ calls per day. Hard cap — voicemail takes over when the bucket is spent.",
-  "Bookings synced to your calendar":  "Google, Outlook, Apple, and iCal — real-time two-way sync.",
-  "Performance email":                 "Bookings handled, minutes used, top call hours — sent straight to your inbox.",
-  "All 7 supported languages":         "Greek · English · Spanish · Portuguese · French · German · Arabic. Agent locks to the caller's language on first substantive word.",
+/** Map a tier's minute bucket to the matching tooltip key in messages.pricing.featureTips */
+function minutesTipKey(min: number): "minutes100" | "minutes250" | "minutes500" | "minutes1000" {
+  if (min >= 1000) return "minutes1000"
+  if (min >= 500)  return "minutes500"
+  if (min >= 250)  return "minutes250"
+  return "minutes100"
 }
 
 // Only SE/DK/PL have native price tables; every other EU country falls back to EUR.
@@ -33,6 +31,7 @@ function currencyForCountry(country: CountryCode): CurrencyCode {
 const DEFAULT_COUNTRY: CountryCode = "GR"
 
 export function Pricing({ headline = "Simple, transparent pricing" }: { headline?: string }) {
+  const t = useTranslations("pricing")
   const [cycle, setCycle] = useState<BillingCycle>("monthly")
   const [countryCode, setCountryCode] = useState<CountryCode>(DEFAULT_COUNTRY)
   const [sheetIdx, setSheetIdx] = useState<number | null>(null)
@@ -72,7 +71,7 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
         <div className="text-center mb-10">
           <motion.p className="text-sm font-semibold uppercase tracking-widest text-primary mb-3"
             initial={{ opacity:0, y:12 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.4 }}>
-            Pricing
+            {t("eyebrow")}
           </motion.p>
           <RevealWords
             key={headline}
@@ -83,7 +82,7 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
           </RevealWords>
           <motion.p className="mt-4 text-lg text-muted-foreground max-w-xl mx-auto"
             initial={{ opacity:0, y:12 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.4, delay:0.2 }}>
-            No setup fees. No contracts. Cancel any time.
+            {t("subheadline")}
           </motion.p>
         </div>
 
@@ -118,7 +117,7 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
             htmlFor="pricing-country"
             className="text-xs font-semibold text-muted-foreground uppercase tracking-wide text-center"
           >
-            Country
+            {t("countryLabel")}
           </label>
           <div className="relative">
             <select
@@ -126,13 +125,13 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
               value={countryCode}
               onChange={e => setCountryCode(e.target.value as CountryCode)}
               className="appearance-none pl-3 pr-9 h-10 rounded-lg border border-border bg-card text-sm text-foreground outline-none focus:border-primary/50 transition-colors cursor-pointer min-w-[220px]"
-              aria-label="Select country"
+              aria-label={t("selectCountryAriaLabel")}
             >
               {COUNTRY_ORDER.map(code => {
                 const c = COUNTRIES[code]
                 return (
                   <option key={code} value={code}>
-                    {c.flag} {c.name} · {currencyForCountry(code)}
+                    {c.flag} {t(`countries.${code}`)} · {currencyForCountry(code)}
                   </option>
                 )
               })}
@@ -161,7 +160,7 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
                   />
                 )}
                 <span className="relative z-10 flex items-center gap-1.5">
-                  {c === "monthly" ? "Monthly" : "Yearly"}
+                  {c === "monthly" ? t("cycleMonthly") : t("cycleYearly")}
                   {c === "yearly" && (
                     <motion.span
                       key={cycle === "yearly" ? "y" : "n"}
@@ -172,7 +171,7 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
                         cycle === "yearly" ? "bg-white/20 text-white" : "bg-green-500/15 text-green-600 dark:text-green-400"
                       }`}
                     >
-                      -{yearlyPct}%
+                      {t("cycleSavings", { pct: yearlyPct })}
                     </motion.span>
                   )}
                 </span>
@@ -188,7 +187,10 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
           <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-4 overflow-x-auto md:overflow-visible snap-x snap-mandatory scroll-smooth no-scrollbar -mx-4 px-4 sm:-mx-6 sm:px-6 md:mx-0 md:px-0 pb-3 md:pb-0">
           {quotes.map((q, index) => {
             const { tier } = q
-            const minutesLine = `${tier.minutesPerMonth.toLocaleString("en-US")} min/month`
+            const tierName = t(`tiers.${tier.id}.name`)
+            const tierProfile = t(`tiers.${tier.id}.profile`)
+            const minutesLine = t("minutesLine", { n: tier.minutesPerMonth.toLocaleString("en-US") })
+            const minutesKey = minutesTipKey(tier.minutesPerMonth)
             const showStrike = !!q.promo && q.netPreHoliday !== q.netEffective
             const isPopular = tier.badge === "Most popular"
             // Per-minute savings vs. the previous tier (dashboard shows this chip below the feature list)
@@ -214,7 +216,7 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10">
                     <span className="text-xs font-bold px-3 py-1 rounded-full text-white shadow-lg whitespace-nowrap"
                       style={{ background: tier.color }}>
-                      {tier.badge}
+                      {tier.badge === "Most popular" ? t("badges.mostPopular") : t("badges.bestValue")}
                     </span>
                   </div>
                 )}
@@ -226,7 +228,7 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
                 }`}>
 
                   {/* Name */}
-                  <p className="font-heading font-bold text-lg" style={{ color: tier.color }}>{tier.name}</p>
+                  <p className="font-heading font-bold text-lg" style={{ color: tier.color }}>{tierName}</p>
 
                   {/* Price */}
                   <div>
@@ -247,12 +249,12 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
                           <span className="text-4xl font-heading font-extrabold">
                             {cycle === "yearly" ? q.formatted.monthlyEquivalent : q.formatted.netEffective}
                           </span>
-                          <span className="text-muted-foreground text-sm mb-1.5">/mo</span>
+                          <span className="text-muted-foreground text-sm mb-1.5">{t("perMonthSuffix")}</span>
                         </div>
 
                         {cycle === "yearly" && (
                           <p className="text-xs text-muted-foreground mt-0.5">
-                            billed {q.formatted.yearlyTotal}/yr
+                            {t("yearlyBilling", { amount: q.formatted.yearlyTotal })}
                           </p>
                         )}
                       </motion.div>
@@ -262,12 +264,12 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
                     {cycle === "yearly" && q.annualSavings > 0 && (
                       <div className="mt-2 flex items-center gap-1.5 flex-wrap">
                         <span className="text-xs font-semibold text-green-600 dark:text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full">
-                          Save {q.formatted.annualSavings}/yr
+                          {t("annualSavingsChip", { amount: q.formatted.annualSavings })}
                         </span>
                         {q.promo && (
                           <span className="text-xs font-semibold px-2 py-0.5 rounded-full"
                             style={{ color:q.promo.color, background:`${q.promo.color}15` }}>
-                            incl. {Math.round(q.promo.discount*100)}% {q.promo.emoji} sale
+                            {t("promoChip", { pct: Math.round(q.promo.discount*100), emoji: q.promo.emoji })}
                           </span>
                         )}
                       </div>
@@ -277,8 +279,8 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
                   {/* Tax breakdown — values animate on country/cycle/currency change */}
                   <div className="rounded-xl border border-border/60 bg-muted/30 p-3 text-xs space-y-1.5">
                     {[
-                      { label: "Net",       value: q.formatted.netEffective,                         key: `net-${q.formatted.netEffective}` },
-                      { label: q.vat.label, value: q.vat.reverseCharged ? "—" : q.formatted.vatAmount, key: `vat-${q.formatted.vatAmount}-${q.vat.reverseCharged}`, hint: q.vat.explanation, hintId: `vat-note-${tier.id}` },
+                      { label: t("netLabel"), value: q.formatted.netEffective,                         key: `net-${q.formatted.netEffective}` },
+                      { label: q.vat.label,    value: q.vat.reverseCharged ? "—" : q.formatted.vatAmount, key: `vat-${q.formatted.vatAmount}-${q.vat.reverseCharged}`, hint: q.vat.explanation, hintId: `vat-note-${tier.id}` },
                     ].map(({ label, value, key, hint, hintId }) => (
                       <div key={label} className="flex justify-between text-muted-foreground" title={hint} aria-describedby={hintId}>
                         <span>{label}</span>
@@ -296,7 +298,7 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
                       </div>
                     ))}
                     <div className="border-t border-border/60 pt-1.5 flex justify-between font-semibold text-foreground">
-                      <span>Total due</span>
+                      <span>{t("totalDueLabel")}</span>
                       <AnimatePresence mode="wait">
                         <motion.span
                           key={`gross-${q.formatted.gross}`}
@@ -316,16 +318,20 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
 
                   {/* Feature list — tier-specific minutes line + shared bullets */}
                   <ul className="space-y-2 flex-1">
-                    {[minutesLine, ...FEATURES_ON_EVERY_PLAN].map(f => (
-                      <li key={f} className="flex items-center gap-2 text-sm">
+                    {/* Minutes line (tier-specific tooltip) */}
+                    <li className="flex items-center gap-2 text-sm">
+                      <CheckCircle size={14} className="text-primary shrink-0" />
+                      <Tooltip content={t(`featureTips.${minutesKey}`)}>
+                        <span className="underline decoration-dotted underline-offset-2 decoration-muted-foreground/40">{minutesLine}</span>
+                      </Tooltip>
+                    </li>
+                    {/* Shared feature bullets */}
+                    {FEATURE_KEYS.map((key: FeatureKey) => (
+                      <li key={key} className="flex items-center gap-2 text-sm">
                         <CheckCircle size={14} className="text-primary shrink-0" />
-                        {FEATURE_TIPS[f] ? (
-                          <Tooltip content={FEATURE_TIPS[f]}>
-                            <span className="underline decoration-dotted underline-offset-2 decoration-muted-foreground/40">{f}</span>
-                          </Tooltip>
-                        ) : (
-                          <span>{f}</span>
-                        )}
+                        <Tooltip content={t(`featureTips.${key}`)}>
+                          <span className="underline decoration-dotted underline-offset-2 decoration-muted-foreground/40">{t(`features.${key}`)}</span>
+                        </Tooltip>
                       </li>
                     ))}
                   </ul>
@@ -333,7 +339,7 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
                   {/* Per-minute savings chip vs. previous tier — matches canonical dashboard */}
                   {savingsPct > 0 && prev && (
                     <span className="inline-flex w-fit items-center text-xs font-semibold text-green-600 dark:text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full">
-                      −{savingsPct}% /min vs. {prev.name}
+                      {t("perMinSavings", { pct: savingsPct, prevName: t(`tiers.${prev.id}.name`) })}
                     </span>
                   )}
 
@@ -342,7 +348,7 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
                     onClick={() => setSheetIdx(index)}
                     className="md:hidden w-full pt-1 text-xs text-center text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    See all plan details ↑
+                    {t("seeAllPlanDetails")}
                   </button>
                 </SpotlightCard>
               </motion.div>
@@ -357,12 +363,12 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
         <BottomSheet
           open={sheetIdx !== null}
           onClose={() => setSheetIdx(null)}
-          title={sheetIdx !== null ? `${quotes[sheetIdx].tier.name} plan` : undefined}
+          title={sheetIdx !== null ? t("sheetTitle", { name: t(`tiers.${quotes[sheetIdx].tier.id}.name`) }) : undefined}
         >
           {sheetIdx !== null && (() => {
             const q = quotes[sheetIdx]
             const { tier } = q
-            const minutesLine = `${tier.minutesPerMonth.toLocaleString("en-US")} min/month`
+            const sheetMinutesLine = t("minutesLine", { n: tier.minutesPerMonth.toLocaleString("en-US") })
             return (
               <div className="flex flex-col gap-6">
                 {/* Price recap */}
@@ -371,22 +377,26 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
                     <span className="text-4xl font-heading font-extrabold">
                       {cycle === "yearly" ? q.formatted.monthlyEquivalent : q.formatted.netEffective}
                     </span>
-                    <span className="text-muted-foreground text-sm mb-1.5">/mo</span>
+                    <span className="text-muted-foreground text-sm mb-1.5">{t("perMonthSuffix")}</span>
                   </div>
                   {cycle === "yearly" && (
-                    <p className="text-xs text-muted-foreground mt-0.5">billed {q.formatted.yearlyTotal}/yr</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{t("yearlyBilling", { amount: q.formatted.yearlyTotal })}</p>
                   )}
-                  <p className="text-xs text-muted-foreground/80 mt-2">{tier.profile}</p>
+                  <p className="text-xs text-muted-foreground/80 mt-2">{t(`tiers.${tier.id}.profile`)}</p>
                 </div>
 
                 {/* Features — minutes line + shared bullets */}
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Included</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">{t("includedHeading")}</p>
                   <ul className="space-y-3">
-                    {[minutesLine, ...FEATURES_ON_EVERY_PLAN].map(f => (
-                      <li key={f} className="flex items-center gap-3 text-sm">
+                    <li className="flex items-center gap-3 text-sm">
+                      <CheckCircle size={15} className="text-primary shrink-0" />
+                      <span>{sheetMinutesLine}</span>
+                    </li>
+                    {FEATURE_KEYS.map((key: FeatureKey) => (
+                      <li key={key} className="flex items-center gap-3 text-sm">
                         <CheckCircle size={15} className="text-primary shrink-0" />
-                        <span>{f}</span>
+                        <span>{t(`features.${key}`)}</span>
                       </li>
                     ))}
                   </ul>
@@ -394,16 +404,16 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
 
                 {/* Tax breakdown */}
                 <div className="rounded-xl border border-border/60 bg-muted/30 p-4 text-sm space-y-2">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Price breakdown</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">{t("priceBreakdownHeading")}</p>
                   <div className="flex justify-between text-muted-foreground">
-                    <span>Net</span><span>{q.formatted.netEffective}</span>
+                    <span>{t("netLabel")}</span><span>{q.formatted.netEffective}</span>
                   </div>
                   <div className="flex justify-between text-muted-foreground">
                     <span>{q.vat.label}</span>
                     <span>{q.vat.reverseCharged ? "—" : q.formatted.vatAmount}</span>
                   </div>
                   <div className="border-t border-border/60 pt-2 flex justify-between font-semibold">
-                    <span>Total due</span><span>{q.formatted.gross}/{q.per}</span>
+                    <span>{t("totalDueLabel")}</span><span>{q.formatted.gross}/{q.per}</span>
                   </div>
                   <p className="text-muted-foreground/70 text-xs pt-1">{q.vat.explanation}</p>
                 </div>
@@ -416,16 +426,15 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
         {/* Under-grid microcopy — hard-cap explainer + geo-swapped tax line */}
         <div className="mt-10 max-w-3xl mx-auto text-center space-y-3">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            All plans include bookings synced to your calendar, a performance email, and all
-            7 supported languages. Minutes are a hard monthly cap — calls route to voicemail
-            once the bucket is spent until the next billing cycle or an upgrade. You&apos;ll
-            get email alerts at 25%, 50%, 75%, and 90% of your bucket so you&apos;re never
-            surprised.
+            {t("microcopyHardCap")}
           </p>
           <p className="text-xs text-muted-foreground/80">
-            {country.flag} Taxes shown for <strong>{country.name}</strong>
-            {country.note ? ` — ${country.note}` : ""}.
-            {" "}Prices shown ex-VAT — tax calculated at checkout.
+            {t.rich("taxLine", {
+              flag: country.flag,
+              country: t(`countries.${countryCode}`),
+              note: country.note ? t("taxLineNoteSeparator") + country.note : "",
+              bold: (chunks) => <strong>{chunks}</strong>,
+            })}
           </p>
         </div>
 

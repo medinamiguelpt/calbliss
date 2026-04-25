@@ -70,6 +70,10 @@ const PROTECTED_TERMS = [
   "HAL", "GLaDOS",
   "Apple",
   "Elite Cuts",
+  // Pricing tier names — kept as stable English brand-style identifiers.
+  // 'Light' especially mistranslates ('Φως' / 'Lumière' = illumination, not
+  // 'lightweight plan') without context, so we lock all four.
+  "Light", "Standard", "Busy", "Heavy",
 ]
 
 function escapeRegex(s) {
