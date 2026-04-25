@@ -188,7 +188,6 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
           {quotes.map((q, index) => {
             const { tier } = q
             const tierName = t(`tiers.${tier.id}.name`)
-            const tierProfile = t(`tiers.${tier.id}.profile`)
             const minutesLine = t("minutesLine", { n: tier.minutesPerMonth.toLocaleString("en-US") })
             const minutesKey = minutesTipKey(tier.minutesPerMonth)
             const showStrike = !!q.promo && q.netPreHoliday !== q.netEffective
