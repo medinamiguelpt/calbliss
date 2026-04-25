@@ -124,7 +124,7 @@ export function AgentNamer({ headline = "Meet your AI teammate" }: { headline?: 
                       exit={{ opacity: 0, scale: 0.85 }}
                       transition={{ duration: 0.18 }}
                       onClick={() => setName(s)}
-                      className={`text-xs font-medium px-3 py-1 rounded-full border transition-colors ${
+                      className={`text-sm font-medium px-3.5 py-1.5 min-h-9 rounded-full border transition-colors ${
                         name === s
                           ? "border-primary bg-primary/10 text-primary"
                           : "border-border hover:border-primary/40 hover:bg-primary/5 text-muted-foreground hover:text-primary"

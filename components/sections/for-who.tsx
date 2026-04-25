@@ -52,7 +52,7 @@ export function ForWho({ headline = "Built for every booking business" }: { head
                 <TabsTrigger
                   key={tab.value}
                   value={tab.value}
-                  className="rounded-full px-5 py-2 text-sm font-semibold border border-border data-active:bg-primary data-active:text-primary-foreground data-active:border-primary transition-colors"
+                  className="rounded-full px-5 py-2 min-h-10 text-sm font-semibold border border-border data-active:bg-primary data-active:text-primary-foreground data-active:border-primary transition-colors"
                 >
                   {tab.label}
                 </TabsTrigger>

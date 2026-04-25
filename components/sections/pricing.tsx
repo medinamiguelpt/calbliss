@@ -346,7 +346,7 @@ export function Pricing({ headline = "Simple, transparent pricing" }: { headline
                   {/* Mobile-only: open bottom sheet with full plan details */}
                   <button
                     onClick={() => setSheetIdx(index)}
-                    className="md:hidden w-full pt-1 text-xs text-center text-muted-foreground hover:text-foreground transition-colors"
+                    className="md:hidden w-full min-h-10 py-2 text-xs text-center text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {t("seeAllPlanDetails")}
                   </button>
