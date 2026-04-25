@@ -113,7 +113,17 @@ function protectTerms(text) {
 
 function unprotectTerms(text) {
   // Strip ignore tags, then decode the XML entities we added in escapeXml.
-  return unescapeXml(text.replace(/<ignore>([\s\S]*?)<\/ignore>/g, "$1"))
+  let out = unescapeXml(text.replace(/<ignore>([\s\S]*?)<\/ignore>/g, "$1"))
+  // DeepL occasionally drops the space before/after a protected term —
+  // e.g. Spanish "Con TimeBookingPro" comes back as "ConTimeBookingPro"
+  // because it treats <ignore> like inline formatting. Re-insert a space
+  // whenever a Unicode letter sits flush against a known protected term.
+  for (const term of PROTECTED_TERMS) {
+    const escaped = escapeRegex(term)
+    out = out.replace(new RegExp(`(\\p{L})${escaped}`, "gu"), `$1 ${term}`)
+    out = out.replace(new RegExp(`${escaped}(\\p{L})`, "gu"), `${term} $1`)
+  }
+  return out
 }
 
 /** Collect every leaf string from a JSON tree as { path: string[], value: string }. */
